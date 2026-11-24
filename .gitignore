@@ -1,0 +1,5 @@
+docs/research/higgsfield-cli/
+docs/research/higgsfield-skills/
+__pycache__/
+*.pyc
+.DS_Store
