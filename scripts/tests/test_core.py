@@ -248,7 +248,7 @@ class StageTests(Base):
         st["stages"]["script"]["qa_rounds"] = [{"round": 1, "verdict": "FAIL"}]
         stages.save_state(proj, st)
         self.write(proj, ".shotcraft/qa/script/round-1.json", "{}")
-        res = stages.reopen(proj, "research", note="new refs")
+        res = stages.reopen(proj, "research", note="new refs", user_said="redo the research")
         self.assertEqual(res["reset"], ["concept", "script"])
         st = stages.load_state(proj)
         self.assertEqual(st["stages"]["research"]["status"], "open")
@@ -342,18 +342,23 @@ class StageTests(Base):
             self.force(proj, prompts="done", boards="open")
             manifest.add_generation(proj, shot="S010", tier="board", status="completed")
             self.assertFalse(stages.check_evidence(proj, "boards")[0])  # no contact sheet
+            from shotcraft import contact_sheet
             self.write(proj, "06_generations/contact-sheets/boards.html", "<html></html>")
+            self.assertFalse(stages.check_evidence(proj, "boards")[0])  # a hand-written sheet does not count
+            contact_sheet.build(proj, "board", stamp="20261124-100000")
             self.assertTrue(stages.check_evidence(proj, "boards")[0])
             # drafts: every shot
             self.force(proj, boards="done", drafts="open")
             manifest.add_generation(proj, shot="S010", tier="draft", status="completed")
-            self.write(proj, "06_generations/contact-sheets/drafts.html", "<html></html>")
+            contact_sheet.build(proj, "draft", stamp="20261124-100100")
             ok, _, probs = stages.check_evidence(proj, "drafts")
             self.assertFalse(ok)
             self.assertIn("S020", probs[0])
             manifest.add_generation(proj, shot="S020", tier="draft", status="failed")
             self.assertFalse(stages.check_evidence(proj, "drafts")[0])
             manifest.add_generation(proj, shot="S020", tier="draft", status="completed")
+            self.assertFalse(stages.check_evidence(proj, "drafts")[0])  # the sheet doesn't show the new take
+            contact_sheet.build(proj, "draft", stamp="20261124-100200")
             self.assertTrue(stages.check_evidence(proj, "drafts")[0])
             # finals: approved, none undecided
             self.force(proj, drafts="done", finals="open")
@@ -371,12 +376,15 @@ class StageTests(Base):
         self.assertFalse(stages.check_evidence(proj, "sound")[0])
         self.write(proj, "08_sound/licences.md", "Track from X, licensed")
         self.assertTrue(stages.check_evidence(proj, "sound")[0])
-        self.write(proj, "10_delivery/delivery-report.json", json.dumps({"checks": [{"name": "fps", "status": "PASS"}]}))
-        self.assertFalse(stages.check_evidence(proj, "delivery")[0])  # no delivered file
+        from shotcraft import delivery
+        self.write(proj, "10_delivery/delivery-report.json", json.dumps({"verdict": "PASS"}))
+        self.assertFalse(stages.check_evidence(proj, "delivery")[0])  # a hand-written report does not count
         self.write(proj, "10_delivery/reel.mp4", "x")
+        delivery.record(proj, {"verdict": "PASS", "checks": [{"name": "fps"}], "failed": [], "spec": {}})
         self.assertTrue(stages.check_evidence(proj, "delivery")[0])
-        self.write(proj, "10_delivery/delivery-report.json",
-                   json.dumps({"checks": [{"name": "fps", "status": "PASS"}, {"name": "loudness", "status": "FAIL"}]}))
+        self.write(proj, "10_delivery/reel.mp4", "changed")
+        self.assertFalse(stages.check_evidence(proj, "delivery")[0])  # file changed since the check
+        delivery.record(proj, {"verdict": "FAIL", "checks": [{}, {}], "failed": ["loudness"], "spec": {}})
         ok, _, probs = stages.check_evidence(proj, "delivery")
         self.assertFalse(ok)
         self.assertIn("loudness", probs[0])

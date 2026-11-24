@@ -10,7 +10,13 @@
       "description": "A production crew for AI video and images, from a quick prompt to a full production with stage gates, a credit budget and a Higgsfield hand-off.",
       "version": "0.1.0",
       "license": "MIT",
-      "keywords": ["higgsfield", "ai-video", "prompt-engineering", "video-production"]
+      "keywords": [
+        "higgsfield",
+        "ai-video",
+        "prompt-engineering",
+        "video-production"
+      ]
     }
-  ]
+  ],
+  "description": "shotcraft: an AI production crew for Claude Code \u2014 prompt refinement, staged production and Higgsfield generation."
 }

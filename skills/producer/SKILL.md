@@ -97,6 +97,9 @@ go, before anything is built. Full question bank, round plan and recommended-ans
    `sc stage skip <stage> --user-said "<their words>"`.
 8. **Show the card** and ask them to confirm it (AskUserQuestion: "Confirm the job card" (Recommended) /
    "Change something"). On their yes: `sc stage done intake --user-said "<their words>"`.
+9. **Save the agreed delivery in project.json** when it differs from the preset (the init takes the preset's
+   typical length, which delivery checks and the hand-off sheet then use):
+   `sc project set --delivery-duration <seconds> [--use-case <preset>] --user-said "<their words>"`.
 
 After the card, no drip questions. Something the intake missed: say it was missed, ask it, and add it to the
 card and to grilling.md.

@@ -290,6 +290,29 @@ def _delivery_files(project):
     return sorted(out)
 
 
+def fingerprints(project):
+    """{relative path: sha256} of every delivery file in 10_delivery/ (what the stage evidence compares)."""
+    out = {}
+    for f in _delivery_files(project):
+        rel = os.path.relpath(f, project).replace(os.sep, "/")
+        out[rel] = manifest.file_sha256(f)
+    return out
+
+
+def record(project, report):
+    """Store the check in project.json; the delivery stage trusts only this record, not the report file."""
+    data = manifest.load(project)
+    spec = report.get("spec") or {}
+    data["delivery_check"] = {
+        "at": report.get("checked_at"), "verdict": report.get("verdict"), "failed": report.get("failed") or [],
+        "checks": len(report.get("checks") or []), "files": fingerprints(project),
+        "effective": {"preset": spec.get("preset") or spec.get("id"), "duration": spec.get("duration_s"),
+                      "duration_tolerance_s": spec.get("duration_tolerance_s"),
+                      "loudness_lufs": spec.get("loudness_lufs")},
+    }
+    manifest.save(project, data)
+
+
 def _check_file(path, rel, spec, planned, single_video, results, notes, duration_override):
     p = probe(path)
     kind = p["kind"]
@@ -404,6 +427,7 @@ def check(project, preset_id=None, duration=None, tolerance=None, lufs=None, wri
     if write:
         jsonio.write_json(os.path.join(project, REPORT), report)
         report["report"] = REPORT
+        record(project, report)
     return report
 
 

@@ -136,11 +136,11 @@ A project folder looks like this:
 In Claude Code:
 
 ```
-/plugin marketplace add <owner>/shotcraft
+/plugin marketplace add timmyha2612-droid/ai-content-production
 /plugin install shotcraft@shotcraft
 ```
 
-Replace `<owner>` with the GitHub account that hosts this repository. Restart Claude Code if the skills do not
+Restart Claude Code if the skills do not
 show up straight away. Then say "set up shotcraft"; the producer asks where your projects should live and
 checks your tools.
 

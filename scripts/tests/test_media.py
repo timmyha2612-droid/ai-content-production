@@ -130,7 +130,7 @@ class ContactSheetTests(Base):
         self.assertIn("Dawn reveal", text)
         self.assertNotIn("S010-f1", text)  # finals are not on the draft sheet
         self.assertLess(text.index('id="S010"'), text.index('id="S020"'))
-        self.assertEqual(res["totals"]["cost"], 44)
+        self.assertEqual(res["totals"]["cost"], 22)  # the blocked (nsfw) job is not charged
         ok, _, _ = stages._ev_contact_sheet(proj, {"tier": "draft"})
         self.assertTrue(ok)
 

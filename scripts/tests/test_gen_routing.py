@@ -86,11 +86,10 @@ class Base(unittest.TestCase):
             meta["settings"]["duration_s"] = duration
         meta["settings"]["variants"] = 1
         meta["inputs"] = inputs or []
-        if approve:
-            meta["status"] = "approved"
-            meta["approved_said"] = "looks good, go"
         path = os.path.join(proj, "05_prompts", sid + ".md")
         cards.write(path, meta, cards.render_body(meta))
+        if approve:
+            cards.approve(proj, path, "looks good, go")
         return path
 
 
@@ -401,8 +400,9 @@ class GenFlowTests(Base):
         self.assertEqual(rc, 2)
         self.assertIn("finals", err)
 
-        self.write(proj, "06_generations/contact-sheets/drafts-2026-11-24.html", "<html></html>")
-        stages.qa_record(proj, "drafts", 1, "PASS")
+        from shotcraft import contact_sheet
+        contact_sheet.build(proj, "draft", stamp="20261124-101500")
+        stages.qa_record(proj, "drafts", 1, "PASS", by="script-supervisor")
         stages.done(proj, "drafts", user_said="drafts look right")
         stages.start(proj, "finals")
         with self.assertRaises(Refused) as cm:
@@ -593,3 +593,11 @@ class ScoutTests(Base):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+class FinalVariantTests(unittest.TestCase):
+    def test_final_defaults_to_one_take(self):
+        import inspect
+        from shotcraft import gen as g
+        src = inspect.getsource(g.plan)
+        self.assertIn('elif tier in ("final", "upscale"):', src)

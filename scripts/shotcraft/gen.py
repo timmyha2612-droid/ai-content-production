@@ -247,7 +247,14 @@ def plan(project, card, tier, model=None, variants=None, strict=True):
            "input_paths": {}, "input_problems": [], "source": None}
     if profile.get("unconfirmed"):
         notes.append("Some of %s's limits are unconfirmed; the provider corrects them if needed." % out["model_name"])
-    n = variants or (meta.get("settings") or {}).get("variants") or 1
+    # Variants are for exploring. Boards and drafts use the card's count; a final makes ONE take of what was
+    # already approved unless the caller asks for more (--variants), because finals are the expensive tier.
+    if variants:
+        n = variants
+    elif tier in ("final", "upscale"):
+        n = 1
+    else:
+        n = (meta.get("settings") or {}).get("variants") or 1
     try:
         n = int(n)
     except (TypeError, ValueError):
