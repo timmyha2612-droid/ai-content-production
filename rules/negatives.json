@@ -1,0 +1,118 @@
+{
+  "version": "0.1.0",
+  "about": "Things to guard against. Cards copy the relevant lists into their avoid list. Most Higgsfield image and video models have no negative prompt field, so the compiler rewrites each item into positive wording (positive_rewrites.json).",
+  "universal": [
+    "blurry",
+    "low resolution",
+    "jpeg artifacts",
+    "watermark",
+    "logo",
+    "signature",
+    "distorted proportions",
+    "oversaturated",
+    "overexposed",
+    "underexposed",
+    "noise",
+    "cropped subject",
+    "duplicate subject"
+  ],
+  "by_category": {
+    "people": [
+      "extra fingers",
+      "deformed hands",
+      "extra limbs",
+      "asymmetrical eyes",
+      "plastic skin",
+      "waxy skin",
+      "uncanny face",
+      "dead eyes",
+      "face morphing",
+      "identity drift",
+      "unnatural pose",
+      "awkward teeth"
+    ],
+    "text": [
+      "warped text",
+      "misspelled text",
+      "gibberish text",
+      "extra text",
+      "random letters",
+      "illegible text",
+      "text cut off"
+    ],
+    "product": [
+      "wrong label",
+      "deformed product",
+      "melted edges",
+      "wrong proportions",
+      "extra parts",
+      "floating product",
+      "cluttered background",
+      "fingerprints",
+      "dust on product"
+    ],
+    "motion": [
+      "camera shake",
+      "jitter",
+      "flicker",
+      "morphing",
+      "warping",
+      "objects passing through each other",
+      "sudden cuts",
+      "speed changes",
+      "frozen frames",
+      "rubbery motion",
+      "sliding feet"
+    ],
+    "locked_off": [
+      "camera movement",
+      "zoom",
+      "handheld wobble",
+      "reframing"
+    ],
+    "loop": [
+      "visible loop seam",
+      "jump at loop point",
+      "fade at end",
+      "new elements appearing at the end"
+    ],
+    "mograph": [
+      "busy background",
+      "inconsistent line weight",
+      "off-brand colours",
+      "photographic texture",
+      "gradients banding",
+      "drop shadows"
+    ],
+    "icon": [
+      "fine detail",
+      "thin lines",
+      "photorealism",
+      "perspective",
+      "complex background",
+      "multiple objects",
+      "text in icon",
+      "gradients"
+    ]
+  },
+  "by_model": {
+    "nano_banana_2": [
+      "extra text"
+    ],
+    "seedance_2_0": [
+      "face morphing",
+      "warped text"
+    ],
+    "seedance_2_5": [
+      "warped text"
+    ],
+    "kling3_0": [
+      "rubbery motion",
+      "identity drift"
+    ],
+    "veo3_1": [
+      "extra text"
+    ]
+  },
+  "by_model_note": "by_model entries are starting guesses from common community reports, not confirmed by Higgsfield. Learn and replace them from your own results."
+}

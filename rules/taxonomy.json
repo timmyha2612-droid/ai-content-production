@@ -1,0 +1,2684 @@
+{
+  "version": "0.1.0",
+  "checked_at": "2026-11-24",
+  "about": "The 6 prompt layers. Each field has a label, help text, a trimming priority and a vocabulary. When a prompt is too long, fields are dropped lowest priority first. Fields at or above protect_at_or_above are never dropped.",
+  "prompt_order": [
+    "subject",
+    "world",
+    "camera",
+    "light_look",
+    "time_output",
+    "style"
+  ],
+  "trim": {
+    "protect_at_or_above": 90,
+    "first_to_drop": [
+      "light_look.texture",
+      "light_look.practicals",
+      "world.era",
+      "camera.camera_look"
+    ]
+  },
+  "layers": {
+    "intent": {
+      "label": "Intent",
+      "help": "Why this shot exists and where it will live. Used for planning and model choice; not written into the prompt.",
+      "in_prompt": false,
+      "fields": {
+        "use": {
+          "label": "Use",
+          "help": "What job the shot does in the finished piece.",
+          "priority": 0,
+          "vocab": [
+            {
+              "term": "hero shot",
+              "means": "the main, most polished image or clip that carries the piece"
+            },
+            {
+              "term": "b-roll insert",
+              "means": "a cutaway that covers an edit or illustrates what someone is saying"
+            },
+            {
+              "term": "establishing shot",
+              "means": "sets where and when we are before the action starts"
+            },
+            {
+              "term": "product demo",
+              "means": "shows how a product works or what it does"
+            },
+            {
+              "term": "ad spot",
+              "means": "a short paid advert with a clear call to action"
+            },
+            {
+              "term": "thumbnail",
+              "means": "a still built to win the click on a video platform"
+            },
+            {
+              "term": "icon",
+              "means": "a small symbol used in an interface or on a slide"
+            },
+            {
+              "term": "logo sting",
+              "means": "a short animated logo reveal, usually 2 to 6 seconds"
+            },
+            {
+              "term": "title card",
+              "means": "a frame that carries a title or chapter name"
+            },
+            {
+              "term": "loop background",
+              "means": "a seamless moving background for a page, stream or stage screen"
+            },
+            {
+              "term": "storyboard frame",
+              "means": "a rough frame that shows the plan for a shot, not the final look"
+            },
+            {
+              "term": "explainer beat",
+              "means": "one step in a how-it-works or explainer video"
+            },
+            {
+              "term": "testimonial cover",
+              "means": "visuals that sit over a customer or expert talking"
+            },
+            {
+              "term": "transition plate",
+              "means": "a short clip used to bridge two scenes"
+            }
+          ]
+        },
+        "platform": {
+          "label": "Platform",
+          "help": "Where it will be seen. Drives aspect, length and safe zones.",
+          "priority": 0,
+          "vocab": [
+            {
+              "term": "Instagram Reels",
+              "means": "vertical 9:16, sound-on, UI covers top and bottom of the frame"
+            },
+            {
+              "term": "Instagram feed",
+              "means": "4:5 or 1:1 in the feed, crop-safe centre"
+            },
+            {
+              "term": "TikTok",
+              "means": "vertical 9:16, fast hooks, captions and UI on the right and bottom"
+            },
+            {
+              "term": "YouTube",
+              "means": "16:9 long-form, up to 4K"
+            },
+            {
+              "term": "YouTube Shorts",
+              "means": "vertical 9:16, up to 3 minutes"
+            },
+            {
+              "term": "LinkedIn",
+              "means": "1:1, 4:5 or 16:9, often watched muted"
+            },
+            {
+              "term": "Facebook feed",
+              "means": "4:5 or 1:1, often watched muted"
+            },
+            {
+              "term": "X (Twitter)",
+              "means": "16:9 or 1:1, short clips"
+            },
+            {
+              "term": "website hero",
+              "means": "wide banner at the top of a page, often muted autoplay loop"
+            },
+            {
+              "term": "digital signage",
+              "means": "screens in shops or venues, often vertical, no sound"
+            },
+            {
+              "term": "broadcast TV",
+              "means": "16:9, strict loudness and safe areas"
+            },
+            {
+              "term": "cinema/DCP",
+              "means": "2.39:1 or 1.85:1 widescreen, projection-grade"
+            },
+            {
+              "term": "pitch deck",
+              "means": "16:9 slides, stills or short loops"
+            },
+            {
+              "term": "print",
+              "means": "paper or billboards, measured in DPI not pixels"
+            }
+          ]
+        },
+        "audience": {
+          "label": "Audience",
+          "help": "Who it is for. Shapes tone, pace and references.",
+          "priority": 0,
+          "vocab": [
+            {
+              "term": "general consumer",
+              "means": "broad audience, plain visuals, clear message"
+            },
+            {
+              "term": "B2B decision maker",
+              "means": "professional, credible, calm pacing"
+            },
+            {
+              "term": "Gen Z social",
+              "means": "fast cuts, native-looking, lo-fi is fine"
+            },
+            {
+              "term": "luxury buyer",
+              "means": "slow, restrained, lots of space and detail"
+            },
+            {
+              "term": "kids and family",
+              "means": "bright, friendly, safe content"
+            },
+            {
+              "term": "enthusiast/niche",
+              "means": "knows the subject, rewards accurate detail"
+            }
+          ]
+        },
+        "brand": {
+          "label": "Brand",
+          "help": "Brand rules that must hold: colours, logo, tone, no-go areas.",
+          "priority": 0,
+          "vocab": [
+            {
+              "term": "brand palette",
+              "means": "only the brand's approved colours, given as hex codes"
+            },
+            {
+              "term": "logo safe area",
+              "means": "clear space kept around the logo"
+            },
+            {
+              "term": "brand typeface",
+              "means": "the brand's own fonts for any on-screen text"
+            },
+            {
+              "term": "tone of voice",
+              "means": "how the brand sounds: playful, premium, technical, warm"
+            },
+            {
+              "term": "no-go list",
+              "means": "things the brand never shows (competitors, certain colours, claims)"
+            },
+            {
+              "term": "unbranded",
+              "means": "no logos or brand marks at all, for stock-like use"
+            }
+          ]
+        }
+      }
+    },
+    "subject": {
+      "label": "Subject",
+      "help": "Who or what the shot is about and what they do. Always comes first in the prompt.",
+      "in_prompt": true,
+      "fields": {
+        "subject": {
+          "label": "Subject",
+          "help": "The main person, product or thing. Be concrete: age, build, material, colour, size.",
+          "priority": 100,
+          "vocab": [
+            {
+              "term": "hero product",
+              "means": "the item being sold, shown clean and complete"
+            },
+            {
+              "term": "talent",
+              "means": "a person on camera; describe age range, look and expression, not a real name"
+            },
+            {
+              "term": "character",
+              "means": "a recurring invented person kept the same across shots"
+            },
+            {
+              "term": "crowd",
+              "means": "many people, usually as background life"
+            },
+            {
+              "term": "animal",
+              "means": "a creature as the subject; name the breed or species"
+            },
+            {
+              "term": "vehicle",
+              "means": "car, bike, boat or aircraft as the subject"
+            },
+            {
+              "term": "architecture",
+              "means": "a building or interior as the subject"
+            },
+            {
+              "term": "food",
+              "means": "a dish or ingredient; texture and steam matter"
+            },
+            {
+              "term": "hands only",
+              "means": "close work shown through hands, no faces"
+            },
+            {
+              "term": "abstract form",
+              "means": "shapes, fluids or particles with no literal object"
+            },
+            {
+              "term": "mascot",
+              "means": "a brand character, usually stylised"
+            },
+            {
+              "term": "landscape",
+              "means": "the place itself is the subject"
+            }
+          ]
+        },
+        "action": {
+          "label": "Action",
+          "help": "What happens, as present-tense verbs with physical detail (speed, weight, direction).",
+          "priority": 98,
+          "vocab": [
+            {
+              "term": "walks toward camera",
+              "means": "subject approaches, getting larger in frame"
+            },
+            {
+              "term": "turns to camera",
+              "means": "subject rotates to face the lens, a classic reveal"
+            },
+            {
+              "term": "looks off-frame",
+              "means": "eyes leave the lens, implies something outside the shot"
+            },
+            {
+              "term": "reaches for",
+              "means": "a hand moves into frame to pick something up"
+            },
+            {
+              "term": "pours",
+              "means": "liquid flows; mention speed, splash and viscosity"
+            },
+            {
+              "term": "unboxes",
+              "means": "opens packaging to reveal a product"
+            },
+            {
+              "term": "rotates slowly",
+              "means": "turntable-style spin, good for products"
+            },
+            {
+              "term": "lands",
+              "means": "an object or person comes down and settles; mention weight"
+            },
+            {
+              "term": "splashes",
+              "means": "liquid breaks and scatters on impact"
+            },
+            {
+              "term": "bursts apart",
+              "means": "an object breaks into pieces or particles"
+            },
+            {
+              "term": "assembles",
+              "means": "pieces fly in and lock together"
+            },
+            {
+              "term": "breathes",
+              "means": "subtle idle motion: chest, cloth, hair moving gently"
+            },
+            {
+              "term": "laughs naturally",
+              "means": "unposed laugh, head tilts, eyes crease"
+            },
+            {
+              "term": "types on laptop",
+              "means": "fingers on keys, screen glow on face"
+            },
+            {
+              "term": "runs",
+              "means": "full-body sprint; mention stride and direction"
+            },
+            {
+              "term": "dances",
+              "means": "rhythmic movement; name the style if it matters"
+            },
+            {
+              "term": "gestures while talking",
+              "means": "hands move with speech, mouth moves naturally"
+            },
+            {
+              "term": "steam rises",
+              "means": "soft vapour curls upward, slow"
+            },
+            {
+              "term": "fabric flutters",
+              "means": "cloth moves in wind or air from a fan"
+            }
+          ]
+        },
+        "wardrobe_props": {
+          "label": "Wardrobe and props",
+          "help": "Clothes, hair, make-up and the objects the subject uses.",
+          "priority": 46,
+          "vocab": [
+            {
+              "term": "neutral wardrobe",
+              "means": "plain clothes in muted colours with no logos"
+            },
+            {
+              "term": "hero wardrobe",
+              "means": "the costume that defines a character; keep it identical every shot"
+            },
+            {
+              "term": "no logos",
+              "means": "clothing and props without any brand marks"
+            },
+            {
+              "term": "period costume",
+              "means": "clothes true to a past era"
+            },
+            {
+              "term": "uniform",
+              "means": "work clothes that say a role at a glance (chef, nurse, builder)"
+            },
+            {
+              "term": "signature prop",
+              "means": "one object that ties to the story or brand"
+            },
+            {
+              "term": "practical prop",
+              "means": "an object the subject uses on camera"
+            },
+            {
+              "term": "styled hair and make-up",
+              "means": "groomed, camera-ready look"
+            },
+            {
+              "term": "natural make-up",
+              "means": "minimal make-up, real skin texture"
+            }
+          ]
+        },
+        "elements": {
+          "label": "Elements",
+          "help": "Other things in frame: secondary objects, set dressing, background people.",
+          "priority": 66,
+          "vocab": [
+            {
+              "term": "set dressing",
+              "means": "objects that make a space feel lived-in"
+            },
+            {
+              "term": "foreground element",
+              "means": "something close to the lens that adds depth"
+            },
+            {
+              "term": "background extras",
+              "means": "people in the distance going about their day"
+            },
+            {
+              "term": "product props",
+              "means": "supporting items that suggest how the product is used"
+            },
+            {
+              "term": "negative fill objects",
+              "means": "dark objects that keep the frame clean around the subject"
+            },
+            {
+              "term": "floating elements",
+              "means": "ingredients or parts suspended in the air around a product"
+            },
+            {
+              "term": "signage",
+              "means": "signs or screens in the scene; keep text minimal and legible"
+            },
+            {
+              "term": "greenery",
+              "means": "plants that soften a space"
+            }
+          ]
+        },
+        "consistency": {
+          "label": "Consistency",
+          "help": "What must match other shots: character, product, wardrobe, location.",
+          "priority": 48,
+          "vocab": [
+            {
+              "term": "same character as S010",
+              "means": "this person must match an earlier shot; reference it"
+            },
+            {
+              "term": "character sheet",
+              "means": "a reference image showing the character from several angles"
+            },
+            {
+              "term": "turnaround",
+              "means": "front, side and back views of a character or product"
+            },
+            {
+              "term": "Soul ID",
+              "means": "a trained Higgsfield identity used to keep a face consistent"
+            },
+            {
+              "term": "reference lock",
+              "means": "use the attached reference image as the source of truth for look"
+            },
+            {
+              "term": "exact product",
+              "means": "product shape, label and colour must match the reference precisely"
+            },
+            {
+              "term": "same wardrobe",
+              "means": "clothes identical to earlier shots"
+            },
+            {
+              "term": "same location",
+              "means": "the set must match earlier shots: layout, props, light direction"
+            },
+            {
+              "term": "continuity of light",
+              "means": "light direction and colour must match the neighbouring shots"
+            }
+          ]
+        }
+      }
+    },
+    "world": {
+      "label": "World",
+      "help": "Where and when: the place, period, time of day, weather and air.",
+      "in_prompt": true,
+      "fields": {
+        "environment": {
+          "label": "Environment",
+          "help": "The place. Specific beats generic: 'tiled Lisbon stairwell' beats 'building'.",
+          "priority": 88,
+          "vocab": [
+            {
+              "term": "seamless studio",
+              "means": "plain infinite background (cyclorama), no visible edges"
+            },
+            {
+              "term": "tabletop set",
+              "means": "small studio set for products and food"
+            },
+            {
+              "term": "minimal interior",
+              "means": "clean modern room with few objects"
+            },
+            {
+              "term": "loft apartment",
+              "means": "open-plan space with large windows and exposed materials"
+            },
+            {
+              "term": "modern kitchen",
+              "means": "domestic kitchen, counters and appliances"
+            },
+            {
+              "term": "open-plan office",
+              "means": "desks, screens and glass, daytime work feel"
+            },
+            {
+              "term": "coworking space",
+              "means": "casual office, plants and shared tables"
+            },
+            {
+              "term": "city street",
+              "means": "urban pavement, traffic and shopfronts"
+            },
+            {
+              "term": "rooftop",
+              "means": "top of a building with skyline behind"
+            },
+            {
+              "term": "alleyway",
+              "means": "narrow city lane, textured walls, puddles"
+            },
+            {
+              "term": "coastal cliffs",
+              "means": "rock and sea from above"
+            },
+            {
+              "term": "beach",
+              "means": "sand, surf and open horizon"
+            },
+            {
+              "term": "desert",
+              "means": "dunes or flats with harsh light"
+            },
+            {
+              "term": "forest",
+              "means": "trees, dappled light, layered depth"
+            },
+            {
+              "term": "mountain ridge",
+              "means": "high terrain with distant peaks"
+            },
+            {
+              "term": "suburban home",
+              "means": "houses, gardens and quiet streets"
+            },
+            {
+              "term": "warehouse",
+              "means": "large industrial interior, high ceilings"
+            },
+            {
+              "term": "neon-lit arcade",
+              "means": "night interior, coloured signage"
+            },
+            {
+              "term": "sci-fi corridor",
+              "means": "futuristic interior, panels and light strips"
+            },
+            {
+              "term": "abstract void",
+              "means": "no real place; colour field or gradient space"
+            },
+            {
+              "term": "luxury hotel lobby",
+              "means": "polished stone, warm practicals, scale"
+            }
+          ]
+        },
+        "era": {
+          "label": "Era",
+          "help": "Period the world belongs to. Drop this first when the era is today.",
+          "priority": 30,
+          "vocab": [
+            {
+              "term": "contemporary",
+              "means": "today, nothing dated"
+            },
+            {
+              "term": "near future",
+              "means": "a few years ahead, sleek but believable"
+            },
+            {
+              "term": "far future",
+              "means": "clearly futuristic tech and design"
+            },
+            {
+              "term": "1920s",
+              "means": "art deco, early cars, flapper styling"
+            },
+            {
+              "term": "1950s",
+              "means": "mid-century design, chrome and pastel"
+            },
+            {
+              "term": "1960s",
+              "means": "space-age and mod design"
+            },
+            {
+              "term": "1970s",
+              "means": "warm browns and oranges, film grain, flares"
+            },
+            {
+              "term": "1980s",
+              "means": "neon, synth, boxy tech, big hair"
+            },
+            {
+              "term": "1990s",
+              "means": "grunge, early digital, camcorder look"
+            },
+            {
+              "term": "Y2K",
+              "means": "early 2000s chrome, translucent plastic, bubbly type"
+            },
+            {
+              "term": "Victorian",
+              "means": "19th-century dress and interiors"
+            },
+            {
+              "term": "medieval",
+              "means": "castles, wool and torchlight"
+            },
+            {
+              "term": "retro-futurism",
+              "means": "the future as imagined in the past"
+            }
+          ]
+        },
+        "time_of_day": {
+          "label": "Time of day",
+          "help": "Sets light direction and colour before any lamp is added.",
+          "priority": 82,
+          "vocab": [
+            {
+              "term": "dawn",
+              "means": "first light, cool and soft, low contrast"
+            },
+            {
+              "term": "sunrise",
+              "means": "sun just above the horizon, warm and low"
+            },
+            {
+              "term": "morning",
+              "means": "clear, fresh light, sun at a moderate angle"
+            },
+            {
+              "term": "midday",
+              "means": "sun overhead, hard short shadows"
+            },
+            {
+              "term": "afternoon",
+              "means": "warmer light, longer shadows"
+            },
+            {
+              "term": "golden hour",
+              "means": "sun low and warm, long soft shadows, glowing rim light"
+            },
+            {
+              "term": "sunset",
+              "means": "sun at or below the horizon, orange-to-pink sky"
+            },
+            {
+              "term": "blue hour",
+              "means": "after sunset, deep blue ambient light, lit windows glow"
+            },
+            {
+              "term": "dusk",
+              "means": "fading light, low contrast, cool tones"
+            },
+            {
+              "term": "night",
+              "means": "dark, lit by practicals, moon or street lamps"
+            },
+            {
+              "term": "late night",
+              "means": "almost empty streets, few lights left on"
+            },
+            {
+              "term": "magic hour",
+              "means": "golden and blue hour together, the soft transition light"
+            }
+          ]
+        },
+        "weather_season": {
+          "label": "Weather and season",
+          "help": "Sky, weather and season. Weather changes light and texture.",
+          "priority": 50,
+          "vocab": [
+            {
+              "term": "clear sky",
+              "means": "cloudless, crisp light"
+            },
+            {
+              "term": "overcast",
+              "means": "thick cloud, soft even light, no hard shadows"
+            },
+            {
+              "term": "light rain",
+              "means": "drizzle, wet surfaces, reflections"
+            },
+            {
+              "term": "heavy rain",
+              "means": "downpour, streaks, splashing puddles"
+            },
+            {
+              "term": "after rain",
+              "means": "wet ground, reflections, clearing sky"
+            },
+            {
+              "term": "storm",
+              "means": "dark sky, wind, dramatic light"
+            },
+            {
+              "term": "snowfall",
+              "means": "falling snow, muted sound, cool tones"
+            },
+            {
+              "term": "fresh snow",
+              "means": "white ground, bright bounce light"
+            },
+            {
+              "term": "fog",
+              "means": "low visibility, depth fades to grey"
+            },
+            {
+              "term": "heatwave",
+              "means": "harsh sun, heat shimmer, bleached colour"
+            },
+            {
+              "term": "windy",
+              "means": "hair, fabric and leaves moving"
+            },
+            {
+              "term": "spring",
+              "means": "fresh greens, blossom"
+            },
+            {
+              "term": "summer",
+              "means": "strong sun, saturated greens and blues"
+            },
+            {
+              "term": "autumn",
+              "means": "warm oranges, falling leaves"
+            },
+            {
+              "term": "winter",
+              "means": "bare trees, cold blues, breath visible"
+            }
+          ]
+        },
+        "atmosphere": {
+          "label": "Atmosphere",
+          "help": "What is in the air. Adds depth and catches light.",
+          "priority": 62,
+          "vocab": [
+            {
+              "term": "haze",
+              "means": "light diffusion in the air that softens contrast and shows light beams"
+            },
+            {
+              "term": "atmospheric haze",
+              "means": "distant layers fade, adds depth to landscapes"
+            },
+            {
+              "term": "mist",
+              "means": "low, damp haze near the ground"
+            },
+            {
+              "term": "fog bank",
+              "means": "dense fog rolling through"
+            },
+            {
+              "term": "dust motes",
+              "means": "small specks floating in a light beam"
+            },
+            {
+              "term": "smoke",
+              "means": "visible drifting smoke"
+            },
+            {
+              "term": "steam",
+              "means": "rising vapour, often from food or vents"
+            },
+            {
+              "term": "god rays",
+              "means": "visible shafts of light through gaps (also called crepuscular rays)"
+            },
+            {
+              "term": "volumetric light",
+              "means": "light beams made visible by haze"
+            },
+            {
+              "term": "falling leaves",
+              "means": "leaves drifting through frame"
+            },
+            {
+              "term": "rain streaks",
+              "means": "backlit falling rain"
+            },
+            {
+              "term": "embers",
+              "means": "glowing particles rising from fire"
+            },
+            {
+              "term": "sparks",
+              "means": "bright fast particles from welding or impact"
+            },
+            {
+              "term": "bokeh lights",
+              "means": "out-of-focus points of light in the background"
+            },
+            {
+              "term": "lens flare",
+              "means": "light hitting the lens, streaks or circles"
+            },
+            {
+              "term": "pollen and particles",
+              "means": "soft floating specks in sunlight"
+            },
+            {
+              "term": "heat shimmer",
+              "means": "wavy distortion above hot ground"
+            },
+            {
+              "term": "underwater caustics",
+              "means": "rippling light patterns from water"
+            }
+          ]
+        }
+      }
+    },
+    "camera": {
+      "label": "Camera",
+      "help": "How we see it: framing, angle, lens, focus, composition and movement.",
+      "in_prompt": true,
+      "fields": {
+        "shot_size": {
+          "label": "Shot size",
+          "help": "How much of the subject fills the frame.",
+          "priority": 90,
+          "vocab": [
+            {
+              "term": "extreme wide shot (EWS)",
+              "means": "the place dominates; people are tiny or absent"
+            },
+            {
+              "term": "wide shot (WS)",
+              "means": "full scene with the subject small but clear"
+            },
+            {
+              "term": "full shot (FS)",
+              "means": "whole body head to toe, a little room around it"
+            },
+            {
+              "term": "medium wide (MWS)",
+              "means": "knees up, also called the cowboy or American shot"
+            },
+            {
+              "term": "cowboy shot",
+              "means": "mid-thigh up, from westerns (holster in frame)"
+            },
+            {
+              "term": "medium shot (MS)",
+              "means": "waist up, the conversational default"
+            },
+            {
+              "term": "medium close-up (MCU)",
+              "means": "chest up, good for talking heads"
+            },
+            {
+              "term": "close-up (CU)",
+              "means": "face fills most of the frame"
+            },
+            {
+              "term": "extreme close-up (ECU)",
+              "means": "one detail: an eye, lips, a texture"
+            },
+            {
+              "term": "insert",
+              "means": "a close shot of an object or detail, cut into a scene"
+            },
+            {
+              "term": "macro shot",
+              "means": "extreme magnification of something tiny"
+            },
+            {
+              "term": "over-the-shoulder (OTS)",
+              "means": "framed past one person's shoulder at another"
+            },
+            {
+              "term": "point of view (POV)",
+              "means": "what a character sees, from their eye line"
+            },
+            {
+              "term": "two-shot",
+              "means": "two people framed together"
+            },
+            {
+              "term": "three-shot",
+              "means": "three people framed together"
+            },
+            {
+              "term": "group shot",
+              "means": "several people in one frame"
+            },
+            {
+              "term": "establishing shot",
+              "means": "wide shot that shows where we are"
+            },
+            {
+              "term": "cutaway",
+              "means": "a shot away from the main action, then back"
+            },
+            {
+              "term": "single",
+              "means": "one person framed on their own"
+            }
+          ]
+        },
+        "angle": {
+          "label": "Angle",
+          "help": "Where the camera sits relative to the subject.",
+          "priority": 78,
+          "vocab": [
+            {
+              "term": "eye level",
+              "means": "camera at the subject's eye height, neutral"
+            },
+            {
+              "term": "low angle",
+              "means": "camera below looking up; subject feels powerful"
+            },
+            {
+              "term": "high angle",
+              "means": "camera above looking down; subject feels smaller"
+            },
+            {
+              "term": "overhead",
+              "means": "camera directly above, looking down"
+            },
+            {
+              "term": "bird's-eye view",
+              "means": "very high, looking straight down at a scene"
+            },
+            {
+              "term": "top-down flat lay",
+              "means": "directly above a flat arrangement, products or food"
+            },
+            {
+              "term": "worm's-eye view",
+              "means": "from the ground looking steeply up"
+            },
+            {
+              "term": "Dutch angle",
+              "means": "camera tilted on its axis; unease or energy"
+            },
+            {
+              "term": "hip level",
+              "means": "camera at waist height, casual, observational"
+            },
+            {
+              "term": "ground level",
+              "means": "camera on the floor, objects loom large"
+            },
+            {
+              "term": "shoulder level",
+              "means": "just at shoulder height, slightly heroic"
+            },
+            {
+              "term": "profile",
+              "means": "subject seen side-on"
+            },
+            {
+              "term": "three-quarter view",
+              "means": "subject turned about 45 degrees, flattering"
+            },
+            {
+              "term": "front-on",
+              "means": "subject square to camera, direct and graphic"
+            },
+            {
+              "term": "from behind",
+              "means": "subject seen from the back, we follow them"
+            }
+          ]
+        },
+        "lens": {
+          "label": "Lens",
+          "help": "Focal length and lens type. Changes perspective, compression and distortion.",
+          "priority": 74,
+          "vocab": [
+            {
+              "term": "8mm fisheye",
+              "means": "extreme wide with strong barrel distortion, skate-video look"
+            },
+            {
+              "term": "14mm ultra-wide",
+              "means": "very wide, exaggerated depth, stretches edges"
+            },
+            {
+              "term": "16mm wide",
+              "means": "wide view with some edge stretch"
+            },
+            {
+              "term": "24mm wide",
+              "means": "wide but natural, good for interiors and environments"
+            },
+            {
+              "term": "28mm",
+              "means": "wide documentary look, close to how eyes see a room"
+            },
+            {
+              "term": "35mm",
+              "means": "natural storytelling lens, a little context around the subject"
+            },
+            {
+              "term": "40mm",
+              "means": "between 35 and 50, very natural"
+            },
+            {
+              "term": "50mm",
+              "means": "normal lens, little distortion"
+            },
+            {
+              "term": "65mm",
+              "means": "slightly long, flattering, gentle compression"
+            },
+            {
+              "term": "85mm portrait",
+              "means": "flattering for faces, soft background"
+            },
+            {
+              "term": "100mm macro",
+              "means": "close focus for small details at true size"
+            },
+            {
+              "term": "135mm telephoto",
+              "means": "strong compression, background pulled close"
+            },
+            {
+              "term": "200mm telephoto",
+              "means": "very compressed, stacked layers, distant subjects"
+            },
+            {
+              "term": "400mm super telephoto",
+              "means": "extreme compression, wildlife and sport look"
+            },
+            {
+              "term": "anamorphic",
+              "means": "wide cinematic lens: oval bokeh, horizontal flares, 2.39:1 feel"
+            },
+            {
+              "term": "spherical prime",
+              "means": "standard cinema lens, clean round bokeh"
+            },
+            {
+              "term": "vintage glass",
+              "means": "older lenses: softer, lower contrast, character flares"
+            },
+            {
+              "term": "macro lens",
+              "means": "focuses very close for tiny detail"
+            },
+            {
+              "term": "probe lens",
+              "means": "long thin lens that goes inside small spaces, bug's-eye view"
+            },
+            {
+              "term": "tilt-shift",
+              "means": "tilted focus plane, makes real scenes look like miniatures"
+            },
+            {
+              "term": "split diopter",
+              "means": "two focus distances sharp at once, near and far"
+            },
+            {
+              "term": "zoom lens",
+              "means": "variable focal length, allows zoom moves"
+            },
+            {
+              "term": "pinhole",
+              "means": "very soft, deep focus, vignetted"
+            }
+          ]
+        },
+        "dof": {
+          "label": "Depth of field",
+          "help": "How much is in focus from front to back.",
+          "priority": 58,
+          "vocab": [
+            {
+              "term": "shallow depth of field",
+              "means": "subject sharp, background melts away"
+            },
+            {
+              "term": "razor-thin focus",
+              "means": "only a sliver is sharp, very dreamy"
+            },
+            {
+              "term": "creamy bokeh",
+              "means": "smooth, soft out-of-focus background"
+            },
+            {
+              "term": "deep focus",
+              "means": "everything from front to back is sharp"
+            },
+            {
+              "term": "medium depth of field",
+              "means": "subject sharp, background readable but soft"
+            },
+            {
+              "term": "rack focus",
+              "means": "focus shifts from one plane to another during the shot"
+            },
+            {
+              "term": "focus pull",
+              "means": "focus follows a moving subject"
+            },
+            {
+              "term": "soft focus",
+              "means": "slightly diffused overall, glowy and gentle"
+            },
+            {
+              "term": "tack sharp",
+              "means": "crisp, fully resolved detail on the subject"
+            },
+            {
+              "term": "miniature effect",
+              "means": "narrow focus band that makes scenes look like models"
+            }
+          ]
+        },
+        "composition": {
+          "label": "Composition",
+          "help": "Where things sit in the frame.",
+          "priority": 72,
+          "vocab": [
+            {
+              "term": "rule of thirds",
+              "means": "subject on a third line, balanced but dynamic"
+            },
+            {
+              "term": "centre-punch",
+              "means": "subject dead centre, bold and direct"
+            },
+            {
+              "term": "symmetry",
+              "means": "frame mirrored left to right, formal and graphic"
+            },
+            {
+              "term": "leading lines",
+              "means": "lines in the scene point to the subject"
+            },
+            {
+              "term": "negative space",
+              "means": "lots of empty space around a small subject; room for text"
+            },
+            {
+              "term": "frame within a frame",
+              "means": "a doorway, window or arch frames the subject"
+            },
+            {
+              "term": "foreground interest",
+              "means": "something close to camera adds depth"
+            },
+            {
+              "term": "layered depth",
+              "means": "clear foreground, middle ground and background"
+            },
+            {
+              "term": "golden ratio",
+              "means": "spiral-based placement, natural balance"
+            },
+            {
+              "term": "headroom",
+              "means": "space between the top of the head and the frame edge"
+            },
+            {
+              "term": "lead room",
+              "means": "space in front of a subject in the direction they face or move"
+            },
+            {
+              "term": "short siding",
+              "means": "subject faces the near edge; uneasy, cramped"
+            },
+            {
+              "term": "Dutch tilt",
+              "means": "tilted horizon for tension"
+            },
+            {
+              "term": "silhouette against sky",
+              "means": "dark shape on bright sky, graphic"
+            },
+            {
+              "term": "diagonal composition",
+              "means": "main lines cross the frame diagonally, energy"
+            },
+            {
+              "term": "top-down grid",
+              "means": "neat flat-lay arrangement seen from above"
+            },
+            {
+              "term": "text-safe left third",
+              "means": "subject kept right so text can sit on the left"
+            },
+            {
+              "term": "centre-safe for crops",
+              "means": "key action kept central so 9:16 and 1:1 crops still work"
+            }
+          ]
+        },
+        "movement": {
+          "label": "Camera movement",
+          "help": "How the camera moves. One clear move per shot works best.",
+          "priority": 94,
+          "vocab": [
+            {
+              "term": "static shot",
+              "means": "camera does not move"
+            },
+            {
+              "term": "locked-off tripod",
+              "means": "fixed camera on a tripod, rock steady"
+            },
+            {
+              "term": "pan left",
+              "means": "camera turns horizontally to the left on a fixed point"
+            },
+            {
+              "term": "pan right",
+              "means": "camera turns horizontally to the right on a fixed point"
+            },
+            {
+              "term": "tilt up",
+              "means": "camera pivots upward on a fixed point"
+            },
+            {
+              "term": "tilt down",
+              "means": "camera pivots downward on a fixed point"
+            },
+            {
+              "term": "dolly in",
+              "means": "camera physically moves toward the subject"
+            },
+            {
+              "term": "dolly out",
+              "means": "camera physically moves away from the subject"
+            },
+            {
+              "term": "push-in",
+              "means": "slow move toward the subject to build focus or tension"
+            },
+            {
+              "term": "pull-out",
+              "means": "slow move away to reveal more of the scene"
+            },
+            {
+              "term": "truck left",
+              "means": "camera slides sideways to the left, parallel to the subject"
+            },
+            {
+              "term": "truck right",
+              "means": "camera slides sideways to the right"
+            },
+            {
+              "term": "tracking shot",
+              "means": "camera follows a moving subject alongside or behind"
+            },
+            {
+              "term": "lead shot",
+              "means": "camera moves backward in front of a walking subject"
+            },
+            {
+              "term": "pedestal up",
+              "means": "camera rises straight up without tilting"
+            },
+            {
+              "term": "pedestal down",
+              "means": "camera lowers straight down without tilting"
+            },
+            {
+              "term": "crane up",
+              "means": "camera rises high on a crane or jib, often revealing the scene"
+            },
+            {
+              "term": "crane down",
+              "means": "camera descends from height toward the subject"
+            },
+            {
+              "term": "jib arm",
+              "means": "short crane swing, smooth vertical and lateral arc"
+            },
+            {
+              "term": "boom shot",
+              "means": "camera on a boom moves through space overhead"
+            },
+            {
+              "term": "arc shot",
+              "means": "camera circles part way around the subject"
+            },
+            {
+              "term": "orbit",
+              "means": "camera circles fully around the subject"
+            },
+            {
+              "term": "360 orbit",
+              "means": "full circle around the subject at constant distance"
+            },
+            {
+              "term": "dolly zoom",
+              "means": "camera moves one way while zooming the other; background warps (vertigo effect)"
+            },
+            {
+              "term": "zoom in",
+              "means": "lens zooms closer without the camera moving"
+            },
+            {
+              "term": "zoom out",
+              "means": "lens zooms wider without the camera moving"
+            },
+            {
+              "term": "crash zoom",
+              "means": "very fast zoom in for impact or comedy"
+            },
+            {
+              "term": "snap zoom",
+              "means": "quick short zoom to emphasise a detail"
+            },
+            {
+              "term": "whip pan",
+              "means": "very fast pan that blurs, often used to cut"
+            },
+            {
+              "term": "handheld",
+              "means": "camera held by hand; organic, slightly shaky"
+            },
+            {
+              "term": "Steadicam",
+              "means": "smooth floating move that follows on foot"
+            },
+            {
+              "term": "gimbal",
+              "means": "stabilised handheld; smooth glide"
+            },
+            {
+              "term": "FPV drone",
+              "means": "fast first-person drone flying through spaces"
+            },
+            {
+              "term": "drone flyover",
+              "means": "drone moves over a landscape"
+            },
+            {
+              "term": "drone reveal",
+              "means": "drone rises or moves past an obstacle to reveal a view"
+            },
+            {
+              "term": "aerial top-down",
+              "means": "drone looks straight down while moving"
+            },
+            {
+              "term": "bullet time",
+              "means": "time freezes while the camera moves around the subject"
+            },
+            {
+              "term": "snorricam",
+              "means": "camera rigged to the actor's body; they stay fixed, world moves"
+            },
+            {
+              "term": "hyperlapse",
+              "means": "time-lapse while the camera travels a long distance"
+            },
+            {
+              "term": "timelapse",
+              "means": "camera fixed, time sped up"
+            },
+            {
+              "term": "motion control",
+              "means": "a precisely repeatable robotic move"
+            },
+            {
+              "term": "tabletop slider",
+              "means": "short smooth slide past a product"
+            },
+            {
+              "term": "roll",
+              "means": "camera rotates around the lens axis"
+            }
+          ]
+        },
+        "movement_speed": {
+          "label": "Speed and easing",
+          "help": "How fast the move is and how it starts and stops.",
+          "priority": 92,
+          "vocab": [
+            {
+              "term": "very slow",
+              "means": "barely perceptible drift"
+            },
+            {
+              "term": "slow",
+              "means": "calm, deliberate move"
+            },
+            {
+              "term": "steady",
+              "means": "constant medium speed"
+            },
+            {
+              "term": "fast",
+              "means": "energetic move"
+            },
+            {
+              "term": "rapid",
+              "means": "very quick move, motion blur likely"
+            },
+            {
+              "term": "ease in",
+              "means": "starts slow and speeds up"
+            },
+            {
+              "term": "ease out",
+              "means": "slows down to a gentle stop"
+            },
+            {
+              "term": "ease in-out",
+              "means": "smooth start and smooth stop"
+            },
+            {
+              "term": "linear",
+              "means": "constant speed with no easing, mechanical feel"
+            },
+            {
+              "term": "speed ramp",
+              "means": "speed changes mid-shot, fast to slow or slow to fast"
+            },
+            {
+              "term": "slow motion",
+              "means": "action slowed down, high-frame-rate feel"
+            },
+            {
+              "term": "real time",
+              "means": "normal speed"
+            },
+            {
+              "term": "snap",
+              "means": "instant start or stop for punch"
+            },
+            {
+              "term": "drift",
+              "means": "slow wandering float, dreamy"
+            }
+          ]
+        },
+        "camera_look": {
+          "label": "Camera look",
+          "help": "The capture device or format the image should feel like.",
+          "priority": 40,
+          "vocab": [
+            {
+              "term": "cinema camera",
+              "means": "high-end digital cinema look: wide latitude, clean highlights"
+            },
+            {
+              "term": "large format",
+              "means": "full-frame or bigger sensor: shallow depth, smooth roll-off"
+            },
+            {
+              "term": "35mm film camera",
+              "means": "film capture: grain, halation, organic colour"
+            },
+            {
+              "term": "16mm film",
+              "means": "smaller film format: heavier grain, indie and documentary feel"
+            },
+            {
+              "term": "Super 8",
+              "means": "home-movie film: heavy grain, warm, flicker, soft"
+            },
+            {
+              "term": "VHS camcorder",
+              "means": "1980s and 1990s home video: smeared colour, scan lines"
+            },
+            {
+              "term": "DV camcorder",
+              "means": "early 2000s digital video: sharp edges, interlace, low resolution"
+            },
+            {
+              "term": "phone footage",
+              "means": "smartphone look: deep focus, slightly crunchy detail"
+            },
+            {
+              "term": "vertical phone selfie",
+              "means": "front camera held at arm's length, creator-style"
+            },
+            {
+              "term": "action cam",
+              "means": "wide, distorted, very stable; sports POV"
+            },
+            {
+              "term": "CCTV",
+              "means": "security camera: high angle, low res, timestamp feel"
+            },
+            {
+              "term": "webcam",
+              "means": "video-call look, flat light, low detail"
+            },
+            {
+              "term": "disposable camera",
+              "means": "flash on, harsh, nostalgic snapshots"
+            },
+            {
+              "term": "Polaroid",
+              "means": "instant film: soft, faded colours, white border feel"
+            }
+          ]
+        }
+      }
+    },
+    "light_look": {
+      "label": "Light and look",
+      "help": "How it is lit and how the image is finished: lighting, colour, grade, texture, style and mood.",
+      "in_prompt": true,
+      "fields": {
+        "setup": {
+          "label": "Lighting setup",
+          "help": "The lighting pattern or plan.",
+          "priority": 80,
+          "vocab": [
+            {
+              "term": "three-point lighting",
+              "means": "key, fill and back light; the classic interview setup"
+            },
+            {
+              "term": "Rembrandt lighting",
+              "means": "key at 45 degrees and high; a small triangle of light on the far cheek"
+            },
+            {
+              "term": "butterfly lighting",
+              "means": "key high and in front; small shadow under the nose, glamour look"
+            },
+            {
+              "term": "split lighting",
+              "means": "light from the side; half the face in shadow"
+            },
+            {
+              "term": "loop lighting",
+              "means": "key slightly to the side; small shadow loop from the nose"
+            },
+            {
+              "term": "broad lighting",
+              "means": "the side of the face toward camera is lit"
+            },
+            {
+              "term": "short lighting",
+              "means": "the side of the face away from camera is lit; slimming, moody"
+            },
+            {
+              "term": "clamshell lighting",
+              "means": "key above and fill below the face; beauty look"
+            },
+            {
+              "term": "high key",
+              "means": "bright, low contrast, few shadows; upbeat"
+            },
+            {
+              "term": "low key",
+              "means": "mostly dark, strong contrast; dramatic"
+            },
+            {
+              "term": "chiaroscuro",
+              "means": "strong light against deep shadow, painterly"
+            },
+            {
+              "term": "motivated lighting",
+              "means": "light that seems to come from a real source in the scene"
+            },
+            {
+              "term": "practical lighting",
+              "means": "lamps and screens in shot actually light the scene"
+            },
+            {
+              "term": "natural light",
+              "means": "sun and sky only, no added lamps"
+            },
+            {
+              "term": "window light",
+              "means": "soft daylight from a window"
+            },
+            {
+              "term": "silhouette",
+              "means": "subject dark against a bright background"
+            },
+            {
+              "term": "backlight",
+              "means": "light from behind the subject"
+            },
+            {
+              "term": "rim light",
+              "means": "edge light that outlines the subject against the background"
+            },
+            {
+              "term": "volumetric lighting",
+              "means": "beams of light visible in haze"
+            },
+            {
+              "term": "neon lighting",
+              "means": "coloured light from neon signs, often magenta and cyan"
+            },
+            {
+              "term": "golden hour sunlight",
+              "means": "low warm sun"
+            },
+            {
+              "term": "blue hour ambient",
+              "means": "cool soft light after sunset"
+            },
+            {
+              "term": "overcast softbox sky",
+              "means": "cloud acting as a giant soft light"
+            },
+            {
+              "term": "hard flash",
+              "means": "direct on-camera flash, crisp shadows"
+            },
+            {
+              "term": "ring light",
+              "means": "even frontal light with a ring reflection in the eyes"
+            },
+            {
+              "term": "top light",
+              "means": "light straight down from above; deep eye shadows"
+            },
+            {
+              "term": "underlight",
+              "means": "light from below; eerie or spooky"
+            },
+            {
+              "term": "moonlight",
+              "means": "cool, dim, blue-tinted night light"
+            },
+            {
+              "term": "firelight",
+              "means": "warm flickering light from flames"
+            },
+            {
+              "term": "light painting",
+              "means": "moving light traced during a long exposure"
+            },
+            {
+              "term": "gobo pattern",
+              "means": "shaped shadow (blinds, leaves) projected onto the scene"
+            },
+            {
+              "term": "cross lighting",
+              "means": "two lights from opposite sides, shapes texture"
+            },
+            {
+              "term": "product light tent",
+              "means": "very soft wraparound light for products"
+            },
+            {
+              "term": "edge-lit glass",
+              "means": "light behind glass or liquid that outlines it"
+            }
+          ]
+        },
+        "quality": {
+          "label": "Light quality",
+          "help": "Hard or soft, and how it falls off.",
+          "priority": 52,
+          "vocab": [
+            {
+              "term": "soft light",
+              "means": "large diffused source; gentle shadows"
+            },
+            {
+              "term": "hard light",
+              "means": "small direct source; crisp shadows"
+            },
+            {
+              "term": "diffused",
+              "means": "light spread through a material, very soft"
+            },
+            {
+              "term": "specular highlights",
+              "means": "bright mirror-like reflections on shiny surfaces"
+            },
+            {
+              "term": "high contrast",
+              "means": "big difference between light and dark"
+            },
+            {
+              "term": "low contrast",
+              "means": "flat, gentle tones"
+            },
+            {
+              "term": "wraparound",
+              "means": "light bends around the subject, very flattering"
+            },
+            {
+              "term": "fast falloff",
+              "means": "light drops off quickly into darkness"
+            }
+          ]
+        },
+        "direction": {
+          "label": "Light direction",
+          "help": "Where the main light comes from.",
+          "priority": 54,
+          "vocab": [
+            {
+              "term": "front light",
+              "means": "light from the camera side; flat, clear"
+            },
+            {
+              "term": "side light",
+              "means": "light from 90 degrees; shows texture and shape"
+            },
+            {
+              "term": "45-degree key",
+              "means": "classic angle for faces"
+            },
+            {
+              "term": "back light",
+              "means": "light from behind; separation and glow"
+            },
+            {
+              "term": "top light",
+              "means": "light from above"
+            },
+            {
+              "term": "under light",
+              "means": "light from below"
+            },
+            {
+              "term": "cross light",
+              "means": "opposing side lights"
+            },
+            {
+              "term": "contre-jour",
+              "means": "shooting into the light; flare and silhouette"
+            },
+            {
+              "term": "camera-left key",
+              "means": "main light on the left of frame"
+            },
+            {
+              "term": "camera-right key",
+              "means": "main light on the right of frame"
+            }
+          ]
+        },
+        "color_temp": {
+          "label": "Colour temperature",
+          "help": "Warm or cool light, in plain words or kelvin.",
+          "priority": 56,
+          "vocab": [
+            {
+              "term": "candlelight 1900K",
+              "means": "very warm orange"
+            },
+            {
+              "term": "tungsten 3200K",
+              "means": "warm indoor light"
+            },
+            {
+              "term": "warm white 3000K",
+              "means": "cosy home lighting"
+            },
+            {
+              "term": "neutral 4300K",
+              "means": "balanced, slightly warm"
+            },
+            {
+              "term": "daylight 5600K",
+              "means": "neutral daylight"
+            },
+            {
+              "term": "overcast 6500K",
+              "means": "slightly cool daylight"
+            },
+            {
+              "term": "shade 7500K",
+              "means": "cool blue light in shadows"
+            },
+            {
+              "term": "mixed temperature",
+              "means": "warm and cool sources in the same frame"
+            },
+            {
+              "term": "warm",
+              "means": "golden, orange tint"
+            },
+            {
+              "term": "cool",
+              "means": "blue tint"
+            },
+            {
+              "term": "teal and amber",
+              "means": "cool shadows with warm highlights"
+            },
+            {
+              "term": "sodium vapour",
+              "means": "orange street-lamp light"
+            },
+            {
+              "term": "fluorescent green",
+              "means": "greenish office or industrial light"
+            }
+          ]
+        },
+        "practicals": {
+          "label": "Practicals",
+          "help": "Light sources visible in frame. Dropped early when trimming.",
+          "priority": 20,
+          "vocab": [
+            {
+              "term": "desk lamp",
+              "means": "a lamp in frame lighting the subject"
+            },
+            {
+              "term": "string lights",
+              "means": "small warm bulbs, festive bokeh"
+            },
+            {
+              "term": "neon sign",
+              "means": "a glowing sign in frame"
+            },
+            {
+              "term": "screen glow",
+              "means": "light from a phone, laptop or TV on the face"
+            },
+            {
+              "term": "candles",
+              "means": "flickering warm points of light"
+            },
+            {
+              "term": "street lamps",
+              "means": "lamps outside, pools of light"
+            },
+            {
+              "term": "car headlights",
+              "means": "bright beams, often moving"
+            },
+            {
+              "term": "LED strips",
+              "means": "coloured light lines along walls or furniture"
+            },
+            {
+              "term": "fireplace",
+              "means": "warm flicker from a fire"
+            },
+            {
+              "term": "pendant lights",
+              "means": "hanging lamps over tables or counters"
+            }
+          ]
+        },
+        "palette_grade": {
+          "label": "Palette and grade",
+          "help": "Colour palette and colour grade.",
+          "priority": 60,
+          "vocab": [
+            {
+              "term": "natural grade",
+              "means": "true-to-life colour"
+            },
+            {
+              "term": "teal and orange",
+              "means": "cool shadows, warm skin; blockbuster look"
+            },
+            {
+              "term": "bleach bypass",
+              "means": "low saturation, high contrast, silvery"
+            },
+            {
+              "term": "monochrome",
+              "means": "black and white"
+            },
+            {
+              "term": "desaturated",
+              "means": "muted colour"
+            },
+            {
+              "term": "pastel palette",
+              "means": "soft light colours"
+            },
+            {
+              "term": "earth tones",
+              "means": "browns, ochres, olive greens"
+            },
+            {
+              "term": "high saturation",
+              "means": "punchy, intense colour"
+            },
+            {
+              "term": "muted palette",
+              "means": "calm, low-saturation colour"
+            },
+            {
+              "term": "complementary colours",
+              "means": "two opposite colours for contrast"
+            },
+            {
+              "term": "analogous palette",
+              "means": "neighbouring colours for harmony"
+            },
+            {
+              "term": "monochromatic palette",
+              "means": "shades of one colour"
+            },
+            {
+              "term": "brand colours only",
+              "means": "stick to the brand hex codes"
+            },
+            {
+              "term": "cool steel grade",
+              "means": "blue-grey, clinical"
+            },
+            {
+              "term": "warm golden grade",
+              "means": "amber, nostalgic"
+            },
+            {
+              "term": "neon cyberpunk palette",
+              "means": "magenta, cyan and deep black"
+            },
+            {
+              "term": "filmic log-to-Rec.709",
+              "means": "natural contrast curve from a cinema camera"
+            },
+            {
+              "term": "crushed blacks",
+              "means": "shadow detail removed, deep blacks"
+            },
+            {
+              "term": "lifted blacks",
+              "means": "faded, matte shadows"
+            },
+            {
+              "term": "clean whites",
+              "means": "neutral, bright whites, commercial look"
+            },
+            {
+              "term": "Kodak 2383 print look",
+              "means": "classic film print emulation: rich contrast, warm"
+            },
+            {
+              "term": "flat grade for colourist",
+              "means": "low-contrast output that leaves room to grade later"
+            }
+          ]
+        },
+        "texture": {
+          "label": "Texture",
+          "help": "Grain, halation and other surface finish. First to drop when trimming.",
+          "priority": 10,
+          "vocab": [
+            {
+              "term": "fine film grain",
+              "means": "subtle organic grain"
+            },
+            {
+              "term": "heavy grain",
+              "means": "strong visible grain"
+            },
+            {
+              "term": "halation",
+              "means": "red-orange glow around bright highlights, a film trait"
+            },
+            {
+              "term": "Kodak Portra 400",
+              "means": "warm skin, soft pastels, gentle grain"
+            },
+            {
+              "term": "Kodak Vision3 500T",
+              "means": "tungsten cinema stock: warm, rich shadows, visible grain"
+            },
+            {
+              "term": "Kodak Ektachrome",
+              "means": "crisp, saturated slide film"
+            },
+            {
+              "term": "Fuji Velvia",
+              "means": "very saturated landscape slide film"
+            },
+            {
+              "term": "Fuji Pro 400H",
+              "means": "soft, airy, slightly green-cyan pastels"
+            },
+            {
+              "term": "CineStill 800T",
+              "means": "tungsten film with red halation around lights"
+            },
+            {
+              "term": "Ilford HP5",
+              "means": "classic black-and-white grain"
+            },
+            {
+              "term": "clean digital",
+              "means": "no grain, crisp"
+            },
+            {
+              "term": "bloom",
+              "means": "soft glow around highlights"
+            },
+            {
+              "term": "Pro-Mist diffusion",
+              "means": "filter that softens highlights and adds a gentle glow"
+            },
+            {
+              "term": "vignette",
+              "means": "darkened corners"
+            },
+            {
+              "term": "chromatic aberration",
+              "means": "colour fringes on edges"
+            },
+            {
+              "term": "scan lines",
+              "means": "horizontal lines of old screens"
+            },
+            {
+              "term": "dust and scratches",
+              "means": "aged film damage"
+            },
+            {
+              "term": "gate weave",
+              "means": "slight frame wobble of projected film"
+            }
+          ]
+        },
+        "style_ref": {
+          "label": "Style",
+          "help": "Genre, medium or art style. Also motion-graphics styles. Name a look, never a living artist.",
+          "priority": 70,
+          "vocab": [
+            {
+              "term": "cinematic",
+              "means": "film-like framing, light and colour"
+            },
+            {
+              "term": "documentary",
+              "means": "observational, natural light, real moments"
+            },
+            {
+              "term": "commercial",
+              "means": "polished, bright, product-forward"
+            },
+            {
+              "term": "editorial fashion",
+              "means": "styled, posed, magazine look"
+            },
+            {
+              "term": "lifestyle",
+              "means": "warm, natural, people using things in real life"
+            },
+            {
+              "term": "film noir",
+              "means": "hard shadows, black and white, mystery"
+            },
+            {
+              "term": "neo-noir",
+              "means": "noir lighting in colour, often neon and rain"
+            },
+            {
+              "term": "cyberpunk",
+              "means": "neon, rain, high tech and decay"
+            },
+            {
+              "term": "sci-fi",
+              "means": "futuristic technology and worlds"
+            },
+            {
+              "term": "fantasy",
+              "means": "magical, otherworldly"
+            },
+            {
+              "term": "horror",
+              "means": "dread, darkness, unease"
+            },
+            {
+              "term": "western",
+              "means": "dust, wide land, hard sun"
+            },
+            {
+              "term": "romantic drama",
+              "means": "soft, warm, intimate"
+            },
+            {
+              "term": "action thriller",
+              "means": "dynamic, high contrast, fast"
+            },
+            {
+              "term": "music video",
+              "means": "stylised, bold light, rhythm-led"
+            },
+            {
+              "term": "skate video",
+              "means": "fisheye, low angles, lo-fi energy"
+            },
+            {
+              "term": "vlog",
+              "means": "creator-to-camera, phone-native"
+            },
+            {
+              "term": "ASMR macro",
+              "means": "close textures, slow, satisfying detail"
+            },
+            {
+              "term": "food commercial",
+              "means": "glossy, steam, slow pours"
+            },
+            {
+              "term": "luxury product film",
+              "means": "dark, restrained, glints on edges"
+            },
+            {
+              "term": "nature documentary",
+              "means": "telephoto wildlife, patient"
+            },
+            {
+              "term": "architectural photography",
+              "means": "straight verticals, clean lines"
+            },
+            {
+              "term": "street photography",
+              "means": "candid, urban, decisive moments"
+            },
+            {
+              "term": "photorealistic",
+              "means": "looks like a real photo or real footage"
+            },
+            {
+              "term": "hyperreal CGI",
+              "means": "perfect 3D render, ultra clean"
+            },
+            {
+              "term": "3D render",
+              "means": "computer-generated look"
+            },
+            {
+              "term": "claymation",
+              "means": "stop-motion clay figures"
+            },
+            {
+              "term": "stop motion",
+              "means": "frame-by-frame handmade animation"
+            },
+            {
+              "term": "anime",
+              "means": "Japanese animation look"
+            },
+            {
+              "term": "2D cel animation",
+              "means": "flat painted animation"
+            },
+            {
+              "term": "watercolour",
+              "means": "soft bleeding paint"
+            },
+            {
+              "term": "oil painting",
+              "means": "thick painterly strokes"
+            },
+            {
+              "term": "ink illustration",
+              "means": "line drawing with ink"
+            },
+            {
+              "term": "pixel art",
+              "means": "low-res blocky retro game look"
+            },
+            {
+              "term": "low poly",
+              "means": "faceted simple 3D shapes"
+            },
+            {
+              "term": "paper cut-out",
+              "means": "layered paper craft"
+            },
+            {
+              "term": "miniature diorama",
+              "means": "tiny model world"
+            },
+            {
+              "term": "flat design",
+              "means": "simple shapes, solid colours, no depth"
+            },
+            {
+              "term": "isometric",
+              "means": "3D-looking objects drawn at fixed angles, no perspective"
+            },
+            {
+              "term": "kinetic typography",
+              "means": "animated words that move with the voice or beat"
+            },
+            {
+              "term": "glassmorphism",
+              "means": "frosted translucent panels with blur and soft light"
+            },
+            {
+              "term": "3D clay",
+              "means": "soft rounded matte 3D shapes, toy-like"
+            },
+            {
+              "term": "line art animation",
+              "means": "single-weight lines drawing on and morphing"
+            },
+            {
+              "term": "liquid motion",
+              "means": "blobs and fluid shapes that morph smoothly"
+            },
+            {
+              "term": "glitch",
+              "means": "digital errors: RGB split, blocks, jitter"
+            },
+            {
+              "term": "particles",
+              "means": "many small points forming shapes or flows"
+            },
+            {
+              "term": "geometric shapes",
+              "means": "circles, squares and lines animated in rhythm"
+            },
+            {
+              "term": "gradient mesh",
+              "means": "smooth multi-colour gradients that shift"
+            },
+            {
+              "term": "neumorphism",
+              "means": "soft extruded UI shapes, subtle shadows"
+            },
+            {
+              "term": "duotone",
+              "means": "two-colour image treatment"
+            },
+            {
+              "term": "collage",
+              "means": "cut-out photos and textures layered"
+            },
+            {
+              "term": "data visualisation",
+              "means": "animated charts and numbers"
+            },
+            {
+              "term": "UI animation",
+              "means": "interface elements sliding, scaling and fading"
+            },
+            {
+              "term": "morphing shapes",
+              "means": "one shape smoothly turns into another"
+            },
+            {
+              "term": "lower-third graphics",
+              "means": "name and title bars in the lower part of the frame"
+            }
+          ]
+        },
+        "mood": {
+          "label": "Mood",
+          "help": "The feeling the shot should leave.",
+          "priority": 76,
+          "vocab": [
+            {
+              "term": "calm",
+              "means": "peaceful, slow, quiet"
+            },
+            {
+              "term": "serene",
+              "means": "still and untroubled"
+            },
+            {
+              "term": "hopeful",
+              "means": "light lifting, optimistic"
+            },
+            {
+              "term": "joyful",
+              "means": "bright, energetic happiness"
+            },
+            {
+              "term": "playful",
+              "means": "light-hearted, fun"
+            },
+            {
+              "term": "energetic",
+              "means": "high pace, punchy"
+            },
+            {
+              "term": "triumphant",
+              "means": "victory, uplifting"
+            },
+            {
+              "term": "intimate",
+              "means": "close, personal, quiet"
+            },
+            {
+              "term": "nostalgic",
+              "means": "warm memory of the past"
+            },
+            {
+              "term": "melancholic",
+              "means": "gentle sadness"
+            },
+            {
+              "term": "mysterious",
+              "means": "hidden, curious"
+            },
+            {
+              "term": "tense",
+              "means": "suspense, something about to happen"
+            },
+            {
+              "term": "ominous",
+              "means": "threat in the air"
+            },
+            {
+              "term": "eerie",
+              "means": "unsettling and strange"
+            },
+            {
+              "term": "dreamy",
+              "means": "soft, floaty, unreal"
+            },
+            {
+              "term": "luxurious",
+              "means": "rich, refined, unhurried"
+            },
+            {
+              "term": "confident",
+              "means": "bold, assured"
+            },
+            {
+              "term": "cosy",
+              "means": "warm, safe, homely"
+            },
+            {
+              "term": "epic",
+              "means": "huge scale, awe"
+            },
+            {
+              "term": "clinical",
+              "means": "clean, precise, cold"
+            }
+          ]
+        }
+      }
+    },
+    "time_output": {
+      "label": "Time and output",
+      "help": "How the shot plays over time and what it hands to the edit: beats, pace, loops, transitions, sound and text.",
+      "in_prompt": true,
+      "fields": {
+        "beats": {
+          "label": "Beats",
+          "help": "What happens when, as time ranges in seconds, e.g. {\"t\": \"0-2\", \"what\": \"drone clears the ridge\"}.",
+          "priority": 84,
+          "vocab": [
+            {
+              "term": "hook",
+              "means": "the first 1 to 2 seconds that stop the scroll"
+            },
+            {
+              "term": "setup",
+              "means": "shows the situation before the change"
+            },
+            {
+              "term": "reveal",
+              "means": "the moment the key thing appears"
+            },
+            {
+              "term": "turn",
+              "means": "the change or surprise in the middle"
+            },
+            {
+              "term": "payoff",
+              "means": "the satisfying result"
+            },
+            {
+              "term": "button",
+              "means": "a short final beat that ends the shot cleanly"
+            },
+            {
+              "term": "hold",
+              "means": "the shot rests on a frame for editing room"
+            }
+          ]
+        },
+        "pacing": {
+          "label": "Pacing",
+          "help": "Overall rhythm of the shot.",
+          "priority": 64,
+          "vocab": [
+            {
+              "term": "slow and contemplative",
+              "means": "long, calm, lingering"
+            },
+            {
+              "term": "measured",
+              "means": "steady, unhurried"
+            },
+            {
+              "term": "brisk",
+              "means": "quick but readable"
+            },
+            {
+              "term": "frenetic",
+              "means": "very fast, chaotic energy"
+            },
+            {
+              "term": "building",
+              "means": "starts calm, gets faster"
+            },
+            {
+              "term": "on the beat",
+              "means": "motion hits land on musical beats"
+            },
+            {
+              "term": "one continuous take",
+              "means": "no cuts, the move carries the whole shot"
+            },
+            {
+              "term": "real-time",
+              "means": "no speed changes"
+            }
+          ]
+        },
+        "loop": {
+          "label": "Loop",
+          "help": "true if the shot must loop seamlessly (last frame matches first).",
+          "priority": 70,
+          "vocab": [
+            {
+              "term": "seamless loop",
+              "means": "the end flows into the start with no visible jump"
+            },
+            {
+              "term": "boomerang",
+              "means": "plays forward then backward"
+            },
+            {
+              "term": "perfect loop",
+              "means": "motion returns exactly to its start position"
+            },
+            {
+              "term": "cyclical motion",
+              "means": "repeating motion such as rotation or waves"
+            }
+          ]
+        },
+        "transition_in": {
+          "label": "Transition in",
+          "help": "How the shot starts, so it joins the shot before it.",
+          "priority": 44,
+          "vocab": [
+            {
+              "term": "hard cut",
+              "means": "instant change, no effect"
+            },
+            {
+              "term": "match cut",
+              "means": "cut on matching shape, motion or colour"
+            },
+            {
+              "term": "cut on action",
+              "means": "cut during a movement so it feels seamless"
+            },
+            {
+              "term": "J-cut",
+              "means": "next shot's sound starts before its picture"
+            },
+            {
+              "term": "L-cut",
+              "means": "previous shot's sound carries over the cut"
+            },
+            {
+              "term": "fade from black",
+              "means": "picture rises out of black"
+            },
+            {
+              "term": "cross dissolve",
+              "means": "one shot melts into the next"
+            },
+            {
+              "term": "whip pan in",
+              "means": "enter from a blurred whip pan"
+            },
+            {
+              "term": "zoom transition",
+              "means": "enter on a fast zoom blur"
+            },
+            {
+              "term": "light leak",
+              "means": "flash of warm film light"
+            },
+            {
+              "term": "flash frame",
+              "means": "a single bright frame for punch"
+            },
+            {
+              "term": "mask wipe",
+              "means": "an object in frame wipes to the next shot"
+            },
+            {
+              "term": "morph",
+              "means": "one image smoothly turns into the next"
+            },
+            {
+              "term": "glitch transition",
+              "means": "digital break-up between shots"
+            },
+            {
+              "term": "smash cut",
+              "means": "abrupt cut from quiet to loud, or the reverse"
+            }
+          ]
+        },
+        "transition_out": {
+          "label": "Transition out",
+          "help": "How the shot ends, so it joins the next shot.",
+          "priority": 42,
+          "vocab": [
+            {
+              "term": "hard cut",
+              "means": "instant change, no effect"
+            },
+            {
+              "term": "fade to black",
+              "means": "picture goes to black"
+            },
+            {
+              "term": "whip pan out",
+              "means": "leave on a fast blurred pan"
+            },
+            {
+              "term": "push into darkness",
+              "means": "camera moves into a dark area to hide the cut"
+            },
+            {
+              "term": "match cut out",
+              "means": "end on a shape or motion that the next shot picks up"
+            },
+            {
+              "term": "hold for cut",
+              "means": "rest on a still frame so the editor can cut anywhere"
+            }
+          ]
+        },
+        "audio": {
+          "label": "Audio",
+          "help": "Native sound to generate, if the model supports it. Otherwise sound is done in post.",
+          "priority": 68,
+          "vocab": [
+            {
+              "term": "no audio",
+              "means": "silent clip; sound added in post"
+            },
+            {
+              "term": "ambient room tone",
+              "means": "quiet background sound of the space"
+            },
+            {
+              "term": "nature ambience",
+              "means": "birds, wind, water"
+            },
+            {
+              "term": "city ambience",
+              "means": "traffic, crowds, distant sirens"
+            },
+            {
+              "term": "foley",
+              "means": "everyday sounds synced to action: footsteps, cloth, objects"
+            },
+            {
+              "term": "hard SFX",
+              "means": "punchy designed sound effects for impacts and moves"
+            },
+            {
+              "term": "whoosh",
+              "means": "air-rush sound for fast moves and transitions"
+            },
+            {
+              "term": "riser",
+              "means": "tension sound that builds into a hit"
+            },
+            {
+              "term": "impact hit",
+              "means": "deep boom on a key moment"
+            },
+            {
+              "term": "dialogue",
+              "means": "people speaking on camera with lip sync"
+            },
+            {
+              "term": "voice-over",
+              "means": "narration not seen on screen"
+            },
+            {
+              "term": "lip sync",
+              "means": "mouth movement matched to speech"
+            },
+            {
+              "term": "music bed",
+              "means": "background music under the scene"
+            },
+            {
+              "term": "diegetic music",
+              "means": "music that exists in the scene (a radio, a band)"
+            },
+            {
+              "term": "stinger",
+              "means": "short musical punch at the end"
+            },
+            {
+              "term": "silence",
+              "means": "deliberate absence of sound for effect"
+            }
+          ]
+        },
+        "on_screen_text": {
+          "label": "On-screen text",
+          "help": "Exact words that must appear in the image. Keep it short; long text often warps.",
+          "priority": 85,
+          "vocab": [
+            {
+              "term": "headline",
+              "means": "large short text, 2 to 6 words"
+            },
+            {
+              "term": "lower third",
+              "means": "name and title in the lower part of the frame"
+            },
+            {
+              "term": "caption",
+              "means": "subtitle-style text for muted viewing"
+            },
+            {
+              "term": "call to action",
+              "means": "short action line: 'Shop now', 'Learn more'"
+            },
+            {
+              "term": "kinetic type",
+              "means": "text that animates with the beat or voice"
+            },
+            {
+              "term": "end card",
+              "means": "final frame with logo and call to action"
+            },
+            {
+              "term": "price tag",
+              "means": "a price shown clearly"
+            },
+            {
+              "term": "label text",
+              "means": "text printed on a product"
+            },
+            {
+              "term": "title-safe area",
+              "means": "keep text inside the inner 90 percent of the frame"
+            },
+            {
+              "term": "platform safe zone",
+              "means": "keep text clear of the app's buttons and captions"
+            }
+          ]
+        }
+      }
+    }
+  }
+}

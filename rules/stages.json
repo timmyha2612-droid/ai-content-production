@@ -1,0 +1,190 @@
+{
+  "schema": 1,
+  "about": "Stage table (SPEC §4). owner = the role that does the work; outputs = what it leaves behind; evidence = what stages.py checks itself on 'stage done'; gate = what else closes it (user_said = the user's own words, qa_pass = the latest QA round PASS, continuity_qa_pass = the script-supervisor's QA round PASS, spec_check = delivery checks PASS, evidence = evidence only); folders = the project paths this stage owns (the guard blocks writing there unless the stage is open).",
+  "stages": {
+    "intake": {
+      "owner": "producer",
+      "outputs": "00_brief/job-card.md with the required lines filled; 00_brief/grilling.md",
+      "evidence": [
+        {"check": "card_lines", "path": "00_brief/job-card.md",
+         "required_lines": ["Goal", "Audience", "Use case", "Delivery", "Budget"]},
+        {"check": "file", "path": "00_brief/grilling.md"}
+      ],
+      "gate": ["user_said"],
+      "optional": false,
+      "folders": ["00_brief/*"]
+    },
+    "research": {
+      "owner": "researcher agent(s)",
+      "outputs": "01_research/direction-note.md, at least one asset with role=reference",
+      "evidence": [
+        {"check": "file", "path": "01_research/direction-note.md"},
+        {"check": "assets", "role": "reference", "min": 1}
+      ],
+      "gate": ["qa_pass"],
+      "optional": true,
+      "folders": ["01_research/*"]
+    },
+    "concept": {
+      "owner": "creative-director skill",
+      "outputs": "02_concept/concepts.md (2 or more directions), 02_concept/chosen.md",
+      "evidence": [
+        {"check": "sections", "path": "02_concept/concepts.md", "pattern": "^#{2,3}\\s+\\S", "min": 2,
+         "what": "directions (## headings)"},
+        {"check": "file", "path": "02_concept/chosen.md"}
+      ],
+      "gate": ["user_said"],
+      "optional": true,
+      "folders": ["02_concept/*"]
+    },
+    "script": {
+      "owner": "screenwriter agent",
+      "outputs": "03_script/script.md",
+      "evidence": [
+        {"check": "file", "path": "03_script/script.md"}
+      ],
+      "gate": ["qa_pass", "user_said"],
+      "optional": false,
+      "folders": ["03_script/script*"]
+    },
+    "shotlist": {
+      "owner": "director skill",
+      "outputs": "03_script/shotlist.md: a table where every shot has an id, duration_s and purpose",
+      "evidence": [
+        {"check": "shotlist", "path": "03_script/shotlist.md"}
+      ],
+      "gate": ["qa_pass"],
+      "optional": false,
+      "folders": ["03_script/shotlist*"]
+    },
+    "bible": {
+      "owner": "production-designer + character-designer agents",
+      "outputs": "04_bible/look.md and at least one file in characters/ or environments/",
+      "evidence": [
+        {"check": "file", "path": "04_bible/look.md"},
+        {"check": "files", "dirs": ["04_bible/characters", "04_bible/environments"], "min": 1}
+      ],
+      "gate": ["continuity_qa_pass", "user_said"],
+      "optional": false,
+      "folders": ["04_bible/*"]
+    },
+    "prompts": {
+      "owner": "cinematographer + generation-tech agents",
+      "outputs": "a valid prompt card in 05_prompts/ for every shot on the shot list (single track: at least one card)",
+      "evidence": [
+        {"check": "cards", "per_shot": true}
+      ],
+      "gate": ["qa_pass"],
+      "optional": false,
+      "folders": ["05_prompts/*"]
+    },
+    "boards": {
+      "owner": "generation-tech",
+      "outputs": "at least one completed board generation for every video shot that needs image-first; a board contact sheet",
+      "evidence": [
+        {"check": "generations", "tier": ["board"], "scope": "image_first"},
+        {"check": "contact_sheet", "tier": "board"}
+      ],
+      "gate": ["user_said"],
+      "optional": true,
+      "folders": ["06_generations/boards/*"]
+    },
+    "drafts": {
+      "owner": "generation-tech",
+      "outputs": "at least one completed draft per shot; a draft contact sheet",
+      "evidence": [
+        {"check": "generations", "tier": ["draft"], "scope": "all_shots"},
+        {"check": "contact_sheet", "tier": "draft"}
+      ],
+      "gate": ["continuity_qa_pass", "user_said"],
+      "optional": false,
+      "folders": ["06_generations/drafts/*"]
+    },
+    "finals": {
+      "owner": "generation-tech",
+      "outputs": "a completed, approved final (or upscale) for every shot; no final left undecided",
+      "evidence": [
+        {"check": "generations", "tier": ["final", "upscale"], "scope": "all_shots", "approved": true}
+      ],
+      "gate": ["user_said"],
+      "optional": false,
+      "folders": ["06_generations/finals/*", "06_generations/upscaled/*"]
+    },
+    "mograph": {
+      "owner": "motion-designer",
+      "outputs": "files in 07_mograph/",
+      "evidence": [
+        {"check": "files", "dirs": ["07_mograph"], "min": 1}
+      ],
+      "gate": ["qa_pass", "user_said"],
+      "optional": true,
+      "folders": ["07_mograph/*"]
+    },
+    "sound": {
+      "owner": "sound agent",
+      "outputs": "files in 08_sound/ plus licence notes (a file whose name has 'licence' or 'license')",
+      "evidence": [
+        {"check": "files", "dirs": ["08_sound"], "min": 1},
+        {"check": "files", "dirs": ["08_sound"], "name_regex": "(?i)licen[cs]e", "min": 1,
+         "what": "licence notes"}
+      ],
+      "gate": ["user_said"],
+      "optional": true,
+      "folders": ["08_sound/*"]
+    },
+    "assembly": {
+      "owner": "assistant-editor agent",
+      "outputs": "09_assembly/animatic.mp4, or an EDL, or notes",
+      "evidence": [
+        {"check": "files", "dirs": ["09_assembly"], "name_regex": "(?i)(^animatic\\.mp4$|\\.edl$|\\.md$|\\.txt$)",
+         "min": 1, "what": "animatic.mp4, an EDL or notes"}
+      ],
+      "gate": ["user_said"],
+      "optional": true,
+      "folders": ["09_assembly/*"]
+    },
+    "delivery": {
+      "owner": "delivery agent",
+      "outputs": "10_delivery/ files + 10_delivery/delivery-report.json with every check PASS",
+      "evidence": [
+        {"check": "files", "dirs": ["10_delivery"], "name_regex": "^(?!delivery-report\\.json$)", "min": 1,
+         "what": "delivered files"},
+        {"check": "delivery_report", "path": "10_delivery/delivery-report.json"}
+      ],
+      "gate": ["spec_check"],
+      "optional": false,
+      "folders": ["10_delivery/*"]
+    },
+    "handoff": {
+      "owner": "producer (handoff skill)",
+      "outputs": "11_handoff/canvas-build-sheet.md + 11_handoff/upload-list.json",
+      "evidence": [
+        {"check": "file", "path": "11_handoff/canvas-build-sheet.md"},
+        {"check": "json", "path": "11_handoff/upload-list.json"}
+      ],
+      "gate": ["evidence"],
+      "optional": true,
+      "folders": ["11_handoff/*"]
+    },
+    "learn": {
+      "owner": "learner agent -> producer",
+      "outputs": "every lesson decided (accepted or rejected with the user's words)",
+      "evidence": [
+        {"check": "lessons_decided"}
+      ],
+      "gate": ["user_said"],
+      "optional": false,
+      "folders": []
+    },
+    "refine": {
+      "owner": "refine skill",
+      "outputs": "a valid prompt card saved",
+      "evidence": [
+        {"check": "cards", "per_shot": false}
+      ],
+      "gate": ["evidence"],
+      "optional": false,
+      "folders": ["05_prompts/*"]
+    }
+  }
+}

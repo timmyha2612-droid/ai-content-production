@@ -1,0 +1,59 @@
+{
+  "description": "shotcraft gates: (1) PreToolUse guard: raw Higgsfield generation from Bash always goes through sc.py gen (reads such as model list/get, generate cost, account and auth status pass); Higgsfield MCP tools that generate, create, upscale, edit, train or upload are blocked while a project is active; project.json, .shotcraft/stages.json and .shotcraft/qa/ change only through sc.py; files go into a stage folder only while that stage is open (00_inputs/ and .shotcraft/lessons.md are always allowed). (2) SessionStart: a daily Higgsfield model check, stale routing rows, and the active project with its open stage. (3) UserPromptSubmit: while a project is active, a reminder to log the user's corrections as lessons.",
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 \"${CLAUDE_PLUGIN_ROOT}/hooks/guard.py\"",
+            "timeout": 10
+          }
+        ]
+      },
+      {
+        "matcher": "Write|Edit|MultiEdit|NotebookEdit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 \"${CLAUDE_PLUGIN_ROOT}/hooks/guard.py\"",
+            "timeout": 10
+          }
+        ]
+      },
+      {
+        "matcher": "mcp__.*[Hh]iggsfield.*",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 \"${CLAUDE_PLUGIN_ROOT}/hooks/guard.py\"",
+            "timeout": 10
+          }
+        ]
+      }
+    ],
+    "SessionStart": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 \"${CLAUDE_PLUGIN_ROOT}/hooks/session_start.py\"",
+            "timeout": 20
+          }
+        ]
+      }
+    ],
+    "UserPromptSubmit": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 \"${CLAUDE_PLUGIN_ROOT}/hooks/prompt_nudge.py\"",
+            "timeout": 5
+          }
+        ]
+      }
+    ]
+  }
+}

@@ -1,0 +1,3955 @@
+{
+  "rules_version": "0.1.0",
+  "checked_at": "2026-11-24",
+  "about": "Model profiles (SPEC section 6). Seeded from the Higgsfield CLI docs on the date above. Live limits and costs always come from the provider (higgsfield model get, higgsfield generate cost); anything in 'unconfirmed' is a best guess. 'flags' are the CLI flags the model accepts (media flags written with underscores: start_image is sent as --start-image). 'param_map' renames a generic param to the model's own flag; 'resolution_via' sets other flags for a size; 'media_mode' switches a mode flag when media inputs are present; 'in_model_list' false means the id is known not to appear in 'higgsfield model list' (null: not known).",
+  "providers": {
+    "higgsfield": {
+      "surface": "cli",
+      "cli": "higgsfield (npm @higgsfield/cli)",
+      "audio_values": {
+        "bool": [
+          "true",
+          "false"
+        ],
+        "onoff": [
+          "on",
+          "off"
+        ]
+      },
+      "models": {
+        "cinematic_studio_2_5": {
+          "name": "Cinematic Studio 2.5",
+          "kind": "image",
+          "vendor": "Higgsfield",
+          "flags": [
+            "aspect_ratio",
+            "batch_size",
+            "folder_id",
+            "image_references",
+            "mode",
+            "prompt",
+            "resolution"
+          ],
+          "durations": null,
+          "resolutions": [
+            "1k",
+            "2k",
+            "4k"
+          ],
+          "aspects": [
+            "1:1",
+            "3:2",
+            "2:3",
+            "4:3",
+            "3:4",
+            "4:5",
+            "5:4",
+            "9:16",
+            "16:9",
+            "21:9"
+          ],
+          "start_frame": false,
+          "end_frame": false,
+          "refs": {
+            "image": 14,
+            "video": 0,
+            "audio": 0
+          },
+          "audio": false,
+          "audio_flag": null,
+          "audio_values": null,
+          "negative_prompt": false,
+          "seed": false,
+          "max_prompt_words": 120,
+          "variants": [],
+          "strengths": [
+            "cinematic still frames up to 4K",
+            "dramatic film look"
+          ],
+          "weaknesses": [],
+          "gotchas": [
+            "batch_size makes several images in one job"
+          ],
+          "in_model_list": true,
+          "checked_at": "2026-11-24",
+          "source": "higgsfield-ai/cli MODELS.md (higgsfield model get), copy in docs/research/higgsfield-cli/MODELS.md"
+        },
+        "flux_2": {
+          "name": "FLUX.2",
+          "kind": "image",
+          "vendor": "Black Forest Labs",
+          "flags": [
+            "aspect_ratio",
+            "image_references",
+            "prompt",
+            "resolution",
+            "variant"
+          ],
+          "durations": null,
+          "resolutions": [
+            "1k",
+            "2k"
+          ],
+          "aspects": [
+            "1:1",
+            "4:3",
+            "3:4",
+            "16:9",
+            "9:16"
+          ],
+          "start_frame": false,
+          "end_frame": false,
+          "refs": {
+            "image": 8,
+            "video": 0,
+            "audio": 0
+          },
+          "audio": false,
+          "audio_flag": null,
+          "audio_values": null,
+          "negative_prompt": false,
+          "seed": false,
+          "max_prompt_words": 120,
+          "variants": [
+            "pro",
+            "flex",
+            "max"
+          ],
+          "strengths": [
+            "precise prompt adherence",
+            "a different look from the Banana family"
+          ],
+          "weaknesses": [],
+          "gotchas": [],
+          "in_model_list": true,
+          "checked_at": "2026-11-24",
+          "source": "higgsfield-ai/cli MODELS.md (higgsfield model get), copy in docs/research/higgsfield-cli/MODELS.md",
+          "unconfirmed": [
+            "refs.image (docs say 'repeated' with no limit; 8 is a guess)"
+          ]
+        },
+        "flux_kontext": {
+          "name": "Flux Kontext",
+          "kind": "image",
+          "vendor": "Black Forest Labs",
+          "flags": [
+            "aspect_ratio",
+            "image_references",
+            "prompt"
+          ],
+          "durations": null,
+          "resolutions": null,
+          "aspects": [
+            "1:1",
+            "4:3",
+            "3:4",
+            "16:9",
+            "9:16"
+          ],
+          "start_frame": false,
+          "end_frame": false,
+          "refs": {
+            "image": 4,
+            "video": 0,
+            "audio": 0
+          },
+          "audio": false,
+          "audio_flag": null,
+          "audio_values": null,
+          "negative_prompt": false,
+          "seed": false,
+          "max_prompt_words": 120,
+          "variants": [],
+          "strengths": [
+            "context-aware editing",
+            "style transfer",
+            "typography remix"
+          ],
+          "weaknesses": [],
+          "gotchas": [
+            "no resolution control"
+          ],
+          "in_model_list": true,
+          "checked_at": "2026-11-24",
+          "source": "higgsfield-ai/cli MODELS.md (higgsfield model get), copy in docs/research/higgsfield-cli/MODELS.md"
+        },
+        "gpt_image_2": {
+          "name": "GPT Image 2",
+          "kind": "image",
+          "vendor": "OpenAI",
+          "flags": [
+            "aspect_ratio",
+            "image_references",
+            "prompt",
+            "resolution",
+            "background",
+            "quality",
+            "is_inpaint",
+            "mask"
+          ],
+          "durations": null,
+          "resolutions": [
+            "1k",
+            "2k",
+            "4k"
+          ],
+          "aspects": [
+            "auto",
+            "1:1",
+            "4:3",
+            "3:4",
+            "16:9",
+            "21:9",
+            "9:16",
+            "3:2",
+            "2:3",
+            "4:5",
+            "5:4"
+          ],
+          "start_frame": false,
+          "end_frame": false,
+          "refs": {
+            "image": 16,
+            "video": 0,
+            "audio": 0
+          },
+          "audio": false,
+          "audio_flag": null,
+          "audio_values": null,
+          "negative_prompt": false,
+          "seed": false,
+          "max_prompt_words": 120,
+          "variants": [],
+          "strengths": [
+            "product photography",
+            "graphic design",
+            "on-image text",
+            "transparent background"
+          ],
+          "weaknesses": [],
+          "gotchas": [],
+          "in_model_list": true,
+          "checked_at": "2026-11-24",
+          "source": "higgsfield-ai/cli MODELS.md (higgsfield model get), copy in docs/research/higgsfield-cli/MODELS.md",
+          "unconfirmed": [
+            "refs.image (docs say 'repeated'; 16 is a guess)"
+          ]
+        },
+        "gpt_image_2_5": {
+          "name": "GPT Image 2.5",
+          "kind": "image",
+          "vendor": "OpenAI",
+          "flags": [
+            "aspect_ratio",
+            "image_references",
+            "prompt",
+            "resolution",
+            "background",
+            "quality",
+            "variant"
+          ],
+          "durations": null,
+          "resolutions": [
+            "1k",
+            "2k",
+            "4k"
+          ],
+          "aspects": [
+            "auto",
+            "1:1",
+            "3:2",
+            "2:3",
+            "4:3",
+            "3:4",
+            "16:9",
+            "9:16",
+            "21:9",
+            "27:16",
+            "16:27",
+            "9:8",
+            "8:9",
+            "4:5",
+            "5:4"
+          ],
+          "start_frame": false,
+          "end_frame": false,
+          "refs": {
+            "image": 16,
+            "video": 0,
+            "audio": 0
+          },
+          "audio": false,
+          "audio_flag": null,
+          "audio_values": null,
+          "negative_prompt": false,
+          "seed": false,
+          "max_prompt_words": 120,
+          "variants": [
+            "flare",
+            "sunburst"
+          ],
+          "strengths": [
+            "on-image text",
+            "design",
+            "reference-guided editing"
+          ],
+          "weaknesses": [],
+          "gotchas": [
+            "--quality defaults to low; pass --quality high (or xhigh/max) for finals",
+            "transparent background via --background transparent"
+          ],
+          "in_model_list": true,
+          "checked_at": "2026-11-24",
+          "source": "higgsfield-ai/cli MODELS.md (higgsfield model get), copy in docs/research/higgsfield-cli/MODELS.md",
+          "tier_params": {
+            "draft": {
+              "quality": "low"
+            },
+            "final": {
+              "quality": "high"
+            }
+          }
+        },
+        "gpt_image_2_6": {
+          "name": "GPT Image 2.6 Sunburst",
+          "kind": "image",
+          "vendor": "OpenAI",
+          "flags": [
+            "aspect_ratio",
+            "image_references",
+            "prompt",
+            "resolution",
+            "quality",
+            "output_format",
+            "size",
+            "frame_count",
+            "frame_duration_ms",
+            "background"
+          ],
+          "durations": null,
+          "resolutions": null,
+          "aspects": null,
+          "start_frame": false,
+          "end_frame": false,
+          "refs": {
+            "image": 16,
+            "video": 0,
+            "audio": 0
+          },
+          "audio": false,
+          "audio_flag": null,
+          "audio_values": null,
+          "negative_prompt": false,
+          "seed": false,
+          "max_prompt_words": 120,
+          "variants": [],
+          "strengths": [
+            "Higgsfield's default image model",
+            "native SVG and animated GIF output",
+            "on-image text"
+          ],
+          "weaknesses": [],
+          "gotchas": [
+            "--output_format svg takes no image references",
+            "Flare is a separate model id, not a variant"
+          ],
+          "in_model_list": null,
+          "checked_at": "2026-11-24",
+          "source": "higgsfield-ai/skills references/model-catalog.md, copy in docs/research/higgsfield-skills/model-catalog.md",
+          "unconfirmed": [
+            "not in the CLI's MODELS.md copy; check with higgsfield model get gpt_image_2_6",
+            "flags, aspects and resolutions"
+          ]
+        },
+        "gpt_image_2_6_flare": {
+          "name": "GPT Image 2.6 Flare",
+          "kind": "image",
+          "vendor": "OpenAI",
+          "flags": [
+            "aspect_ratio",
+            "image_references",
+            "prompt",
+            "resolution",
+            "quality",
+            "output_format",
+            "background"
+          ],
+          "durations": null,
+          "resolutions": null,
+          "aspects": null,
+          "start_frame": false,
+          "end_frame": false,
+          "refs": {
+            "image": 16,
+            "video": 0,
+            "audio": 0
+          },
+          "audio": false,
+          "audio_flag": null,
+          "audio_values": null,
+          "negative_prompt": false,
+          "seed": false,
+          "max_prompt_words": 120,
+          "variants": [],
+          "strengths": [
+            "same format controls as GPT Image 2.6"
+          ],
+          "weaknesses": [],
+          "gotchas": [],
+          "in_model_list": null,
+          "checked_at": "2026-11-24",
+          "source": "higgsfield-ai/skills references/model-catalog.md, copy in docs/research/higgsfield-skills/model-catalog.md",
+          "unconfirmed": [
+            "not in the CLI's MODELS.md copy",
+            "flags, aspects and resolutions"
+          ]
+        },
+        "grok_image": {
+          "name": "Grok Image",
+          "kind": "image",
+          "vendor": "xAI",
+          "flags": [
+            "aspect_ratio",
+            "image_references",
+            "prompt",
+            "resolution",
+            "mode"
+          ],
+          "durations": null,
+          "resolutions": [
+            "1k",
+            "2k"
+          ],
+          "aspects": [
+            "1:1",
+            "auto",
+            "1:2",
+            "2:1",
+            "3:2",
+            "2:3",
+            "4:3",
+            "3:4",
+            "16:9",
+            "9:16"
+          ],
+          "start_frame": false,
+          "end_frame": false,
+          "refs": {
+            "image": 8,
+            "video": 0,
+            "audio": 0
+          },
+          "audio": false,
+          "audio_flag": null,
+          "audio_values": null,
+          "negative_prompt": false,
+          "seed": false,
+          "max_prompt_words": 120,
+          "variants": [
+            "std",
+            "quality"
+          ],
+          "strengths": [
+            "bold, high-contrast, stylized looks"
+          ],
+          "weaknesses": [],
+          "gotchas": [],
+          "in_model_list": true,
+          "checked_at": "2026-11-24",
+          "source": "higgsfield-ai/cli MODELS.md (higgsfield model get), copy in docs/research/higgsfield-cli/MODELS.md",
+          "unconfirmed": [
+            "refs.image (docs say 'repeated'; 8 is a guess)"
+          ]
+        },
+        "image_auto": {
+          "name": "Image Auto",
+          "kind": "image",
+          "vendor": "Higgsfield",
+          "flags": [
+            "aspect_ratio",
+            "image_references",
+            "prompt"
+          ],
+          "durations": null,
+          "resolutions": null,
+          "aspects": [
+            "1:1",
+            "4:3",
+            "3:4",
+            "16:9",
+            "9:16"
+          ],
+          "start_frame": false,
+          "end_frame": false,
+          "refs": {
+            "image": 14,
+            "video": 0,
+            "audio": 0
+          },
+          "audio": false,
+          "audio_flag": null,
+          "audio_values": null,
+          "negative_prompt": false,
+          "seed": false,
+          "max_prompt_words": 120,
+          "variants": [],
+          "strengths": [
+            "picks a model from the prompt"
+          ],
+          "weaknesses": [
+            "you do not control which model runs, so results and costs vary"
+          ],
+          "gotchas": [],
+          "in_model_list": true,
+          "checked_at": "2026-11-24",
+          "source": "higgsfield-ai/cli MODELS.md (higgsfield model get), copy in docs/research/higgsfield-cli/MODELS.md"
+        },
+        "image_background_remover": {
+          "name": "Image Background Remover",
+          "kind": "utility",
+          "vendor": "Higgsfield",
+          "flags": [
+            "image_references"
+          ],
+          "durations": null,
+          "resolutions": null,
+          "aspects": null,
+          "start_frame": false,
+          "end_frame": false,
+          "refs": {
+            "image": 1,
+            "video": 0,
+            "audio": 0
+          },
+          "audio": false,
+          "audio_flag": null,
+          "audio_values": null,
+          "negative_prompt": false,
+          "seed": false,
+          "max_prompt_words": 120,
+          "variants": [],
+          "strengths": [
+            "cut-outs for mograph and product shots"
+          ],
+          "weaknesses": [],
+          "gotchas": [
+            "exactly one image"
+          ],
+          "in_model_list": true,
+          "checked_at": "2026-11-24",
+          "source": "higgsfield-ai/cli MODELS.md (higgsfield model get), copy in docs/research/higgsfield-cli/MODELS.md",
+          "requires": {
+            "image_references": 1
+          }
+        },
+        "kling_omni_image": {
+          "name": "Kling O1 Image",
+          "kind": "image",
+          "vendor": "Kling",
+          "flags": [
+            "aspect_ratio",
+            "image_references",
+            "prompt",
+            "resolution"
+          ],
+          "durations": null,
+          "resolutions": [
+            "1k",
+            "2k"
+          ],
+          "aspects": [
+            "1:1",
+            "auto",
+            "16:9",
+            "9:16",
+            "4:3",
+            "3:4",
+            "3:2",
+            "2:3",
+            "21:9"
+          ],
+          "start_frame": false,
+          "end_frame": false,
+          "refs": {
+            "image": 10,
+            "video": 0,
+            "audio": 0
+          },
+          "audio": false,
+          "audio_flag": null,
+          "audio_values": null,
+          "negative_prompt": false,
+          "seed": false,
+          "max_prompt_words": 120,
+          "variants": [],
+          "strengths": [
+            "photoreal, broad aspect ratios"
+          ],
+          "weaknesses": [],
+          "gotchas": [
+            "aspect auto needs at least one image reference"
+          ],
+          "in_model_list": true,
+          "checked_at": "2026-11-24",
+          "source": "higgsfield-ai/cli MODELS.md (higgsfield model get), copy in docs/research/higgsfield-cli/MODELS.md"
+        },
+        "marketing_studio_image": {
+          "name": "Marketing Studio Image",
+          "kind": "image",
+          "vendor": "Higgsfield",
+          "flags": [
+            "aspect_ratio",
+            "image_references",
+            "prompt",
+            "resolution"
+          ],
+          "durations": null,
+          "resolutions": [
+            "1k",
+            "2k",
+            "4k"
+          ],
+          "aspects": [
+            "auto",
+            "1:1",
+            "3:2",
+            "2:3",
+            "4:3",
+            "3:4",
+            "4:5",
+            "5:4",
+            "9:16",
+            "16:9",
+            "21:9"
+          ],
+          "start_frame": false,
+          "end_frame": false,
+          "refs": {
+            "image": 14,
+            "video": 0,
+            "audio": 0
+          },
+          "audio": false,
+          "audio_flag": null,
+          "audio_values": null,
+          "negative_prompt": false,
+          "seed": false,
+          "max_prompt_words": 120,
+          "variants": [],
+          "strengths": [
+            "branded ad images with avatars and products"
+          ],
+          "weaknesses": [],
+          "gotchas": [
+            "runs inside the Marketing Studio flow (avatars, products)"
+          ],
+          "in_model_list": true,
+          "checked_at": "2026-11-24",
+          "source": "higgsfield-ai/cli MODELS.md (higgsfield model get), copy in docs/research/higgsfield-cli/MODELS.md"
+        },
+        "nano_banana": {
+          "name": "Nano Banana",
+          "kind": "image",
+          "vendor": "Google",
+          "flags": [
+            "aspect_ratio",
+            "image_references",
+            "prompt"
+          ],
+          "durations": null,
+          "resolutions": null,
+          "aspects": [
+            "1:1",
+            "3:2",
+            "2:3",
+            "4:3",
+            "3:4",
+            "4:5",
+            "5:4",
+            "9:16",
+            "16:9",
+            "21:9"
+          ],
+          "start_frame": false,
+          "end_frame": false,
+          "refs": {
+            "image": 8,
+            "video": 0,
+            "audio": 0
+          },
+          "audio": false,
+          "audio_flag": null,
+          "audio_values": null,
+          "negative_prompt": false,
+          "seed": false,
+          "max_prompt_words": 120,
+          "variants": [],
+          "strengths": [
+            "budget-friendly realistic look"
+          ],
+          "weaknesses": [],
+          "gotchas": [
+            "no resolution control"
+          ],
+          "in_model_list": true,
+          "checked_at": "2026-11-24",
+          "source": "higgsfield-ai/cli MODELS.md (higgsfield model get), copy in docs/research/higgsfield-cli/MODELS.md"
+        },
+        "nano_banana_2": {
+          "name": "Nano Banana Pro",
+          "kind": "image",
+          "vendor": "Google",
+          "flags": [
+            "aspect_ratio",
+            "image_references",
+            "prompt",
+            "resolution"
+          ],
+          "durations": null,
+          "resolutions": [
+            "1k",
+            "2k",
+            "4k"
+          ],
+          "aspects": [
+            "1:1",
+            "3:2",
+            "2:3",
+            "4:3",
+            "3:4",
+            "4:5",
+            "5:4",
+            "9:16",
+            "16:9",
+            "21:9"
+          ],
+          "start_frame": false,
+          "end_frame": false,
+          "refs": {
+            "image": 14,
+            "video": 0,
+            "audio": 0
+          },
+          "audio": false,
+          "audio_flag": null,
+          "audio_values": null,
+          "negative_prompt": false,
+          "seed": false,
+          "max_prompt_words": 120,
+          "variants": [],
+          "strengths": [
+            "top-tier fidelity",
+            "accurate text and layout",
+            "up to 4K"
+          ],
+          "weaknesses": [],
+          "gotchas": [
+            "TRAP: the id nano_banana_2 is Nano Banana PRO; Nano Banana 2 is nano_banana_flash"
+          ],
+          "in_model_list": true,
+          "checked_at": "2026-11-24",
+          "source": "higgsfield-ai/cli MODELS.md (higgsfield model get), copy in docs/research/higgsfield-cli/MODELS.md"
+        },
+        "nano_banana_2_lite": {
+          "name": "Nano Banana 2 Lite",
+          "kind": "image",
+          "vendor": "Google",
+          "flags": [
+            "aspect_ratio",
+            "image_references",
+            "prompt",
+            "resolution",
+            "thinking"
+          ],
+          "durations": null,
+          "resolutions": [
+            "1k"
+          ],
+          "aspects": [
+            "auto",
+            "1:1",
+            "3:2",
+            "2:3",
+            "4:3",
+            "3:4",
+            "4:5",
+            "5:4",
+            "9:16",
+            "16:9",
+            "21:9"
+          ],
+          "start_frame": false,
+          "end_frame": false,
+          "refs": {
+            "image": 14,
+            "video": 0,
+            "audio": 0
+          },
+          "audio": false,
+          "audio_flag": null,
+          "audio_values": null,
+          "negative_prompt": false,
+          "seed": false,
+          "max_prompt_words": 120,
+          "variants": [],
+          "strengths": [
+            "fast, cheap reference edits"
+          ],
+          "weaknesses": [],
+          "gotchas": [
+            "1k only",
+            "aspect auto needs an image reference"
+          ],
+          "in_model_list": true,
+          "checked_at": "2026-11-24",
+          "source": "higgsfield-ai/cli MODELS.md (higgsfield model get), copy in docs/research/higgsfield-cli/MODELS.md"
+        },
+        "nano_banana_flash": {
+          "name": "Nano Banana 2",
+          "kind": "image",
+          "vendor": "Google",
+          "flags": [
+            "aspect_ratio",
+            "image_references",
+            "prompt",
+            "resolution"
+          ],
+          "durations": null,
+          "resolutions": [
+            "1k",
+            "2k",
+            "4k"
+          ],
+          "aspects": [
+            "1:1",
+            "3:2",
+            "2:3",
+            "4:3",
+            "3:4",
+            "4:5",
+            "5:4",
+            "9:16",
+            "16:9",
+            "21:9"
+          ],
+          "start_frame": false,
+          "end_frame": false,
+          "refs": {
+            "image": 14,
+            "video": 0,
+            "audio": 0
+          },
+          "audio": false,
+          "audio_flag": null,
+          "audio_values": null,
+          "negative_prompt": false,
+          "seed": false,
+          "max_prompt_words": 120,
+          "variants": [],
+          "strengths": [
+            "fast everyday default",
+            "characters, cartoons",
+            "edits",
+            "cheap drafts"
+          ],
+          "weaknesses": [],
+          "gotchas": [
+            "TRAP: nano_banana_flash is Nano Banana 2; nano_banana_2 is Nano Banana Pro"
+          ],
+          "in_model_list": true,
+          "checked_at": "2026-11-24",
+          "source": "higgsfield-ai/cli MODELS.md (higgsfield model get), copy in docs/research/higgsfield-cli/MODELS.md",
+          "unconfirmed": [
+            "refs.image (docs say 'repeated'; 14 is a guess)"
+          ]
+        },
+        "openai_hazel": {
+          "name": "OpenAI Hazel",
+          "kind": "image",
+          "vendor": "OpenAI",
+          "flags": [
+            "aspect_ratio",
+            "image_references",
+            "prompt",
+            "quality"
+          ],
+          "durations": null,
+          "resolutions": null,
+          "aspects": [
+            "1:1",
+            "3:2",
+            "2:3",
+            "auto"
+          ],
+          "start_frame": false,
+          "end_frame": false,
+          "refs": {
+            "image": 16,
+            "video": 0,
+            "audio": 0
+          },
+          "audio": false,
+          "audio_flag": null,
+          "audio_values": null,
+          "negative_prompt": false,
+          "seed": false,
+          "max_prompt_words": 120,
+          "variants": [],
+          "strengths": [
+            "OpenAI look"
+          ],
+          "weaknesses": [
+            "few aspect ratios (no 16:9 or 9:16)"
+          ],
+          "gotchas": [],
+          "in_model_list": true,
+          "checked_at": "2026-11-24",
+          "source": "higgsfield-ai/cli MODELS.md (higgsfield model get), copy in docs/research/higgsfield-cli/MODELS.md"
+        },
+        "outpaint": {
+          "name": "Outpaint",
+          "kind": "utility",
+          "vendor": "Higgsfield",
+          "flags": [
+            "aspect_ratio",
+            "folder_id",
+            "image_references"
+          ],
+          "durations": null,
+          "resolutions": null,
+          "aspects": [
+            "auto",
+            "1:1",
+            "3:2",
+            "2:3",
+            "4:3",
+            "3:4",
+            "4:5",
+            "5:4",
+            "9:16",
+            "16:9",
+            "21:9"
+          ],
+          "start_frame": false,
+          "end_frame": false,
+          "refs": {
+            "image": 1,
+            "video": 0,
+            "audio": 0
+          },
+          "audio": false,
+          "audio_flag": null,
+          "audio_values": null,
+          "negative_prompt": false,
+          "seed": false,
+          "max_prompt_words": 120,
+          "variants": [],
+          "strengths": [
+            "extend a frame to a new aspect ratio"
+          ],
+          "weaknesses": [],
+          "gotchas": [
+            "exactly one image; default aspect is 21:9"
+          ],
+          "in_model_list": true,
+          "checked_at": "2026-11-24",
+          "source": "higgsfield-ai/cli MODELS.md (higgsfield model get), copy in docs/research/higgsfield-cli/MODELS.md",
+          "requires": {
+            "image_references": 1
+          }
+        },
+        "recraft_v4_1": {
+          "name": "Recraft V4.1",
+          "kind": "image",
+          "vendor": "Recraft",
+          "flags": [
+            "aspect_ratio",
+            "background_color",
+            "colors",
+            "model_type",
+            "prompt",
+            "resolution"
+          ],
+          "durations": null,
+          "resolutions": [
+            "1k",
+            "2k"
+          ],
+          "aspects": [
+            "1:1",
+            "3:4",
+            "4:3",
+            "4:5",
+            "5:4",
+            "3:2",
+            "2:3",
+            "16:9",
+            "9:16"
+          ],
+          "start_frame": false,
+          "end_frame": false,
+          "refs": {
+            "image": 0,
+            "video": 0,
+            "audio": 0
+          },
+          "audio": false,
+          "audio_flag": null,
+          "audio_values": null,
+          "negative_prompt": false,
+          "seed": false,
+          "max_prompt_words": 120,
+          "variants": [
+            "standard",
+            "vector",
+            "utility",
+            "utility_vector"
+          ],
+          "strengths": [
+            "logos, icons, vector-like illustration",
+            "controlled palettes (--colors #RRGGBB)"
+          ],
+          "weaknesses": [],
+          "gotchas": [
+            "prompt-only: no image references",
+            "--model_type vector for vector output",
+            "colors and background_color must be #RRGGBB"
+          ],
+          "in_model_list": true,
+          "checked_at": "2026-11-24",
+          "source": "higgsfield-ai/cli MODELS.md (higgsfield model get), copy in docs/research/higgsfield-cli/MODELS.md",
+          "unconfirmed": [
+            "whether model_type vector returns an .svg file or a raster that looks vector"
+          ]
+        },
+        "seedream_v4_5": {
+          "name": "Seedream 4.5",
+          "kind": "image",
+          "vendor": "Bytedance",
+          "flags": [
+            "aspect_ratio",
+            "image_references",
+            "prompt",
+            "quality"
+          ],
+          "durations": null,
+          "resolutions": null,
+          "aspects": [
+            "1:1",
+            "4:3",
+            "16:9",
+            "3:2",
+            "21:9",
+            "3:4",
+            "9:16",
+            "2:3"
+          ],
+          "start_frame": false,
+          "end_frame": false,
+          "refs": {
+            "image": 14,
+            "video": 0,
+            "audio": 0
+          },
+          "audio": false,
+          "audio_flag": null,
+          "audio_values": null,
+          "negative_prompt": false,
+          "seed": false,
+          "max_prompt_words": 120,
+          "variants": [],
+          "strengths": [
+            "face-anchored scene edits"
+          ],
+          "weaknesses": [],
+          "gotchas": [
+            "quality basic|high, no resolution flag"
+          ],
+          "in_model_list": true,
+          "checked_at": "2026-11-24",
+          "source": "higgsfield-ai/cli MODELS.md (higgsfield model get), copy in docs/research/higgsfield-cli/MODELS.md"
+        },
+        "seedream_v5_lite": {
+          "name": "Seedream V5 Lite",
+          "kind": "image",
+          "vendor": "Bytedance",
+          "flags": [
+            "aspect_ratio",
+            "image_references",
+            "prompt",
+            "quality"
+          ],
+          "durations": null,
+          "resolutions": null,
+          "aspects": [
+            "1:1",
+            "4:3",
+            "3:4",
+            "16:9",
+            "9:16"
+          ],
+          "start_frame": false,
+          "end_frame": false,
+          "refs": {
+            "image": 10,
+            "video": 0,
+            "audio": 0
+          },
+          "audio": false,
+          "audio_flag": null,
+          "audio_values": null,
+          "negative_prompt": false,
+          "seed": false,
+          "max_prompt_words": 120,
+          "variants": [],
+          "strengths": [
+            "fast instruction-based edits"
+          ],
+          "weaknesses": [],
+          "gotchas": [],
+          "in_model_list": true,
+          "checked_at": "2026-11-24",
+          "source": "higgsfield-ai/cli MODELS.md (higgsfield model get), copy in docs/research/higgsfield-cli/MODELS.md",
+          "unconfirmed": [
+            "refs.image (docs say 'repeated'; 10 is a guess)"
+          ]
+        },
+        "seedream_v5_pro": {
+          "name": "Seedream 5.0 Pro",
+          "kind": "image",
+          "vendor": "Bytedance",
+          "flags": [
+            "aspect_ratio",
+            "image_references",
+            "prompt",
+            "resolution"
+          ],
+          "durations": null,
+          "resolutions": [
+            "1k",
+            "1.5k",
+            "2k"
+          ],
+          "aspects": [
+            "1:1",
+            "4:3",
+            "3:4",
+            "16:9",
+            "9:16",
+            "3:2",
+            "2:3",
+            "21:9"
+          ],
+          "start_frame": false,
+          "end_frame": false,
+          "refs": {
+            "image": 10,
+            "video": 0,
+            "audio": 0
+          },
+          "audio": false,
+          "audio_flag": null,
+          "audio_values": null,
+          "negative_prompt": false,
+          "seed": false,
+          "max_prompt_words": 120,
+          "variants": [],
+          "strengths": [
+            "faces, character sheets",
+            "complex scene edits with faces"
+          ],
+          "weaknesses": [],
+          "gotchas": [],
+          "in_model_list": null,
+          "checked_at": "2026-11-24",
+          "source": "higgsfield-ai/skills references/model-catalog.md, copy in docs/research/higgsfield-skills/model-catalog.md",
+          "unconfirmed": [
+            "not in the CLI's MODELS.md copy; check with higgsfield model get seedream_v5_pro",
+            "aspects",
+            "the resolution flag name"
+          ]
+        },
+        "soul_cast": {
+          "name": "Soul Cast",
+          "kind": "image",
+          "vendor": "Higgsfield",
+          "flags": [
+            "aspect_ratio",
+            "budget",
+            "prompt"
+          ],
+          "durations": null,
+          "resolutions": null,
+          "aspects": [
+            "16:9"
+          ],
+          "start_frame": false,
+          "end_frame": false,
+          "refs": {
+            "image": 0,
+            "video": 0,
+            "audio": 0
+          },
+          "audio": false,
+          "audio_flag": null,
+          "audio_values": null,
+          "negative_prompt": false,
+          "seed": false,
+          "max_prompt_words": 120,
+          "variants": [],
+          "strengths": [
+            "characterful personas"
+          ],
+          "weaknesses": [],
+          "gotchas": [
+            "16:9 only, prompt-only"
+          ],
+          "in_model_list": true,
+          "checked_at": "2026-11-24",
+          "source": "higgsfield-ai/cli MODELS.md (higgsfield model get), copy in docs/research/higgsfield-cli/MODELS.md"
+        },
+        "soul_cinematic": {
+          "name": "Soul Cinematic",
+          "kind": "image",
+          "vendor": "Higgsfield",
+          "flags": [
+            "aspect_ratio",
+            "image_references",
+            "prompt",
+            "quality",
+            "soul_id"
+          ],
+          "durations": null,
+          "resolutions": [
+            "1.5k",
+            "2k"
+          ],
+          "aspects": [
+            "1:1",
+            "16:9",
+            "9:16",
+            "4:3",
+            "3:4",
+            "3:2",
+            "2:3",
+            "21:9"
+          ],
+          "start_frame": false,
+          "end_frame": false,
+          "refs": {
+            "image": 1,
+            "video": 0,
+            "audio": 0
+          },
+          "audio": false,
+          "audio_flag": null,
+          "audio_values": null,
+          "negative_prompt": false,
+          "seed": false,
+          "max_prompt_words": 120,
+          "variants": [],
+          "strengths": [
+            "cinematic stills with film-grade light",
+            "takes a Soul ID for a consistent face"
+          ],
+          "weaknesses": [],
+          "gotchas": [
+            "size is --quality 1.5k|2k (maps to 720p/1080p)",
+            "one image reference at most"
+          ],
+          "in_model_list": true,
+          "checked_at": "2026-11-24",
+          "source": "higgsfield-ai/cli MODELS.md (higgsfield model get), copy in docs/research/higgsfield-cli/MODELS.md",
+          "param_map": {
+            "resolution": "quality"
+          },
+          "soul_id": true
+        },
+        "soul_cinema_studio": {
+          "name": "Soul Cinema Studio",
+          "kind": "image",
+          "vendor": "Higgsfield",
+          "flags": [
+            "aspect_ratio",
+            "prompt",
+            "quality",
+            "style_id",
+            "enhance_prompt",
+            "soul_id"
+          ],
+          "durations": null,
+          "resolutions": [
+            "1.5k",
+            "2k"
+          ],
+          "aspects": [
+            "1:1",
+            "16:9",
+            "9:16",
+            "4:3",
+            "3:4",
+            "3:2",
+            "2:3",
+            "21:9"
+          ],
+          "start_frame": false,
+          "end_frame": false,
+          "refs": {
+            "image": 0,
+            "video": 0,
+            "audio": 0
+          },
+          "audio": false,
+          "audio_flag": null,
+          "audio_values": null,
+          "negative_prompt": false,
+          "seed": false,
+          "max_prompt_words": 120,
+          "variants": [],
+          "strengths": [
+            "cinematic Soul stills with style presets"
+          ],
+          "weaknesses": [],
+          "gotchas": [],
+          "in_model_list": null,
+          "checked_at": "2026-11-24",
+          "source": "higgsfield-ai/skills references/model-catalog.md, copy in docs/research/higgsfield-skills/model-catalog.md",
+          "param_map": {
+            "resolution": "quality"
+          },
+          "unconfirmed": [
+            "not in the CLI's MODELS.md copy",
+            "flags and refs"
+          ]
+        },
+        "soul_location": {
+          "name": "Soul Location",
+          "kind": "image",
+          "vendor": "Higgsfield",
+          "flags": [
+            "aspect_ratio",
+            "prompt"
+          ],
+          "durations": null,
+          "resolutions": null,
+          "aspects": [
+            "1:1",
+            "16:9",
+            "9:16",
+            "4:3",
+            "3:4",
+            "3:2",
+            "2:3",
+            "21:9",
+            "9:21"
+          ],
+          "start_frame": false,
+          "end_frame": false,
+          "refs": {
+            "image": 0,
+            "video": 0,
+            "audio": 0
+          },
+          "audio": false,
+          "audio_flag": null,
+          "audio_values": null,
+          "negative_prompt": false,
+          "seed": false,
+          "max_prompt_words": 120,
+          "variants": [],
+          "strengths": [
+            "environments and locations with no people"
+          ],
+          "weaknesses": [],
+          "gotchas": [
+            "prompt-only",
+            "fixed sizes per aspect"
+          ],
+          "in_model_list": true,
+          "checked_at": "2026-11-24",
+          "source": "higgsfield-ai/cli MODELS.md (higgsfield model get), copy in docs/research/higgsfield-cli/MODELS.md"
+        },
+        "text2image_soul_v2": {
+          "name": "Higgsfield Soul V2",
+          "kind": "image",
+          "vendor": "Higgsfield",
+          "flags": [
+            "aspect_ratio",
+            "image_references",
+            "prompt",
+            "quality",
+            "soul_id",
+            "style_id"
+          ],
+          "durations": null,
+          "resolutions": [
+            "1.5k",
+            "2k"
+          ],
+          "aspects": [
+            "1:1",
+            "16:9",
+            "9:16",
+            "4:3",
+            "3:4",
+            "3:2",
+            "2:3"
+          ],
+          "start_frame": false,
+          "end_frame": false,
+          "refs": {
+            "image": 1,
+            "video": 0,
+            "audio": 0
+          },
+          "audio": false,
+          "audio_flag": null,
+          "audio_values": null,
+          "negative_prompt": false,
+          "seed": false,
+          "max_prompt_words": 120,
+          "variants": [],
+          "strengths": [
+            "photoreal people, UGC, editorial, fashion",
+            "Soul ID for a consistent face",
+            "style presets"
+          ],
+          "weaknesses": [],
+          "gotchas": [
+            "size is --quality 1.5k|2k",
+            "--style_id does not combine with an image reference"
+          ],
+          "in_model_list": true,
+          "checked_at": "2026-11-24",
+          "source": "higgsfield-ai/cli MODELS.md (higgsfield model get), copy in docs/research/higgsfield-cli/MODELS.md",
+          "param_map": {
+            "resolution": "quality"
+          },
+          "soul_id": true
+        },
+        "z_image": {
+          "name": "Z Image",
+          "kind": "image",
+          "vendor": "Tongyi-MAI",
+          "flags": [
+            "aspect_ratio",
+            "prompt"
+          ],
+          "durations": null,
+          "resolutions": null,
+          "aspects": [
+            "1:1",
+            "4:3",
+            "3:4",
+            "16:9",
+            "9:16"
+          ],
+          "start_frame": false,
+          "end_frame": false,
+          "refs": {
+            "image": 0,
+            "video": 0,
+            "audio": 0
+          },
+          "audio": false,
+          "audio_flag": null,
+          "audio_values": null,
+          "negative_prompt": false,
+          "seed": false,
+          "max_prompt_words": 120,
+          "variants": [],
+          "strengths": [
+            "fastest and cheapest: drafts and boards"
+          ],
+          "weaknesses": [
+            "no resolution control, prompt-only"
+          ],
+          "gotchas": [],
+          "in_model_list": true,
+          "checked_at": "2026-11-24",
+          "source": "higgsfield-ai/cli MODELS.md (higgsfield model get), copy in docs/research/higgsfield-cli/MODELS.md"
+        },
+        "brain_activity": {
+          "name": "Virality Predictor",
+          "kind": "utility",
+          "vendor": "Higgsfield",
+          "flags": [
+            "folder_id",
+            "video_references"
+          ],
+          "durations": null,
+          "resolutions": null,
+          "aspects": null,
+          "start_frame": false,
+          "end_frame": false,
+          "refs": {
+            "image": 0,
+            "video": 1,
+            "audio": 0
+          },
+          "audio": false,
+          "audio_flag": null,
+          "audio_values": null,
+          "negative_prompt": false,
+          "seed": false,
+          "max_prompt_words": 120,
+          "variants": [],
+          "strengths": [
+            "scores a finished video's hook, attention and retention"
+          ],
+          "weaknesses": [],
+          "gotchas": [
+            "takes --video, no prompt; returns a text report, not media"
+          ],
+          "in_model_list": true,
+          "checked_at": "2026-11-24",
+          "source": "higgsfield-ai/cli MODELS.md (higgsfield model get), copy in docs/research/higgsfield-cli/MODELS.md",
+          "requires": {
+            "video_references": 1
+          },
+          "outputs": "report"
+        },
+        "cinematic_studio_3_0": {
+          "name": "Cinematic Studio 3.0",
+          "kind": "video",
+          "vendor": "Higgsfield",
+          "flags": [
+            "aspect_ratio",
+            "audio_references",
+            "batch_size",
+            "duration",
+            "end_image",
+            "enhance_prompt",
+            "folder_id",
+            "generate_audio",
+            "genre",
+            "image_references",
+            "multi_prompt",
+            "multi_shot_mode",
+            "multi_shots",
+            "preset_id",
+            "prompt",
+            "prompt_language",
+            "resolution",
+            "speedramp",
+            "start_image",
+            "video_references"
+          ],
+          "durations": {
+            "min": 3,
+            "max": 15
+          },
+          "resolutions": [
+            "480p",
+            "720p",
+            "1080p",
+            "4k"
+          ],
+          "aspects": [
+            "auto",
+            "21:9",
+            "16:9",
+            "4:3",
+            "1:1",
+            "3:4",
+            "9:16"
+          ],
+          "start_frame": true,
+          "end_frame": true,
+          "refs": {
+            "image": 13,
+            "video": 3,
+            "audio": 3
+          },
+          "audio": true,
+          "audio_flag": "generate_audio",
+          "audio_values": "bool",
+          "negative_prompt": false,
+          "seed": false,
+          "max_prompt_words": 120,
+          "variants": [],
+          "strengths": [
+            "cinema-grade, up to 4K",
+            "multi-shot",
+            "speed ramps"
+          ],
+          "weaknesses": [],
+          "gotchas": [
+            "does not appear in higgsfield model list; check with model get",
+            "at most 15 media in total",
+            "--prompt_language defaults to zh; shotcraft sends en"
+          ],
+          "in_model_list": false,
+          "checked_at": "2026-11-24",
+          "source": "higgsfield-ai/cli MODELS.md (higgsfield model get), copy in docs/research/higgsfield-cli/MODELS.md",
+          "defaults": {
+            "prompt_language": "en"
+          },
+          "unconfirmed": [
+            "duration range (docs say integer, default 5)",
+            "per-kind reference limits (15 total)"
+          ]
+        },
+        "cinematic_studio_video": {
+          "name": "Cinematic Studio Video",
+          "kind": "video",
+          "vendor": "Higgsfield",
+          "flags": [
+            "aspect_ratio",
+            "duration",
+            "end_image",
+            "prompt",
+            "slow_motion",
+            "sound",
+            "start_image"
+          ],
+          "durations": [
+            5,
+            10
+          ],
+          "resolutions": null,
+          "aspects": [
+            "1:1",
+            "4:3",
+            "3:4",
+            "16:9",
+            "9:16"
+          ],
+          "start_frame": true,
+          "end_frame": true,
+          "refs": {
+            "image": 0,
+            "video": 0,
+            "audio": 0
+          },
+          "audio": true,
+          "audio_flag": "sound",
+          "audio_values": "bool",
+          "negative_prompt": false,
+          "seed": false,
+          "max_prompt_words": 120,
+          "variants": [],
+          "strengths": [
+            "cinematic compositions"
+          ],
+          "weaknesses": [],
+          "gotchas": [
+            "end frame needs a start frame",
+            "sound is on by default"
+          ],
+          "in_model_list": true,
+          "checked_at": "2026-11-24",
+          "source": "higgsfield-ai/cli MODELS.md (higgsfield model get), copy in docs/research/higgsfield-cli/MODELS.md"
+        },
+        "cinematic_studio_video_3_5": {
+          "name": "Cinematic Studio Video 3.5",
+          "kind": "video",
+          "vendor": "Higgsfield",
+          "flags": [
+            "aspect_ratio",
+            "audio_references",
+            "camera_style",
+            "color_grading",
+            "duration",
+            "end_image",
+            "enhance_prompt",
+            "generate_audio",
+            "genre",
+            "image_references",
+            "light_scheme",
+            "multi_prompt",
+            "multi_shot_mode",
+            "multi_shots",
+            "prompt",
+            "prompt_language",
+            "resolution",
+            "start_image",
+            "style_prompt",
+            "video_references"
+          ],
+          "durations": {
+            "min": 4,
+            "max": 15
+          },
+          "resolutions": [
+            "480p",
+            "720p",
+            "1080p"
+          ],
+          "aspects": [
+            "auto",
+            "21:9",
+            "16:9",
+            "4:3",
+            "1:1",
+            "3:4",
+            "9:16"
+          ],
+          "start_frame": true,
+          "end_frame": true,
+          "refs": {
+            "image": 13,
+            "video": 3,
+            "audio": 3
+          },
+          "audio": true,
+          "audio_flag": "generate_audio",
+          "audio_values": "bool",
+          "negative_prompt": false,
+          "seed": false,
+          "max_prompt_words": 120,
+          "variants": [],
+          "strengths": [
+            "multi-shot sequences in one job",
+            "named camera styles, light schemes and grades",
+            "genre control"
+          ],
+          "weaknesses": [],
+          "gotchas": [
+            "camera_style/light_scheme/color_grading cannot be combined with style_prompt",
+            "at most 15 media in total",
+            "default duration is 15 s: always pass --duration",
+            "--prompt_language defaults to zh; shotcraft sends en"
+          ],
+          "in_model_list": true,
+          "checked_at": "2026-11-24",
+          "source": "higgsfield-ai/cli MODELS.md (higgsfield model get), copy in docs/research/higgsfield-cli/MODELS.md",
+          "defaults": {
+            "prompt_language": "en"
+          },
+          "unconfirmed": [
+            "duration range (docs say integer, default 15)",
+            "per-kind reference limits (15 total)"
+          ]
+        },
+        "cinematic_studio_video_4_0": {
+          "name": "Cinema Studio 4.0",
+          "kind": "video",
+          "vendor": "Higgsfield",
+          "flags": [
+            "aspect_ratio",
+            "duration",
+            "end_image",
+            "image_references",
+            "mode",
+            "prompt",
+            "resolution",
+            "start_image",
+            "video_references",
+            "audio_references",
+            "generate_audio"
+          ],
+          "durations": {
+            "min": 4,
+            "max": 15
+          },
+          "resolutions": [
+            "480p",
+            "720p",
+            "1080p"
+          ],
+          "aspects": [
+            "auto",
+            "21:9",
+            "16:9",
+            "4:3",
+            "1:1",
+            "3:4",
+            "9:16"
+          ],
+          "start_frame": true,
+          "end_frame": true,
+          "refs": {
+            "image": 30,
+            "video": 3,
+            "audio": 3
+          },
+          "audio": true,
+          "audio_flag": "generate_audio",
+          "audio_values": "bool",
+          "negative_prompt": false,
+          "seed": false,
+          "max_prompt_words": 120,
+          "variants": [
+            "t2v",
+            "omni_reference",
+            "video_edit",
+            "video_extension"
+          ],
+          "strengths": [
+            "Higgsfield's newest cinema model",
+            "camera, lens, light and genre controls"
+          ],
+          "weaknesses": [],
+          "gotchas": [
+            "does not appear in higgsfield model list; check with model get"
+          ],
+          "in_model_list": false,
+          "checked_at": "2026-11-24",
+          "source": "higgsfield-ai/skills references/model-catalog.md, copy in docs/research/higgsfield-skills/model-catalog.md",
+          "media_mode": {
+            "param": "mode",
+            "with_media": "omni_reference",
+            "without_media": "t2v"
+          },
+          "unconfirmed": [
+            "not in the CLI's MODELS.md copy",
+            "duration range",
+            "flags",
+            "native audio flag"
+          ]
+        },
+        "cinematic_studio_video_v2": {
+          "name": "Cinematic Studio Video V2",
+          "kind": "video",
+          "vendor": "Higgsfield",
+          "flags": [
+            "aspect_ratio",
+            "batch_size",
+            "cfg_scale",
+            "duration",
+            "end_image",
+            "folder_id",
+            "genre",
+            "image_references",
+            "kling_element_ids",
+            "mode",
+            "multi_prompt",
+            "multi_shot_mode",
+            "multi_shots",
+            "preset_id",
+            "prompt",
+            "sound",
+            "speedramp",
+            "start_image"
+          ],
+          "durations": {
+            "min": 3,
+            "max": 15
+          },
+          "resolutions": [
+            "720p",
+            "1080p"
+          ],
+          "aspects": [
+            "1:1",
+            "4:3",
+            "3:4",
+            "16:9",
+            "9:16"
+          ],
+          "start_frame": true,
+          "end_frame": true,
+          "refs": {
+            "image": 4,
+            "video": 0,
+            "audio": 0
+          },
+          "audio": true,
+          "audio_flag": "sound",
+          "audio_values": "onoff",
+          "negative_prompt": false,
+          "seed": false,
+          "max_prompt_words": 120,
+          "variants": [
+            "std",
+            "pro"
+          ],
+          "strengths": [
+            "refined camera and colour with genre control"
+          ],
+          "weaknesses": [],
+          "gotchas": [],
+          "in_model_list": true,
+          "checked_at": "2026-11-24",
+          "source": "higgsfield-ai/cli MODELS.md (higgsfield model get), copy in docs/research/higgsfield-cli/MODELS.md",
+          "resolution_via": {
+            "720p": {
+              "mode": "std"
+            },
+            "1080p": {
+              "mode": "pro"
+            }
+          },
+          "unconfirmed": [
+            "duration range (docs say integer, default 5)",
+            "refs.image",
+            "std/pro resolution mapping"
+          ]
+        },
+        "gemini_omni": {
+          "name": "Gemini Omni Flash",
+          "kind": "video",
+          "vendor": "Google",
+          "flags": [
+            "aspect_ratio",
+            "duration",
+            "image_references",
+            "prompt",
+            "resolution",
+            "video_references"
+          ],
+          "durations": [
+            4,
+            6,
+            8,
+            10
+          ],
+          "resolutions": [
+            "720p"
+          ],
+          "aspects": [
+            "16:9",
+            "9:16"
+          ],
+          "start_frame": false,
+          "end_frame": false,
+          "refs": {
+            "image": 7,
+            "video": 1,
+            "audio": 0
+          },
+          "audio": false,
+          "audio_flag": null,
+          "audio_values": null,
+          "negative_prompt": false,
+          "seed": false,
+          "max_prompt_words": 120,
+          "variants": [],
+          "strengths": [
+            "fast multimodal reference-to-video"
+          ],
+          "weaknesses": [
+            "720p only",
+            "no start frame slot"
+          ],
+          "gotchas": [
+            "with a video reference, at most 5 image references"
+          ],
+          "in_model_list": true,
+          "checked_at": "2026-11-24",
+          "source": "higgsfield-ai/cli MODELS.md (higgsfield model get), copy in docs/research/higgsfield-cli/MODELS.md",
+          "unconfirmed": [
+            "native audio"
+          ]
+        },
+        "gemini_omni_flash_1_1": {
+          "name": "Gemini Omni Flash 1.1",
+          "kind": "video",
+          "vendor": "Google",
+          "flags": [
+            "aspect_ratio",
+            "duration",
+            "image_references",
+            "mode",
+            "prompt",
+            "resolution",
+            "start_image",
+            "end_image",
+            "video_references"
+          ],
+          "durations": [
+            4,
+            6,
+            8,
+            10
+          ],
+          "resolutions": [
+            "720p"
+          ],
+          "aspects": [
+            "16:9",
+            "9:16"
+          ],
+          "start_frame": true,
+          "end_frame": true,
+          "refs": {
+            "image": 7,
+            "video": 1,
+            "audio": 0
+          },
+          "audio": true,
+          "audio_flag": null,
+          "audio_values": null,
+          "negative_prompt": false,
+          "seed": false,
+          "max_prompt_words": 120,
+          "variants": [],
+          "strengths": [
+            "reference-driven video with native audio"
+          ],
+          "weaknesses": [],
+          "gotchas": [],
+          "in_model_list": null,
+          "checked_at": "2026-11-24",
+          "source": "higgsfield-ai/skills references/model-catalog.md, copy in docs/research/higgsfield-skills/model-catalog.md",
+          "unconfirmed": [
+            "not in the CLI's MODELS.md copy",
+            "every field"
+          ]
+        },
+        "grok_video": {
+          "name": "Grok Video",
+          "kind": "video",
+          "vendor": "xAI",
+          "flags": [
+            "aspect_ratio",
+            "duration",
+            "prompt",
+            "start_image"
+          ],
+          "durations": {
+            "min": 1,
+            "max": 15
+          },
+          "resolutions": null,
+          "aspects": [
+            "16:9",
+            "9:16",
+            "1:1"
+          ],
+          "start_frame": true,
+          "end_frame": false,
+          "refs": {
+            "image": 0,
+            "video": 0,
+            "audio": 0
+          },
+          "audio": false,
+          "audio_flag": null,
+          "audio_values": null,
+          "negative_prompt": false,
+          "seed": false,
+          "max_prompt_words": 120,
+          "variants": [],
+          "strengths": [
+            "stylized, bold motion"
+          ],
+          "weaknesses": [],
+          "gotchas": [],
+          "in_model_list": true,
+          "checked_at": "2026-11-24",
+          "source": "higgsfield-ai/cli MODELS.md (higgsfield model get), copy in docs/research/higgsfield-cli/MODELS.md",
+          "unconfirmed": [
+            "duration range (docs say integer, default 5)",
+            "native audio"
+          ]
+        },
+        "grok_video_v15": {
+          "name": "Grok Video 1.5",
+          "kind": "video",
+          "vendor": "xAI",
+          "flags": [
+            "duration",
+            "prompt",
+            "resolution",
+            "start_image"
+          ],
+          "durations": {
+            "min": 2,
+            "max": 15
+          },
+          "resolutions": [
+            "480p",
+            "720p"
+          ],
+          "aspects": null,
+          "start_frame": true,
+          "end_frame": false,
+          "refs": {
+            "image": 0,
+            "video": 0,
+            "audio": 0
+          },
+          "audio": false,
+          "audio_flag": null,
+          "audio_values": null,
+          "negative_prompt": false,
+          "seed": false,
+          "max_prompt_words": 120,
+          "variants": [],
+          "strengths": [
+            "bold image-to-video from one frame"
+          ],
+          "weaknesses": [],
+          "gotchas": [
+            "needs a start frame",
+            "no aspect flag: the start frame sets the shape"
+          ],
+          "in_model_list": true,
+          "checked_at": "2026-11-24",
+          "source": "higgsfield-ai/cli MODELS.md (higgsfield model get), copy in docs/research/higgsfield-cli/MODELS.md",
+          "requires": {
+            "start_image": 1
+          },
+          "unconfirmed": [
+            "1080p (catalog says yes without reference media; MODELS.md lists 480p/720p)"
+          ]
+        },
+        "kling2_6": {
+          "name": "Kling 2.6 Video",
+          "kind": "video",
+          "vendor": "Kling",
+          "flags": [
+            "aspect_ratio",
+            "duration",
+            "prompt",
+            "sound",
+            "start_image"
+          ],
+          "durations": [
+            5,
+            10
+          ],
+          "resolutions": null,
+          "aspects": [
+            "16:9",
+            "9:16",
+            "1:1"
+          ],
+          "start_frame": true,
+          "end_frame": false,
+          "refs": {
+            "image": 0,
+            "video": 0,
+            "audio": 0
+          },
+          "audio": true,
+          "audio_flag": "sound",
+          "audio_values": "bool",
+          "negative_prompt": false,
+          "seed": false,
+          "max_prompt_words": 120,
+          "variants": [],
+          "strengths": [
+            "cinematic motion with physics"
+          ],
+          "weaknesses": [],
+          "gotchas": [
+            "sound is on by default"
+          ],
+          "in_model_list": true,
+          "checked_at": "2026-11-24",
+          "source": "higgsfield-ai/cli MODELS.md (higgsfield model get), copy in docs/research/higgsfield-cli/MODELS.md"
+        },
+        "kling3_0": {
+          "name": "Kling v3.0",
+          "kind": "video",
+          "vendor": "Kling",
+          "flags": [
+            "aspect_ratio",
+            "duration",
+            "end_image",
+            "mode",
+            "prompt",
+            "sound",
+            "start_image"
+          ],
+          "durations": {
+            "min": 3,
+            "max": 15
+          },
+          "resolutions": [
+            "720p",
+            "1080p",
+            "4k"
+          ],
+          "aspects": [
+            "16:9",
+            "9:16",
+            "1:1"
+          ],
+          "start_frame": true,
+          "end_frame": true,
+          "refs": {
+            "image": 0,
+            "video": 0,
+            "audio": 0
+          },
+          "audio": true,
+          "audio_flag": "sound",
+          "audio_values": "onoff",
+          "negative_prompt": false,
+          "seed": false,
+          "max_prompt_words": 120,
+          "variants": [
+            "std",
+            "pro",
+            "4k"
+          ],
+          "strengths": [
+            "motion and physics",
+            "start and end frames",
+            "lower cost"
+          ],
+          "weaknesses": [],
+          "gotchas": [
+            "size is set by --mode std|pro|4k",
+            "sound defaults to on: shotcraft sends off unless the card wants audio"
+          ],
+          "in_model_list": true,
+          "checked_at": "2026-11-24",
+          "source": "higgsfield-ai/cli MODELS.md (higgsfield model get), copy in docs/research/higgsfield-cli/MODELS.md",
+          "resolution_via": {
+            "720p": {
+              "mode": "std"
+            },
+            "1080p": {
+              "mode": "pro"
+            },
+            "4k": {
+              "mode": "4k"
+            }
+          },
+          "unconfirmed": [
+            "std = 720p and pro = 1080p mapping"
+          ]
+        },
+        "kling3_0_turbo": {
+          "name": "Kling 3.0 Turbo",
+          "kind": "video",
+          "vendor": "Kling",
+          "flags": [
+            "aspect_ratio",
+            "duration",
+            "prompt",
+            "resolution",
+            "start_image"
+          ],
+          "durations": {
+            "min": 3,
+            "max": 15
+          },
+          "resolutions": [
+            "720p",
+            "1080p"
+          ],
+          "aspects": [
+            "16:9",
+            "9:16",
+            "1:1"
+          ],
+          "start_frame": true,
+          "end_frame": false,
+          "refs": {
+            "image": 0,
+            "video": 0,
+            "audio": 0
+          },
+          "audio": false,
+          "audio_flag": null,
+          "audio_values": null,
+          "negative_prompt": false,
+          "seed": false,
+          "max_prompt_words": 120,
+          "variants": [],
+          "strengths": [
+            "fast and cheap simple motion",
+            "good draft model"
+          ],
+          "weaknesses": [
+            "no end frame, no references"
+          ],
+          "gotchas": [],
+          "in_model_list": true,
+          "checked_at": "2026-11-24",
+          "source": "higgsfield-ai/cli MODELS.md (higgsfield model get), copy in docs/research/higgsfield-cli/MODELS.md"
+        },
+        "marketing_studio_video": {
+          "name": "Marketing Studio Video",
+          "kind": "video",
+          "vendor": "Higgsfield",
+          "flags": [
+            "ad_reference_id",
+            "aspect_ratio",
+            "avatar_ids",
+            "avatars",
+            "duration",
+            "end_image",
+            "generate_audio",
+            "hook_id",
+            "image_references",
+            "mode",
+            "product_ids",
+            "prompt",
+            "resolution",
+            "setting_id",
+            "specific_mode",
+            "start_image",
+            "storyboard_id",
+            "web_product_ids",
+            "web_product_type"
+          ],
+          "durations": {
+            "min": 5,
+            "max": 30
+          },
+          "resolutions": [
+            "480p",
+            "720p",
+            "1080p"
+          ],
+          "aspects": [
+            "auto",
+            "21:9",
+            "16:9",
+            "4:3",
+            "1:1",
+            "3:4",
+            "9:16"
+          ],
+          "start_frame": true,
+          "end_frame": true,
+          "refs": {
+            "image": 8,
+            "video": 0,
+            "audio": 0
+          },
+          "audio": true,
+          "audio_flag": "generate_audio",
+          "audio_values": "bool",
+          "negative_prompt": false,
+          "seed": false,
+          "max_prompt_words": 120,
+          "variants": [],
+          "strengths": [
+            "ads, UGC, unboxing, product showcase with avatars and products"
+          ],
+          "weaknesses": [],
+          "gotchas": [
+            "default duration is 15 s",
+            "hook_id/setting_id only with some modes"
+          ],
+          "in_model_list": true,
+          "checked_at": "2026-11-24",
+          "source": "higgsfield-ai/cli MODELS.md (higgsfield model get), copy in docs/research/higgsfield-cli/MODELS.md",
+          "unconfirmed": [
+            "duration range (docs say integer, default 15)",
+            "refs.image"
+          ]
+        },
+        "minimax_hailuo": {
+          "name": "Minimax Hailuo",
+          "kind": "video",
+          "vendor": "Hailuo",
+          "flags": [
+            "duration",
+            "end_image",
+            "prompt",
+            "resolution",
+            "start_image",
+            "variant"
+          ],
+          "durations": [
+            6,
+            10
+          ],
+          "resolutions": [
+            "512",
+            "768",
+            "1080"
+          ],
+          "aspects": null,
+          "start_frame": true,
+          "end_frame": true,
+          "refs": {
+            "image": 0,
+            "video": 0,
+            "audio": 0
+          },
+          "audio": false,
+          "audio_flag": null,
+          "audio_values": null,
+          "negative_prompt": false,
+          "seed": false,
+          "max_prompt_words": 120,
+          "variants": [
+            "minimax",
+            "minimax-fast",
+            "minimax-2.3",
+            "minimax-2.3-fast"
+          ],
+          "strengths": [
+            "cheap with strong physics"
+          ],
+          "weaknesses": [
+            "no audio",
+            "no aspect flag"
+          ],
+          "gotchas": [
+            "1080 not available for 10 s",
+            "end frame not with minimax-2.3 variants",
+            "a start or end frame is needed unless the variant is minimax-2.3"
+          ],
+          "in_model_list": true,
+          "checked_at": "2026-11-24",
+          "source": "higgsfield-ai/cli MODELS.md (higgsfield model get), copy in docs/research/higgsfield-cli/MODELS.md"
+        },
+        "seedance1_5": {
+          "name": "Seedance 1.5 Pro",
+          "kind": "video",
+          "vendor": "Bytedance",
+          "flags": [
+            "aspect_ratio",
+            "duration",
+            "end_image",
+            "generate_audio",
+            "prompt",
+            "resolution",
+            "start_image"
+          ],
+          "durations": [
+            4,
+            8,
+            12
+          ],
+          "resolutions": [
+            "480p",
+            "720p",
+            "1080p"
+          ],
+          "aspects": [
+            "auto",
+            "16:9",
+            "9:16",
+            "4:3",
+            "3:4",
+            "1:1",
+            "21:9"
+          ],
+          "start_frame": true,
+          "end_frame": true,
+          "refs": {
+            "image": 0,
+            "video": 0,
+            "audio": 0
+          },
+          "audio": true,
+          "audio_flag": "generate_audio",
+          "audio_values": "bool",
+          "negative_prompt": false,
+          "seed": false,
+          "max_prompt_words": 120,
+          "variants": [],
+          "strengths": [
+            "budget clean single takes"
+          ],
+          "weaknesses": [],
+          "gotchas": [
+            "audio is on by default",
+            "end frame needs a start frame"
+          ],
+          "in_model_list": true,
+          "checked_at": "2026-11-24",
+          "source": "higgsfield-ai/cli MODELS.md (higgsfield model get), copy in docs/research/higgsfield-cli/MODELS.md"
+        },
+        "seedance_2_0": {
+          "name": "Seedance 2.0",
+          "kind": "video",
+          "vendor": "Bytedance",
+          "flags": [
+            "aspect_ratio",
+            "audio_references",
+            "bitrate_mode",
+            "duration",
+            "end_image",
+            "generate_audio",
+            "genre",
+            "image_references",
+            "mode",
+            "prompt",
+            "resolution",
+            "start_image",
+            "video_references"
+          ],
+          "durations": {
+            "min": 4,
+            "max": 15
+          },
+          "resolutions": [
+            "480p",
+            "720p",
+            "1080p",
+            "4k"
+          ],
+          "aspects": [
+            "auto",
+            "16:9",
+            "9:16",
+            "4:3",
+            "3:4",
+            "1:1",
+            "21:9"
+          ],
+          "start_frame": true,
+          "end_frame": true,
+          "refs": {
+            "image": 9,
+            "video": 3,
+            "audio": 3
+          },
+          "audio": true,
+          "audio_flag": "generate_audio",
+          "audio_values": "bool",
+          "negative_prompt": false,
+          "seed": false,
+          "max_prompt_words": 120,
+          "variants": [
+            "std",
+            "fast"
+          ],
+          "strengths": [
+            "native 4K",
+            "fast mode makes cheap 480p/720p drafts",
+            "references of every kind"
+          ],
+          "weaknesses": [],
+          "gotchas": [
+            "mode fast is 480p/720p only",
+            "at most 9 images counting start/end frames, 12 media in total",
+            "audio references need an image or video too"
+          ],
+          "in_model_list": true,
+          "checked_at": "2026-11-24",
+          "source": "higgsfield-ai/cli MODELS.md (higgsfield model get), copy in docs/research/higgsfield-cli/MODELS.md",
+          "unconfirmed": [
+            "generate_audio: MODELS.md lists it, the skills media-inputs note says not to pass it"
+          ]
+        },
+        "seedance_2_0_mini": {
+          "name": "Seedance 2.0 Mini",
+          "kind": "video",
+          "vendor": "Bytedance",
+          "flags": [
+            "aspect_ratio",
+            "audio_references",
+            "bitrate_mode",
+            "duration",
+            "end_image",
+            "generate_audio",
+            "genre",
+            "image_references",
+            "prompt",
+            "resolution",
+            "start_image",
+            "video_references"
+          ],
+          "durations": {
+            "min": 4,
+            "max": 15
+          },
+          "resolutions": [
+            "480p",
+            "720p"
+          ],
+          "aspects": [
+            "auto",
+            "16:9",
+            "9:16",
+            "4:3",
+            "3:4",
+            "1:1",
+            "21:9"
+          ],
+          "start_frame": true,
+          "end_frame": true,
+          "refs": {
+            "image": 9,
+            "video": 3,
+            "audio": 3
+          },
+          "audio": true,
+          "audio_flag": "generate_audio",
+          "audio_values": "bool",
+          "negative_prompt": false,
+          "seed": false,
+          "max_prompt_words": 120,
+          "variants": [],
+          "strengths": [
+            "cheaper Seedance 2.0"
+          ],
+          "weaknesses": [],
+          "gotchas": [],
+          "in_model_list": true,
+          "checked_at": "2026-11-24",
+          "source": "higgsfield-ai/cli MODELS.md (higgsfield model get), copy in docs/research/higgsfield-cli/MODELS.md",
+          "unconfirmed": [
+            "duration range (docs say integer, default 5)"
+          ]
+        },
+        "seedance_2_5": {
+          "name": "Seedance 2.5",
+          "kind": "video",
+          "vendor": "Bytedance",
+          "flags": [
+            "aspect_ratio",
+            "audio_references",
+            "bitrate_mode",
+            "duration",
+            "end_image",
+            "generate_audio",
+            "image_references",
+            "mode",
+            "prompt",
+            "resolution",
+            "start_image",
+            "video_references"
+          ],
+          "durations": {
+            "min": 4,
+            "max": 30
+          },
+          "resolutions": [
+            "480p",
+            "720p",
+            "1080p"
+          ],
+          "aspects": [
+            "auto",
+            "16:9",
+            "9:16",
+            "4:3",
+            "3:4",
+            "1:1",
+            "21:9"
+          ],
+          "start_frame": true,
+          "end_frame": true,
+          "refs": {
+            "image": 9,
+            "video": 3,
+            "audio": 3
+          },
+          "audio": true,
+          "audio_flag": "generate_audio",
+          "audio_values": "bool",
+          "negative_prompt": false,
+          "seed": false,
+          "max_prompt_words": 120,
+          "variants": [
+            "t2v",
+            "omni_reference",
+            "video_edit",
+            "video_extension"
+          ],
+          "strengths": [
+            "Higgsfield's default video model",
+            "multi-shot, consistent identity, heavy motion",
+            "4-30 s in one take",
+            "image-to-video, editing, extension"
+          ],
+          "weaknesses": [
+            "tops out at 1080p (use Seedance 2.0 for native 4K)"
+          ],
+          "gotchas": [
+            "t2v mode takes no media: shotcraft switches to omni_reference when there are inputs"
+          ],
+          "in_model_list": true,
+          "checked_at": "2026-11-24",
+          "source": "higgsfield-ai/cli README.md model table + example, copy in docs/research/higgsfield-cli/README.md; higgsfield-ai/skills references/model-catalog.md, copy in docs/research/higgsfield-skills/model-catalog.md",
+          "media_mode": {
+            "param": "mode",
+            "with_media": "omni_reference",
+            "without_media": "t2v"
+          },
+          "unconfirmed": [
+            "full flag list (no MODELS.md entry in this copy)",
+            "aspects",
+            "reference limits",
+            "generate_audio flag"
+          ]
+        },
+        "veo3": {
+          "name": "Google Veo 3",
+          "kind": "video",
+          "vendor": "Google",
+          "flags": [
+            "aspect_ratio",
+            "prompt",
+            "start_image",
+            "variant"
+          ],
+          "durations": [
+            8
+          ],
+          "resolutions": null,
+          "aspects": [
+            "16:9",
+            "9:16"
+          ],
+          "start_frame": true,
+          "end_frame": false,
+          "refs": {
+            "image": 0,
+            "video": 0,
+            "audio": 0
+          },
+          "audio": true,
+          "audio_flag": null,
+          "audio_values": null,
+          "negative_prompt": false,
+          "seed": false,
+          "max_prompt_words": 120,
+          "variants": [
+            "veo-3-preview",
+            "veo-3-fast"
+          ],
+          "strengths": [
+            "native dialogue audio"
+          ],
+          "weaknesses": [],
+          "gotchas": [
+            "needs a start frame",
+            "no duration flag"
+          ],
+          "in_model_list": true,
+          "checked_at": "2026-11-24",
+          "source": "higgsfield-ai/cli MODELS.md (higgsfield model get), copy in docs/research/higgsfield-cli/MODELS.md",
+          "requires": {
+            "start_image": 1
+          },
+          "unconfirmed": [
+            "fixed 8 s length",
+            "native audio (no audio flag)"
+          ]
+        },
+        "veo3_1": {
+          "name": "Google Veo 3.1",
+          "kind": "video",
+          "vendor": "Google",
+          "flags": [
+            "aspect_ratio",
+            "duration",
+            "prompt",
+            "quality",
+            "start_image",
+            "variant"
+          ],
+          "durations": [
+            4,
+            6,
+            8
+          ],
+          "resolutions": null,
+          "aspects": [
+            "16:9",
+            "9:16"
+          ],
+          "start_frame": true,
+          "end_frame": false,
+          "refs": {
+            "image": 0,
+            "video": 0,
+            "audio": 0
+          },
+          "audio": true,
+          "audio_flag": null,
+          "audio_values": null,
+          "negative_prompt": false,
+          "seed": false,
+          "max_prompt_words": 120,
+          "variants": [
+            "veo-3-1-preview",
+            "veo-3-1-fast"
+          ],
+          "strengths": [
+            "ultra-realistic",
+            "dialogue and native sound",
+            "lip-sync"
+          ],
+          "weaknesses": [
+            "4, 6 or 8 s only",
+            "16:9 or 9:16 only"
+          ],
+          "gotchas": [
+            "quality basic|high|ultra, no resolution flag",
+            "no flag to turn audio off"
+          ],
+          "in_model_list": true,
+          "checked_at": "2026-11-24",
+          "source": "higgsfield-ai/cli MODELS.md (higgsfield model get), copy in docs/research/higgsfield-cli/MODELS.md",
+          "tier_params": {
+            "final": {
+              "quality": "high"
+            }
+          },
+          "unconfirmed": [
+            "native audio is always on (no flag in MODELS.md)"
+          ]
+        },
+        "veo3_1_lite": {
+          "name": "Google Veo 3.1 Lite",
+          "kind": "video",
+          "vendor": "Google",
+          "flags": [
+            "aspect_ratio",
+            "duration",
+            "end_image",
+            "generate_audio",
+            "prompt",
+            "start_image"
+          ],
+          "durations": [
+            4,
+            6,
+            8
+          ],
+          "resolutions": null,
+          "aspects": [
+            "16:9",
+            "9:16",
+            "auto"
+          ],
+          "start_frame": true,
+          "end_frame": true,
+          "refs": {
+            "image": 0,
+            "video": 0,
+            "audio": 0
+          },
+          "audio": true,
+          "audio_flag": "generate_audio",
+          "audio_values": "bool",
+          "negative_prompt": false,
+          "seed": false,
+          "max_prompt_words": 120,
+          "variants": [],
+          "strengths": [
+            "cheap Veo for drafts and volume",
+            "dialogue audio"
+          ],
+          "weaknesses": [],
+          "gotchas": [
+            "duration must be 8 with both start and end frames",
+            "audio is off by default"
+          ],
+          "in_model_list": true,
+          "checked_at": "2026-11-24",
+          "source": "higgsfield-ai/cli MODELS.md (higgsfield model get), copy in docs/research/higgsfield-cli/MODELS.md"
+        },
+        "video_background_remover": {
+          "name": "Video Background Remover",
+          "kind": "utility",
+          "vendor": "Higgsfield",
+          "flags": [
+            "video_references"
+          ],
+          "durations": null,
+          "resolutions": null,
+          "aspects": null,
+          "start_frame": false,
+          "end_frame": false,
+          "refs": {
+            "image": 0,
+            "video": 1,
+            "audio": 0
+          },
+          "audio": false,
+          "audio_flag": null,
+          "audio_values": null,
+          "negative_prompt": false,
+          "seed": false,
+          "max_prompt_words": 120,
+          "variants": [],
+          "strengths": [
+            "cut-out video for compositing"
+          ],
+          "weaknesses": [],
+          "gotchas": [],
+          "in_model_list": true,
+          "checked_at": "2026-11-24",
+          "source": "higgsfield-ai/cli MODELS.md (higgsfield model get), copy in docs/research/higgsfield-cli/MODELS.md",
+          "requires": {
+            "video_references": 1
+          }
+        },
+        "wan2_6": {
+          "name": "Wan 2.6 Video",
+          "kind": "video",
+          "vendor": "Wan",
+          "flags": [
+            "aspect_ratio",
+            "audio_references",
+            "duration",
+            "image_references",
+            "prompt",
+            "quality",
+            "video_references"
+          ],
+          "durations": [
+            5,
+            10,
+            15
+          ],
+          "resolutions": [
+            "720p",
+            "1080p"
+          ],
+          "aspects": [
+            "16:9",
+            "9:16",
+            "1:1"
+          ],
+          "start_frame": false,
+          "end_frame": false,
+          "refs": {
+            "image": 4,
+            "video": 1,
+            "audio": 1
+          },
+          "audio": false,
+          "audio_flag": null,
+          "audio_values": null,
+          "negative_prompt": false,
+          "seed": false,
+          "max_prompt_words": 120,
+          "variants": [],
+          "strengths": [
+            "cheap, stylized, experimental"
+          ],
+          "weaknesses": [],
+          "gotchas": [
+            "size is --quality 720p|1080p",
+            "video references allow only 5 or 10 s",
+            "some configs reject media"
+          ],
+          "in_model_list": true,
+          "checked_at": "2026-11-24",
+          "source": "higgsfield-ai/cli MODELS.md (higgsfield model get), copy in docs/research/higgsfield-cli/MODELS.md",
+          "param_map": {
+            "resolution": "quality"
+          },
+          "unconfirmed": [
+            "reference limits"
+          ]
+        },
+        "wan2_7": {
+          "name": "Wan 2.7",
+          "kind": "video",
+          "vendor": "Wan",
+          "flags": [
+            "aspect_ratio",
+            "audio_references",
+            "duration",
+            "end_image",
+            "prompt",
+            "resolution",
+            "start_image"
+          ],
+          "durations": {
+            "min": 2,
+            "max": 15
+          },
+          "resolutions": [
+            "720p",
+            "1080p"
+          ],
+          "aspects": [
+            "16:9",
+            "9:16",
+            "1:1",
+            "4:3",
+            "3:4"
+          ],
+          "start_frame": true,
+          "end_frame": true,
+          "refs": {
+            "image": 0,
+            "video": 0,
+            "audio": 1
+          },
+          "audio": false,
+          "audio_flag": null,
+          "audio_values": null,
+          "negative_prompt": false,
+          "seed": false,
+          "max_prompt_words": 120,
+          "variants": [],
+          "strengths": [
+            "synchronized audio with consistent characters"
+          ],
+          "weaknesses": [],
+          "gotchas": [
+            "end frame needs a start frame",
+            "one audio reference at most"
+          ],
+          "in_model_list": true,
+          "checked_at": "2026-11-24",
+          "source": "higgsfield-ai/cli MODELS.md (higgsfield model get), copy in docs/research/higgsfield-cli/MODELS.md",
+          "unconfirmed": [
+            "duration range (docs say integer, default 5)",
+            "native audio flag"
+          ]
+        },
+        "video_explainer": {
+          "name": "Explainer Video",
+          "kind": "utility",
+          "vendor": "Higgsfield",
+          "flags": [
+            "prompt",
+            "medias",
+            "aspect_ratio",
+            "duration",
+            "preset_id",
+            "voice_type",
+            "voice_id",
+            "folder_id"
+          ],
+          "durations": null,
+          "resolutions": null,
+          "aspects": [
+            "16:9",
+            "9:16"
+          ],
+          "start_frame": false,
+          "end_frame": false,
+          "refs": {
+            "image": 0,
+            "video": 0,
+            "audio": 0
+          },
+          "audio": false,
+          "audio_flag": null,
+          "audio_values": null,
+          "negative_prompt": false,
+          "seed": false,
+          "max_prompt_words": 120,
+          "variants": [],
+          "strengths": [
+            "one-job narrated explainer"
+          ],
+          "weaknesses": [],
+          "gotchas": [
+            "duration 20-600 s in steps of 10"
+          ],
+          "in_model_list": null,
+          "checked_at": "2026-11-24",
+          "source": "higgsfield-ai/cli MODELS.md (higgsfield model get), copy in docs/research/higgsfield-cli/MODELS.md"
+        },
+        "explainer_video": {
+          "name": "Explainer Video Assembler",
+          "kind": "utility",
+          "vendor": "Higgsfield",
+          "flags": [
+            "width",
+            "height",
+            "items",
+            "subtitles"
+          ],
+          "durations": null,
+          "resolutions": null,
+          "aspects": null,
+          "start_frame": false,
+          "end_frame": false,
+          "refs": {
+            "image": 0,
+            "video": 0,
+            "audio": 0
+          },
+          "audio": false,
+          "audio_flag": null,
+          "audio_values": null,
+          "negative_prompt": false,
+          "seed": false,
+          "max_prompt_words": 120,
+          "variants": [],
+          "strengths": [
+            "assembles clip/voice pairs"
+          ],
+          "weaknesses": [],
+          "gotchas": [],
+          "in_model_list": null,
+          "checked_at": "2026-11-24",
+          "source": "higgsfield-ai/cli MODELS.md (higgsfield model get), copy in docs/research/higgsfield-cli/MODELS.md"
+        },
+        "topaz_image": {
+          "name": "Topaz Image Upscale",
+          "kind": "upscale",
+          "vendor": "Topaz Labs",
+          "flags": [
+            "image_references"
+          ],
+          "durations": null,
+          "resolutions": null,
+          "aspects": null,
+          "start_frame": false,
+          "end_frame": false,
+          "refs": {
+            "image": 1,
+            "video": 0,
+            "audio": 0
+          },
+          "audio": false,
+          "audio_flag": null,
+          "audio_values": null,
+          "negative_prompt": false,
+          "seed": false,
+          "max_prompt_words": 120,
+          "variants": [],
+          "strengths": [
+            "upscale an approved image only when delivery needs more pixels"
+          ],
+          "weaknesses": [],
+          "gotchas": [],
+          "in_model_list": null,
+          "checked_at": "2026-11-24",
+          "source": "higgsfield-ai/cli MODELS.md 'Additional utility job types' (schema not documented: run higgsfield model get <id>)",
+          "requires": {
+            "image_references": 1
+          },
+          "upscales": "image",
+          "unconfirmed": [
+            "every field: run higgsfield model get topaz_image"
+          ]
+        },
+        "bytedance_image_upscale": {
+          "name": "Bytedance Image Upscale",
+          "kind": "upscale",
+          "vendor": "Bytedance",
+          "flags": [
+            "image_references"
+          ],
+          "durations": null,
+          "resolutions": null,
+          "aspects": null,
+          "start_frame": false,
+          "end_frame": false,
+          "refs": {
+            "image": 1,
+            "video": 0,
+            "audio": 0
+          },
+          "audio": false,
+          "audio_flag": null,
+          "audio_values": null,
+          "negative_prompt": false,
+          "seed": false,
+          "max_prompt_words": 120,
+          "variants": [],
+          "strengths": [
+            "upscale an approved image only when delivery needs more pixels"
+          ],
+          "weaknesses": [],
+          "gotchas": [],
+          "in_model_list": null,
+          "checked_at": "2026-11-24",
+          "source": "higgsfield-ai/cli MODELS.md 'Additional utility job types' (schema not documented: run higgsfield model get <id>)",
+          "requires": {
+            "image_references": 1
+          },
+          "upscales": "image",
+          "unconfirmed": [
+            "every field: run higgsfield model get bytedance_image_upscale"
+          ]
+        },
+        "topaz_video": {
+          "name": "Topaz Video Upscale",
+          "kind": "upscale",
+          "vendor": "Topaz Labs",
+          "flags": [
+            "video_references"
+          ],
+          "durations": null,
+          "resolutions": null,
+          "aspects": null,
+          "start_frame": false,
+          "end_frame": false,
+          "refs": {
+            "image": 0,
+            "video": 1,
+            "audio": 0
+          },
+          "audio": false,
+          "audio_flag": null,
+          "audio_values": null,
+          "negative_prompt": false,
+          "seed": false,
+          "max_prompt_words": 120,
+          "variants": [],
+          "strengths": [
+            "upscale an approved video only when delivery needs more pixels"
+          ],
+          "weaknesses": [],
+          "gotchas": [],
+          "in_model_list": null,
+          "checked_at": "2026-11-24",
+          "source": "higgsfield-ai/cli MODELS.md 'Additional utility job types' (schema not documented: run higgsfield model get <id>)",
+          "requires": {
+            "video_references": 1
+          },
+          "upscales": "video",
+          "unconfirmed": [
+            "every field: run higgsfield model get topaz_video"
+          ]
+        },
+        "bytedance_video_upscale": {
+          "name": "Bytedance Video Upscale",
+          "kind": "upscale",
+          "vendor": "Bytedance",
+          "flags": [
+            "video_references"
+          ],
+          "durations": null,
+          "resolutions": null,
+          "aspects": null,
+          "start_frame": false,
+          "end_frame": false,
+          "refs": {
+            "image": 0,
+            "video": 1,
+            "audio": 0
+          },
+          "audio": false,
+          "audio_flag": null,
+          "audio_values": null,
+          "negative_prompt": false,
+          "seed": false,
+          "max_prompt_words": 120,
+          "variants": [],
+          "strengths": [
+            "upscale an approved video only when delivery needs more pixels"
+          ],
+          "weaknesses": [],
+          "gotchas": [],
+          "in_model_list": null,
+          "checked_at": "2026-11-24",
+          "source": "higgsfield-ai/cli MODELS.md 'Additional utility job types' (schema not documented: run higgsfield model get <id>)",
+          "requires": {
+            "video_references": 1
+          },
+          "upscales": "video",
+          "unconfirmed": [
+            "every field: run higgsfield model get bytedance_video_upscale"
+          ]
+        },
+        "video_upscale": {
+          "name": "Video Upscale",
+          "kind": "upscale",
+          "vendor": "Higgsfield",
+          "flags": [
+            "video_references"
+          ],
+          "durations": null,
+          "resolutions": null,
+          "aspects": null,
+          "start_frame": false,
+          "end_frame": false,
+          "refs": {
+            "image": 0,
+            "video": 1,
+            "audio": 0
+          },
+          "audio": false,
+          "audio_flag": null,
+          "audio_values": null,
+          "negative_prompt": false,
+          "seed": false,
+          "max_prompt_words": 120,
+          "variants": [],
+          "strengths": [
+            "upscale an approved video only when delivery needs more pixels"
+          ],
+          "weaknesses": [],
+          "gotchas": [],
+          "in_model_list": null,
+          "checked_at": "2026-11-24",
+          "source": "higgsfield-ai/cli MODELS.md 'Additional utility job types' (schema not documented: run higgsfield model get <id>)",
+          "requires": {
+            "video_references": 1
+          },
+          "upscales": "video",
+          "unconfirmed": [
+            "every field: run higgsfield model get video_upscale"
+          ]
+        },
+        "video_deflicker": {
+          "name": "Video Deflicker",
+          "kind": "utility",
+          "vendor": "Higgsfield",
+          "flags": [
+            "video_references"
+          ],
+          "durations": null,
+          "resolutions": null,
+          "aspects": null,
+          "start_frame": false,
+          "end_frame": false,
+          "refs": {
+            "image": 0,
+            "video": 0,
+            "audio": 0
+          },
+          "audio": false,
+          "audio_flag": null,
+          "audio_values": null,
+          "negative_prompt": false,
+          "seed": false,
+          "max_prompt_words": 120,
+          "variants": [],
+          "strengths": [
+            "remove flicker from a clip"
+          ],
+          "weaknesses": [],
+          "gotchas": [],
+          "in_model_list": null,
+          "checked_at": "2026-11-24",
+          "source": "higgsfield-ai/cli MODELS.md 'Additional utility job types' (schema not documented: run higgsfield model get <id>)",
+          "unconfirmed": [
+            "every field: run higgsfield model get video_deflicker"
+          ]
+        },
+        "color_grading_lut": {
+          "name": "Colour Grading LUT",
+          "kind": "utility",
+          "vendor": "Higgsfield",
+          "flags": [
+            "video_references"
+          ],
+          "durations": null,
+          "resolutions": null,
+          "aspects": null,
+          "start_frame": false,
+          "end_frame": false,
+          "refs": {
+            "image": 0,
+            "video": 0,
+            "audio": 0
+          },
+          "audio": false,
+          "audio_flag": null,
+          "audio_values": null,
+          "negative_prompt": false,
+          "seed": false,
+          "max_prompt_words": 120,
+          "variants": [],
+          "strengths": [
+            "apply or make a colour grade"
+          ],
+          "weaknesses": [],
+          "gotchas": [],
+          "in_model_list": null,
+          "checked_at": "2026-11-24",
+          "source": "higgsfield-ai/cli MODELS.md 'Additional utility job types' (schema not documented: run higgsfield model get <id>)",
+          "unconfirmed": [
+            "every field: run higgsfield model get color_grading_lut"
+          ]
+        },
+        "autosprite": {
+          "name": "Autosprite",
+          "kind": "utility",
+          "vendor": "Higgsfield",
+          "flags": [
+            "image_references"
+          ],
+          "durations": null,
+          "resolutions": null,
+          "aspects": null,
+          "start_frame": false,
+          "end_frame": false,
+          "refs": {
+            "image": 0,
+            "video": 0,
+            "audio": 0
+          },
+          "audio": false,
+          "audio_flag": null,
+          "audio_values": null,
+          "negative_prompt": false,
+          "seed": false,
+          "max_prompt_words": 120,
+          "variants": [],
+          "strengths": [
+            "sprite sheets for games"
+          ],
+          "weaknesses": [],
+          "gotchas": [],
+          "in_model_list": null,
+          "checked_at": "2026-11-24",
+          "source": "higgsfield-ai/cli MODELS.md 'Additional utility job types' (schema not documented: run higgsfield model get <id>)",
+          "unconfirmed": [
+            "every field: run higgsfield model get autosprite"
+          ]
+        },
+        "clipify": {
+          "name": "Clipify",
+          "kind": "utility",
+          "vendor": "Higgsfield",
+          "flags": [
+            "video_references"
+          ],
+          "durations": null,
+          "resolutions": null,
+          "aspects": null,
+          "start_frame": false,
+          "end_frame": false,
+          "refs": {
+            "image": 0,
+            "video": 0,
+            "audio": 0
+          },
+          "audio": false,
+          "audio_flag": null,
+          "audio_values": null,
+          "negative_prompt": false,
+          "seed": false,
+          "max_prompt_words": 120,
+          "variants": [],
+          "strengths": [
+            "cut a long video into clips"
+          ],
+          "weaknesses": [],
+          "gotchas": [],
+          "in_model_list": null,
+          "checked_at": "2026-11-24",
+          "source": "higgsfield-ai/cli MODELS.md 'Additional utility job types' (schema not documented: run higgsfield model get <id>)",
+          "unconfirmed": [
+            "every field: run higgsfield model get clipify"
+          ]
+        },
+        "llm_text": {
+          "name": "LLM Text",
+          "kind": "utility",
+          "vendor": "Higgsfield",
+          "flags": [
+            "prompt"
+          ],
+          "durations": null,
+          "resolutions": null,
+          "aspects": null,
+          "start_frame": false,
+          "end_frame": false,
+          "refs": {
+            "image": 0,
+            "video": 0,
+            "audio": 0
+          },
+          "audio": false,
+          "audio_flag": null,
+          "audio_values": null,
+          "negative_prompt": false,
+          "seed": false,
+          "max_prompt_words": 120,
+          "variants": [],
+          "strengths": [
+            "text generation"
+          ],
+          "weaknesses": [],
+          "gotchas": [],
+          "in_model_list": null,
+          "checked_at": "2026-11-24",
+          "source": "higgsfield-ai/cli MODELS.md 'Additional utility job types' (schema not documented: run higgsfield model get <id>)",
+          "unconfirmed": [
+            "every field: run higgsfield model get llm_text"
+          ]
+        },
+        "sam_3_video": {
+          "name": "SAM 3 Video",
+          "kind": "utility",
+          "vendor": "Higgsfield",
+          "flags": [
+            "video_references"
+          ],
+          "durations": null,
+          "resolutions": null,
+          "aspects": null,
+          "start_frame": false,
+          "end_frame": false,
+          "refs": {
+            "image": 0,
+            "video": 0,
+            "audio": 0
+          },
+          "audio": false,
+          "audio_flag": null,
+          "audio_values": null,
+          "negative_prompt": false,
+          "seed": false,
+          "max_prompt_words": 120,
+          "variants": [],
+          "strengths": [
+            "segment objects in video"
+          ],
+          "weaknesses": [],
+          "gotchas": [],
+          "in_model_list": null,
+          "checked_at": "2026-11-24",
+          "source": "higgsfield-ai/cli MODELS.md 'Additional utility job types' (schema not documented: run higgsfield model get <id>)",
+          "unconfirmed": [
+            "every field: run higgsfield model get sam_3_video"
+          ]
+        },
+        "speech2text": {
+          "name": "Speech to Text",
+          "kind": "utility",
+          "vendor": "Higgsfield",
+          "flags": [
+            "audio_references"
+          ],
+          "durations": null,
+          "resolutions": null,
+          "aspects": null,
+          "start_frame": false,
+          "end_frame": false,
+          "refs": {
+            "image": 0,
+            "video": 0,
+            "audio": 0
+          },
+          "audio": false,
+          "audio_flag": null,
+          "audio_values": null,
+          "negative_prompt": false,
+          "seed": false,
+          "max_prompt_words": 120,
+          "variants": [],
+          "strengths": [
+            "transcribe speech"
+          ],
+          "weaknesses": [],
+          "gotchas": [],
+          "in_model_list": null,
+          "checked_at": "2026-11-24",
+          "source": "higgsfield-ai/cli MODELS.md 'Additional utility job types' (schema not documented: run higgsfield model get <id>)",
+          "unconfirmed": [
+            "every field: run higgsfield model get speech2text"
+          ]
+        },
+        "3d_rigging": {
+          "name": "3D Rigging",
+          "kind": "3d",
+          "vendor": "Higgsfield",
+          "flags": [
+            "animation_action_id",
+            "enable_animation",
+            "enable_safety_checker",
+            "folder_id",
+            "height_meters",
+            "model_url"
+          ],
+          "durations": null,
+          "resolutions": null,
+          "aspects": null,
+          "start_frame": false,
+          "end_frame": false,
+          "refs": {
+            "image": 0,
+            "video": 0,
+            "audio": 0
+          },
+          "audio": false,
+          "audio_flag": null,
+          "audio_values": null,
+          "negative_prompt": false,
+          "seed": false,
+          "max_prompt_words": 120,
+          "variants": [],
+          "strengths": [
+            "rig a 3D model"
+          ],
+          "weaknesses": [],
+          "gotchas": [
+            "needs --model_url"
+          ],
+          "in_model_list": true,
+          "checked_at": "2026-11-24",
+          "source": "higgsfield-ai/cli MODELS.md (higgsfield model get), copy in docs/research/higgsfield-cli/MODELS.md"
+        },
+        "image_to_3d": {
+          "name": "Image to 3D",
+          "kind": "3d",
+          "vendor": "Meshy",
+          "flags": [
+            "animation_action_id",
+            "enable_animation",
+            "enable_pbr",
+            "enable_rigging",
+            "enable_safety_checker",
+            "folder_id",
+            "image_references",
+            "pose_mode",
+            "rigging_height_meters",
+            "seed",
+            "should_remesh",
+            "should_texture",
+            "symmetry_mode",
+            "target_polycount",
+            "texture_image_url",
+            "texture_prompt",
+            "topology"
+          ],
+          "durations": null,
+          "resolutions": null,
+          "aspects": null,
+          "start_frame": false,
+          "end_frame": false,
+          "refs": {
+            "image": 4,
+            "video": 0,
+            "audio": 0
+          },
+          "audio": false,
+          "audio_flag": null,
+          "audio_values": null,
+          "negative_prompt": false,
+          "seed": true,
+          "max_prompt_words": 120,
+          "variants": [],
+          "strengths": [
+            "mesh from one image"
+          ],
+          "weaknesses": [],
+          "gotchas": [
+            "texture options need should_texture true"
+          ],
+          "in_model_list": true,
+          "checked_at": "2026-11-24",
+          "source": "higgsfield-ai/cli MODELS.md (higgsfield model get), copy in docs/research/higgsfield-cli/MODELS.md",
+          "requires": {
+            "image_references": 1
+          }
+        },
+        "multi_image_to_3d": {
+          "name": "Multi-Image to 3D",
+          "kind": "3d",
+          "vendor": "Meshy",
+          "flags": [
+            "animation_action_id",
+            "enable_animation",
+            "enable_pbr",
+            "enable_rigging",
+            "enable_safety_checker",
+            "folder_id",
+            "image_references",
+            "pose_mode",
+            "rigging_height_meters",
+            "seed",
+            "should_remesh",
+            "should_texture",
+            "symmetry_mode",
+            "target_polycount",
+            "texture_image_url",
+            "texture_prompt",
+            "topology"
+          ],
+          "durations": null,
+          "resolutions": null,
+          "aspects": null,
+          "start_frame": false,
+          "end_frame": false,
+          "refs": {
+            "image": 4,
+            "video": 0,
+            "audio": 0
+          },
+          "audio": false,
+          "audio_flag": null,
+          "audio_values": null,
+          "negative_prompt": false,
+          "seed": true,
+          "max_prompt_words": 120,
+          "variants": [],
+          "strengths": [
+            "GLB mesh from 1-4 product/object views (Blender blockouts and props)"
+          ],
+          "weaknesses": [],
+          "gotchas": [
+            "--should_texture true for textured assets"
+          ],
+          "in_model_list": true,
+          "checked_at": "2026-11-24",
+          "source": "higgsfield-ai/cli MODELS.md (higgsfield model get), copy in docs/research/higgsfield-cli/MODELS.md",
+          "requires": {
+            "image_references": 1
+          }
+        },
+        "sam_3_3d": {
+          "name": "3D Objects",
+          "kind": "3d",
+          "vendor": "Meta",
+          "flags": [
+            "detection_threshold",
+            "export_textured_glb",
+            "folder_id",
+            "image_references",
+            "prompt",
+            "seed"
+          ],
+          "durations": null,
+          "resolutions": null,
+          "aspects": null,
+          "start_frame": false,
+          "end_frame": false,
+          "refs": {
+            "image": 4,
+            "video": 0,
+            "audio": 0
+          },
+          "audio": false,
+          "audio_flag": null,
+          "audio_values": null,
+          "negative_prompt": false,
+          "seed": true,
+          "max_prompt_words": 120,
+          "variants": [],
+          "strengths": [
+            "3D objects from an image"
+          ],
+          "weaknesses": [],
+          "gotchas": [],
+          "in_model_list": true,
+          "checked_at": "2026-11-24",
+          "source": "higgsfield-ai/cli MODELS.md (higgsfield model get), copy in docs/research/higgsfield-cli/MODELS.md",
+          "requires": {
+            "image_references": 1
+          }
+        },
+        "tripo_3d": {
+          "name": "Text to 3D",
+          "kind": "3d",
+          "vendor": "Tripo",
+          "flags": [
+            "auto_size",
+            "face_limit",
+            "geometry_quality",
+            "negative_prompt",
+            "pbr",
+            "prompt",
+            "texture",
+            "texture_quality"
+          ],
+          "durations": null,
+          "resolutions": null,
+          "aspects": null,
+          "start_frame": false,
+          "end_frame": false,
+          "refs": {
+            "image": 0,
+            "video": 0,
+            "audio": 0
+          },
+          "audio": false,
+          "audio_flag": null,
+          "audio_values": null,
+          "negative_prompt": true,
+          "seed": false,
+          "max_prompt_words": 120,
+          "variants": [],
+          "strengths": [
+            "3D model from text"
+          ],
+          "weaknesses": [],
+          "gotchas": [
+            "the only CLI model with a negative prompt"
+          ],
+          "in_model_list": true,
+          "checked_at": "2026-11-24",
+          "source": "higgsfield-ai/cli MODELS.md (higgsfield model get), copy in docs/research/higgsfield-cli/MODELS.md"
+        },
+        "inworld_text_to_speech": {
+          "name": "Inworld Text to Speech",
+          "kind": "audio",
+          "vendor": "Inworld",
+          "flags": [
+            "prompt",
+            "voice"
+          ],
+          "durations": null,
+          "resolutions": null,
+          "aspects": null,
+          "start_frame": false,
+          "end_frame": false,
+          "refs": {
+            "image": 0,
+            "video": 0,
+            "audio": 0
+          },
+          "audio": false,
+          "audio_flag": null,
+          "audio_values": null,
+          "negative_prompt": false,
+          "seed": false,
+          "max_prompt_words": 120,
+          "variants": [],
+          "strengths": [
+            "113 built-in voices"
+          ],
+          "weaknesses": [],
+          "gotchas": [
+            "--voice is required"
+          ],
+          "in_model_list": true,
+          "checked_at": "2026-11-24",
+          "source": "higgsfield-ai/cli MODELS.md (higgsfield model get), copy in docs/research/higgsfield-cli/MODELS.md"
+        },
+        "mirelo_text_to_audio": {
+          "name": "Mirelo Text to Audio",
+          "kind": "audio",
+          "vendor": "Mirelo",
+          "flags": [
+            "duration",
+            "prompt"
+          ],
+          "durations": {
+            "min": 1,
+            "max": 30
+          },
+          "resolutions": null,
+          "aspects": null,
+          "start_frame": false,
+          "end_frame": false,
+          "refs": {
+            "image": 0,
+            "video": 0,
+            "audio": 0
+          },
+          "audio": false,
+          "audio_flag": null,
+          "audio_values": null,
+          "negative_prompt": false,
+          "seed": false,
+          "max_prompt_words": 120,
+          "variants": [],
+          "strengths": [
+            "sound effects and ambience"
+          ],
+          "weaknesses": [],
+          "gotchas": [],
+          "in_model_list": true,
+          "checked_at": "2026-11-24",
+          "source": "higgsfield-ai/cli MODELS.md (higgsfield model get), copy in docs/research/higgsfield-cli/MODELS.md",
+          "unconfirmed": [
+            "duration range (docs say number)"
+          ]
+        },
+        "seed_audio": {
+          "name": "Seed Audio 1.0",
+          "kind": "audio",
+          "vendor": "Bytedance",
+          "flags": [
+            "audio_references",
+            "format",
+            "image_references",
+            "loudness_rate",
+            "pitch_rate",
+            "prompt",
+            "sample_rate",
+            "speech_rate",
+            "voice_id",
+            "voice_type"
+          ],
+          "durations": null,
+          "resolutions": null,
+          "aspects": null,
+          "start_frame": false,
+          "end_frame": false,
+          "refs": {
+            "image": 4,
+            "video": 0,
+            "audio": 2
+          },
+          "audio": false,
+          "audio_flag": null,
+          "audio_values": null,
+          "negative_prompt": false,
+          "seed": false,
+          "max_prompt_words": 120,
+          "variants": [],
+          "strengths": [
+            "default audio: SFX, ambience, voice-style, music-like"
+          ],
+          "weaknesses": [],
+          "gotchas": [
+            "image and audio references are mutually exclusive"
+          ],
+          "in_model_list": true,
+          "checked_at": "2026-11-24",
+          "source": "higgsfield-ai/cli MODELS.md (higgsfield model get), copy in docs/research/higgsfield-cli/MODELS.md"
+        },
+        "sonilo_music": {
+          "name": "Sonilo Music",
+          "kind": "audio",
+          "vendor": "Sonilo",
+          "flags": [
+            "duration",
+            "prompt"
+          ],
+          "durations": {
+            "min": 1,
+            "max": 180
+          },
+          "resolutions": null,
+          "aspects": null,
+          "start_frame": false,
+          "end_frame": false,
+          "refs": {
+            "image": 0,
+            "video": 0,
+            "audio": 0
+          },
+          "audio": false,
+          "audio_flag": null,
+          "audio_values": null,
+          "negative_prompt": false,
+          "seed": false,
+          "max_prompt_words": 120,
+          "variants": [],
+          "strengths": [
+            "music beds and jingles from text"
+          ],
+          "weaknesses": [],
+          "gotchas": [],
+          "in_model_list": true,
+          "checked_at": "2026-11-24",
+          "source": "higgsfield-ai/cli MODELS.md (higgsfield model get), copy in docs/research/higgsfield-cli/MODELS.md",
+          "unconfirmed": [
+            "duration range (docs say number)"
+          ]
+        },
+        "text2speech_v2": {
+          "name": "Text to Speech",
+          "kind": "audio",
+          "vendor": "Higgsfield",
+          "flags": [
+            "prompt",
+            "variant",
+            "voice_id",
+            "voice_type"
+          ],
+          "durations": null,
+          "resolutions": null,
+          "aspects": null,
+          "start_frame": false,
+          "end_frame": false,
+          "refs": {
+            "image": 0,
+            "video": 0,
+            "audio": 0
+          },
+          "audio": false,
+          "audio_flag": null,
+          "audio_values": null,
+          "negative_prompt": false,
+          "seed": false,
+          "max_prompt_words": 120,
+          "variants": [
+            "elevenlabs",
+            "minimax",
+            "seed_speech",
+            "vibe_voice",
+            "cozy_voice"
+          ],
+          "strengths": [
+            "voice-over with preset or cloned voices"
+          ],
+          "weaknesses": [],
+          "gotchas": [
+            "voice_id and voice_type are required"
+          ],
+          "in_model_list": true,
+          "checked_at": "2026-11-24",
+          "source": "higgsfield-ai/cli MODELS.md (higgsfield model get), copy in docs/research/higgsfield-cli/MODELS.md"
+        }
+      }
+    }
+  }
+}
