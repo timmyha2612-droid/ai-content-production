@@ -495,3 +495,13 @@ class CliTest(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+class TextGuardTests(unittest.TestCase):
+    def test_text_guards_only_when_text(self):
+        from shotcraft import compiler
+        card = {"avoid": ["warped text", "camera shake"], "layers": {"time_output": {"on_screen_text": ""}}}
+        rules_ = {"negatives": {"by_category": {"text": ["warped text"]}}}
+        self.assertEqual(compiler._gather_avoid(card, {}, rules_), ["camera shake"])
+        card["layers"]["time_output"]["on_screen_text"] = "SALE 50%"
+        self.assertIn("warped text", compiler._gather_avoid(card, {}, rules_))

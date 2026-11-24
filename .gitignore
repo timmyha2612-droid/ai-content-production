@@ -3,3 +3,4 @@ docs/research/higgsfield-skills/
 __pycache__/
 *.pyc
 .DS_Store
+shotcraft.bundle

@@ -170,8 +170,10 @@ class FakeProvider(Provider):
             body = {".png": _PNG, ".mp4": _MP4, ".wav": _WAV, ".svg": _SVG}.get(
                 ext, ("fake output of %s\n" % job_id).encode("utf-8"))
             dest = os.path.join(dest_dir, base + ext)
-            with open(dest, "wb") as fh:
-                fh.write(body)
+            job = (self._load().get("jobs") or {}).get(job_id) or {}
+            if not _render_media(dest, ext, job.get("params") or {}):
+                with open(dest, "wb") as fh:
+                    fh.write(body)
             out.append(dest)
         return out
 
@@ -195,3 +197,47 @@ class FakeProvider(Provider):
     # ------------------------------------------------------------ for tests
     def calls(self):
         return list(self._load()["calls"])
+
+
+_RES = {"480p": 480, "512": 512, "720p": 720, "768": 768, "1080p": 1080, "1k": 1024, "1.5k": 1536, "2k": 2048,
+        "4k": 2160}
+
+
+def _size(params):
+    """Width x height from aspect + resolution, even numbers, so test media matches what was asked for."""
+    short = _RES.get(str(params.get("resolution") or params.get("quality") or "").lower(), 480)
+    try:
+        a, b = (float(x) for x in str(params.get("aspect_ratio") or params.get("aspect") or "16:9").split(":"))
+    except ValueError:
+        a, b = 16.0, 9.0
+    if a >= b:
+        h, w = short, short * a / b
+    else:
+        w, h = short, short * b / a
+    return int(w) // 2 * 2, int(h) // 2 * 2
+
+
+def _render_media(dest, ext, params):
+    """With ffmpeg installed, write a real (test-pattern) clip or still at the requested size and length, so
+    contact sheets, continuity frame grabs, delivery checks and animatics can run on fake output.
+    Returns False when ffmpeg is missing or fails (the caller then writes the tiny placeholder)."""
+    import shutil
+    import subprocess
+    if ext not in (".mp4", ".png") or not shutil.which("ffmpeg"):
+        return False
+    w, h = _size(params)
+    try:
+        dur = float(params.get("duration") or 5)
+    except (TypeError, ValueError):
+        dur = 5.0
+    if ext == ".mp4":
+        cmd = ["ffmpeg", "-loglevel", "error", "-y", "-f", "lavfi",
+               "-i", "testsrc2=size=%dx%d:rate=30:duration=%s" % (w, h, dur),
+               "-c:v", "libx264", "-pix_fmt", "yuv420p", dest]
+    else:
+        cmd = ["ffmpeg", "-loglevel", "error", "-y", "-f", "lavfi", "-i", "testsrc2=size=%dx%d" % (w, h),
+               "-frames:v", "1", dest]
+    try:
+        return subprocess.run(cmd, capture_output=True, timeout=60).returncode == 0 and os.path.getsize(dest) > 0
+    except (OSError, subprocess.SubprocessError):
+        return False

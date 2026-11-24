@@ -29,6 +29,7 @@ import re
 
 DEFAULT_MAX_WORDS = 120
 DEFAULT_PROTECT = 90
+MIN_GUARDS = 2
 DEFAULT_GUARD_PRIORITY = 45
 
 # Prompt order: subject+action -> world -> camera -> light & look -> time/beats -> style.
@@ -247,6 +248,12 @@ def _camera_moves(layers):
     return bool(mv) and not any(w in mv for w in STATIC_WORDS)
 
 
+def _has_text(card):
+    t = (((card.get("layers") or {}).get("time_output") or {}).get("on_screen_text") or "")
+    t = str(t).strip().lower()
+    return bool(t) and t not in ("none", "no", "n/a", "-", "no text")
+
+
 def _gather_avoid(card, profile, rules):
     avoid = [a for a in (card.get("avoid") or []) if isinstance(a, str) and a.strip()]
     neg = (rules or {}).get("negatives") or {}
@@ -256,6 +263,11 @@ def _gather_avoid(card, profile, rules):
         for a in extra:
             if isinstance(a, str) and _norm(a) not in {_norm(x) for x in avoid}:
                 avoid.append(a)
+    # Text guards only when the shot has text: "correctly spelled text" on a shot with none invites the model
+    # to add some.
+    if not _has_text(card):
+        text_terms = {_norm(t) for t in ((neg.get("by_category") or {}).get("text") or [])}
+        avoid = [a for a in avoid if _norm(a) not in text_terms and not _norm(a).endswith(" text")]
     out, seen = [], set()
     for a in avoid:
         n = _norm(a)
@@ -426,6 +438,12 @@ def compile(card, model_profile=None, rules=None):  # noqa: A001 - name fixed by
     prompt = build()
     while _words(prompt) > max_words:
         cands = [it for it in items if it["priority"] < protect]
+        # Keep the first MIN_GUARDS avoid guards (the card's own, most important ones) while anything else
+        # optional can still go: dropping every guard is how unwanted artefacts creep back in.
+        guards = [it for it in cands if it["key"].startswith("avoid:")]
+        keep = {id(it) for it in sorted(guards, key=lambda it: it["idx"])[:MIN_GUARDS]}
+        if any(id(it) not in keep for it in cands):
+            cands = [it for it in cands if id(it) not in keep]
         if not cands:
             warnings.append("The prompt is {} words, over this model's {}-word limit, even after "
                             "dropping every optional field. Shorten the subject, action or beats."
