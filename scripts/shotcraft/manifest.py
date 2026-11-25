@@ -61,7 +61,7 @@ def new_manifest(name, slug, track, use_case=None, delivery=None, budget=None, s
         "assets": [],
         "generations": [],
         "decisions": [],
-        "handoff": {"uploaded": [], "canvas_sheet": "11_handoff/canvas-build-sheet.md"},
+        "handoff": {"uploaded": [], "canvas_sheet": "10_handoff/canvas-build-sheet.md"},
     }
 
 

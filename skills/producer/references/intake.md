@@ -104,8 +104,8 @@ not read them out as a list.
 
 ### Stages and roles
 
-1. **Drop stages** (multiSelect): research, concept, boards, mograph, sound, assembly, handoff. Explain each
-   in its description. [Keep research and concept for new creative work; drop mograph when there is no
+1. **Drop stages** (multiSelect): research, concept, boards, sound, assembly, handoff. Explain each
+   in its description. [Keep research and concept for new creative work; drop sound when there is no
    text or graphics; keep handoff on the full track.]
 2. **Who does what.** "Anything you'll do yourself?" multiSelect: music and sound; the edit; colour grade;
    motion graphics; none. [Their stages are dropped with their words or marked as theirs on the card.]

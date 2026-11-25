@@ -154,7 +154,7 @@ class ContactSheetTests(Base):
 class DeliveryTests(Base):
     def test_video_pass_and_report(self):
         proj = self.make()
-        clip = make_clip(os.path.join(proj, "10_delivery", "reel.mp4"), w=1080, h=1920, dur=2, fps=30)
+        clip = make_clip(os.path.join(proj, "09_delivery", "reel.mp4"), w=1080, h=1920, dur=2, fps=30)
         lu = delivery.loudness(clip)
         self.assertIsNotNone(lu)
         rep = delivery.check(proj, duration=2, lufs=lu["integrated_lufs"])
@@ -169,7 +169,7 @@ class DeliveryTests(Base):
 
     def test_video_fail(self):
         proj = self.make()
-        make_clip(os.path.join(proj, "10_delivery", "wrong.mp4"), w=320, h=240, dur=1, fps=25, audio=False)
+        make_clip(os.path.join(proj, "09_delivery", "wrong.mp4"), w=320, h=240, dur=1, fps=25, audio=False)
         rep = delivery.check(proj)
         self.assertEqual(rep["verdict"], "FAIL")
         failed = {c["check"] for c in rep["checks"] if c["verdict"] == "FAIL"}
@@ -183,7 +183,7 @@ class DeliveryTests(Base):
     def test_shot_duration_from_card(self):
         proj = self.make()
         self.card(proj, "S010", duration=1)
-        make_clip(os.path.join(proj, "10_delivery", "S010-final.mp4"), w=1080, h=1920, dur=1, fps=30, audio=False)
+        make_clip(os.path.join(proj, "09_delivery", "S010-final.mp4"), w=1080, h=1920, dur=1, fps=30, audio=False)
         rep = delivery.check(proj)
         dur = [c for c in rep["checks"] if c["check"] == "duration"][0]
         self.assertEqual(dur["verdict"], "PASS", dur)
@@ -191,7 +191,7 @@ class DeliveryTests(Base):
 
     def test_image(self):
         proj = self.make(use_case="thumbnail", name="Thumb")
-        make_png(os.path.join(proj, "10_delivery", "thumb.png"), 1280, 720)
+        make_png(os.path.join(proj, "09_delivery", "thumb.png"), 1280, 720)
         rep = delivery.check(proj)
         self.assertEqual(rep["verdict"], "PASS", rep["checks"])
         self.assertIn("file size", {c["check"] for c in rep["checks"]})

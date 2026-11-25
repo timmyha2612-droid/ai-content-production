@@ -28,7 +28,7 @@ First public release.
   with a single-job threshold, and reference rights enforcement.
 - Hooks: a guard (raw generation goes through `sc.py gen`, protected project files, stage folders writable
   only while their stage is open), a daily model check at session start, and a lessons reminder.
-- The crew: producer, refine, creative-director, director, review, motion-design, handoff, learn,
+- The crew: producer, refine, creative-director, director, review, handoff, learn,
   model-scout and prompt-craft skills, and the agents they spawn.
 - Higgsfield hand-off: approved assets uploaded and a Canvas build sheet (Canvas has no API yet).
 - Templates for the job card, brief, two-column script, shot list, character and environment bible pages,

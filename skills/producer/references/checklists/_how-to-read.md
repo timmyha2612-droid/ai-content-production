@@ -5,7 +5,7 @@ These checklists are for the reviewers: `shotcraft:qa-supervisor` (every buildin
 (`shotcraft:qa-verifier`) reads them too, to judge whether a finding breaks a written rule.
 
 One file per stage: `research.md`, `script.md`, `shotlist.md`, `bible.md`, `prompts.md`, `drafts.md` (also used
-for boards), `finals.md`, `mograph.md`, `delivery.md`.
+for boards), `finals.md`, `delivery.md`.
 
 `sc` = `python3 "${CLAUDE_PLUGIN_ROOT}/scripts/sc.py"`.
 
@@ -58,7 +58,7 @@ has that thing. Mark the others `n/a` in `checked` with the reason.
 
 Every finding has a `fix`: the concrete change, small enough to do in one pass, and the `owner` who should do it
 (the agent or skill named in the stage map, for example `screenwriter`, `director`, `cinematographer`,
-`generation-tech`, `production-designer`, `character-designer`, `motion-designer`, `delivery`). "Make it better"
+`generation-tech`, `production-designer`, `character-designer`, `delivery`). "Make it better"
 is not a fix. "Cut S030 from 3.0 s to 2.0 s so the total is 15.0 s" is.
 
 ## Scratch files

@@ -13,15 +13,47 @@
       "kind": "image",
       "checked_at": "2026-11-24",
       "board": [
-        {"model": "recraft_v4_1", "params": {"model_type": "vector", "resolution": "1k"}, "why": "Vector-style marks; cheap enough to sketch with."}
+        {
+          "model": "recraft_v4_1",
+          "params": {
+            "model_type": "vector",
+            "resolution": "1k"
+          },
+          "why": "Vector-style marks; cheap enough to sketch with."
+        }
       ],
       "draft": [
-        {"model": "recraft_v4_1", "params": {"model_type": "vector", "resolution": "1k"}, "why": "Clean vector-style logos and icons with a controlled palette (--colors)."},
-        {"model": "gpt_image_2_6", "params": {"output_format": "svg"}, "why": "Native SVG output; fallback when Recraft misses the idea. Takes no references in SVG mode."}
+        {
+          "model": "recraft_v4_1",
+          "params": {
+            "model_type": "vector",
+            "resolution": "1k"
+          },
+          "why": "Clean vector-style logos and icons with a controlled palette (--colors)."
+        },
+        {
+          "model": "gpt_image_2_6",
+          "params": {
+            "output_format": "svg"
+          },
+          "why": "Native SVG output; fallback when Recraft misses the idea. Takes no references in SVG mode."
+        }
       ],
       "final": [
-        {"model": "recraft_v4_1", "params": {"model_type": "vector"}, "why": "Same model as the approved draft keeps the look; vector output scales to any size."},
-        {"model": "gpt_image_2_6", "params": {"output_format": "svg"}, "why": "Native SVG output."}
+        {
+          "model": "recraft_v4_1",
+          "params": {
+            "model_type": "vector"
+          },
+          "why": "Same model as the approved draft keeps the look; vector output scales to any size."
+        },
+        {
+          "model": "gpt_image_2_6",
+          "params": {
+            "output_format": "svg"
+          },
+          "why": "Native SVG output."
+        }
       ],
       "upscale": [],
       "notes": "Deliver SVG (vectorise in post if the file comes back raster), then export PNG sizes from it. No upscale: vectors scale."
@@ -30,18 +62,51 @@
       "kind": "image",
       "checked_at": "2026-11-24",
       "board": [
-        {"model": "nano_banana_flash", "params": {"resolution": "1k"}, "why": "Cheap layout sketch."}
+        {
+          "model": "nano_banana_flash",
+          "params": {
+            "resolution": "1k"
+          },
+          "why": "Cheap layout sketch."
+        }
       ],
       "draft": [
-        {"model": "nano_banana_flash", "params": {"resolution": "1k"}, "why": "Nano Banana 2: fast, cheap, good enough text to judge the layout."}
+        {
+          "model": "nano_banana_flash",
+          "params": {
+            "resolution": "1k"
+          },
+          "why": "Nano Banana 2: fast, cheap, good enough text to judge the layout."
+        }
       ],
       "final": [
-        {"model": "nano_banana_2", "params": {"resolution": "2k"}, "why": "Nano Banana Pro: accurate on-image text and layout."},
-        {"model": "gpt_image_2_5", "params": {"resolution": "2k", "quality": "high"}, "why": "Strong on-image text and design; transparent backgrounds."}
+        {
+          "model": "nano_banana_2",
+          "params": {
+            "resolution": "2k"
+          },
+          "why": "Nano Banana Pro: accurate on-image text and layout."
+        },
+        {
+          "model": "gpt_image_2_5",
+          "params": {
+            "resolution": "2k",
+            "quality": "high"
+          },
+          "why": "Strong on-image text and design; transparent backgrounds."
+        }
       ],
       "upscale": [
-        {"model": "topaz_image", "params": {}, "why": "Only if the delivery is bigger than 2k (print, billboards)."},
-        {"model": "bytedance_image_upscale", "params": {}, "why": "Fallback upscaler."}
+        {
+          "model": "topaz_image",
+          "params": {},
+          "why": "Only if the delivery is bigger than 2k (print, billboards)."
+        },
+        {
+          "model": "bytedance_image_upscale",
+          "params": {},
+          "why": "Fallback upscaler."
+        }
       ],
       "notes": "Check every word of on-image text at final size. Thumbnails: put real text on in post when the model's text is not perfect."
     },
@@ -49,17 +114,45 @@
       "kind": "image",
       "checked_at": "2026-11-24",
       "board": [
-        {"model": "text2image_soul_v2", "params": {"resolution": "1.5k"}, "why": "Soul V2 at 1.5k: cheap faces that look real."}
+        {
+          "model": "text2image_soul_v2",
+          "params": {
+            "resolution": "1.5k"
+          },
+          "why": "Soul V2 at 1.5k: cheap faces that look real."
+        }
       ],
       "draft": [
-        {"model": "text2image_soul_v2", "params": {"resolution": "1.5k"}, "why": "Soul V2 at 1.5k: photoreal people, takes a Soul ID."}
+        {
+          "model": "text2image_soul_v2",
+          "params": {
+            "resolution": "1.5k"
+          },
+          "why": "Soul V2 at 1.5k: photoreal people, takes a Soul ID."
+        }
       ],
       "final": [
-        {"model": "soul_cinematic", "params": {"resolution": "2k"}, "why": "Soul Cinematic at 2k: film-grade light; add the character's Soul ID (--soul-id) for the same face in every shot."},
-        {"model": "seedream_v5_pro", "params": {"resolution": "2k"}, "why": "Seedream 5 Pro at 2k: faces from reference photos, character sheets."}
+        {
+          "model": "soul_cinematic",
+          "params": {
+            "resolution": "2k"
+          },
+          "why": "Soul Cinematic at 2k: film-grade light; add the character's Soul ID (--soul-id) for the same face in every shot."
+        },
+        {
+          "model": "seedream_v5_pro",
+          "params": {
+            "resolution": "2k"
+          },
+          "why": "Seedream 5 Pro at 2k: faces from reference photos, character sheets."
+        }
       ],
       "upscale": [
-        {"model": "topaz_image", "params": {}, "why": "Only if the delivery is bigger than 2k."}
+        {
+          "model": "topaz_image",
+          "params": {},
+          "why": "Only if the delivery is bigger than 2k."
+        }
       ],
       "notes": "Train a Soul ID (higgsfield soul-id create, 5-20 photos the user owns) for a recurring character before the drafts. Never use a real person's likeness without their consent."
     },
@@ -67,18 +160,44 @@
       "kind": "image",
       "checked_at": "2026-11-24",
       "board": [
-        {"model": "z_image", "params": {}, "why": "Fastest, cheapest still for a composition check."}
+        {
+          "model": "z_image",
+          "params": {},
+          "why": "Fastest, cheapest still for a composition check."
+        }
       ],
       "draft": [
-        {"model": "z_image", "params": {}, "why": "Z Image: fastest and cheapest draft."},
-        {"model": "nano_banana_flash", "params": {"resolution": "1k"}, "why": "Nano Banana 2 at 1k when the draft needs references (the product photo)."}
+        {
+          "model": "z_image",
+          "params": {},
+          "why": "Z Image: fastest and cheapest draft."
+        },
+        {
+          "model": "nano_banana_flash",
+          "params": {
+            "resolution": "1k"
+          },
+          "why": "Nano Banana 2 at 1k when the draft needs references (the product photo)."
+        }
       ],
       "final": [
-        {"model": "nano_banana_2", "params": {}, "why": "Nano Banana Pro at 2k-4k (the preset decides): product accuracy with up to 14 references."},
-        {"model": "seedream_v5_pro", "params": {}, "why": "Seedream 5 Pro at 2k: complex scenes, edits with faces."}
+        {
+          "model": "nano_banana_2",
+          "params": {},
+          "why": "Nano Banana Pro at 2k-4k (the preset decides): product accuracy with up to 14 references."
+        },
+        {
+          "model": "seedream_v5_pro",
+          "params": {},
+          "why": "Seedream 5 Pro at 2k: complex scenes, edits with faces."
+        }
       ],
       "upscale": [
-        {"model": "topaz_image", "params": {}, "why": "Only if the delivery is bigger than 4k (large print)."}
+        {
+          "model": "topaz_image",
+          "params": {},
+          "why": "Only if the delivery is bigger than 4k (large print)."
+        }
       ],
       "notes": "Product shots: pass the user's own product photo (rights owned) as a reference. Locations with no people can also try soul_location."
     },
@@ -86,20 +205,63 @@
       "kind": "video",
       "checked_at": "2026-11-24",
       "board": [
-        {"model": "z_image", "params": {}, "why": "Image first: a cheap still proves the frame before any video credits."},
-        {"model": "nano_banana_flash", "params": {"resolution": "1k"}, "why": "Board with references (character, product)."}
+        {
+          "model": "z_image",
+          "params": {},
+          "why": "Image first: a cheap still proves the frame before any video credits."
+        },
+        {
+          "model": "nano_banana_flash",
+          "params": {
+            "resolution": "1k"
+          },
+          "why": "Board with references (character, product)."
+        }
       ],
       "draft": [
-        {"model": "seedance_2_0", "params": {"mode": "fast", "resolution": "480p"}, "why": "Seedance 2.0 fast at 480p, shortest length: cheap motion test in the same family as the final."},
-        {"model": "kling3_0_turbo", "params": {"resolution": "720p"}, "why": "Kling 3.0 Turbo at 720p: fast, cheap simple motion."}
+        {
+          "model": "seedance_2_0",
+          "params": {
+            "mode": "fast",
+            "resolution": "480p"
+          },
+          "why": "Seedance 2.0 fast at 480p, shortest length: cheap motion test in the same family as the final."
+        },
+        {
+          "model": "kling3_0_turbo",
+          "params": {
+            "resolution": "720p"
+          },
+          "why": "Kling 3.0 Turbo at 720p: fast, cheap simple motion."
+        }
       ],
       "final": [
-        {"model": "seedance_2_5", "params": {"resolution": "1080p"}, "why": "Seedance 2.5 at 1080p: Higgsfield's default video model, 4-30 s in one take."},
-        {"model": "seedance_2_0", "params": {"mode": "std"}, "why": "Seedance 2.0 when the delivery needs native 4K."}
+        {
+          "model": "seedance_2_5",
+          "params": {
+            "resolution": "1080p"
+          },
+          "why": "Seedance 2.5 at 1080p: Higgsfield's default video model, 4-30 s in one take."
+        },
+        {
+          "model": "seedance_2_0",
+          "params": {
+            "mode": "std"
+          },
+          "why": "Seedance 2.0 when the delivery needs native 4K."
+        }
       ],
       "upscale": [
-        {"model": "topaz_video", "params": {}, "why": "Only if the delivery needs more than 1080p."},
-        {"model": "bytedance_video_upscale", "params": {}, "why": "Fallback video upscaler."}
+        {
+          "model": "topaz_video",
+          "params": {},
+          "why": "Only if the delivery needs more than 1080p."
+        },
+        {
+          "model": "bytedance_video_upscale",
+          "params": {},
+          "why": "Fallback video upscaler."
+        }
       ],
       "notes": "Approve a draft before any final. A start frame from an approved board makes the final far more predictable."
     },
@@ -107,17 +269,44 @@
       "kind": "video",
       "checked_at": "2026-11-24",
       "board": [
-        {"model": "z_image", "params": {}, "why": "Cheap still of the key frame."}
+        {
+          "model": "z_image",
+          "params": {},
+          "why": "Cheap still of the key frame."
+        }
       ],
       "draft": [
-        {"model": "kling3_0_turbo", "params": {"resolution": "720p"}, "why": "Kling 3.0 Turbo: cheap test of the motion."}
+        {
+          "model": "kling3_0_turbo",
+          "params": {
+            "resolution": "720p"
+          },
+          "why": "Kling 3.0 Turbo: cheap test of the motion."
+        }
       ],
       "final": [
-        {"model": "kling3_0", "params": {"mode": "pro", "resolution": "1080p"}, "why": "Kling 3.0 pro: strong physics, start and end frames."},
-        {"model": "seedance_2_5", "params": {"resolution": "1080p"}, "why": "Fallback for heavy motion and longer takes."}
+        {
+          "model": "kling3_0",
+          "params": {
+            "mode": "pro",
+            "resolution": "1080p"
+          },
+          "why": "Kling 3.0 pro: strong physics, start and end frames."
+        },
+        {
+          "model": "seedance_2_5",
+          "params": {
+            "resolution": "1080p"
+          },
+          "why": "Fallback for heavy motion and longer takes."
+        }
       ],
       "upscale": [
-        {"model": "topaz_video", "params": {}, "why": "Only if the delivery needs more than 1080p."}
+        {
+          "model": "topaz_video",
+          "params": {},
+          "why": "Only if the delivery needs more than 1080p."
+        }
       ],
       "notes": "Sports, liquids, cloth, collisions, fast action. Kling sends sound by default: shotcraft turns it off unless the card asks for audio."
     },
@@ -125,16 +314,36 @@
       "kind": "video",
       "checked_at": "2026-11-24",
       "board": [
-        {"model": "text2image_soul_v2", "params": {"resolution": "1.5k"}, "why": "The speaker's face first (Soul ID)."}
+        {
+          "model": "text2image_soul_v2",
+          "params": {
+            "resolution": "1.5k"
+          },
+          "why": "The speaker's face first (Soul ID)."
+        }
       ],
       "draft": [
-        {"model": "veo3_1_lite", "params": {}, "why": "Veo 3.1 Lite: cheap dialogue with native audio."}
+        {
+          "model": "veo3_1_lite",
+          "params": {},
+          "why": "Veo 3.1 Lite: cheap dialogue with native audio."
+        }
       ],
       "final": [
-        {"model": "veo3_1", "params": {"quality": "high"}, "why": "Veo 3.1: realistic people speaking, native sound and lip-sync."}
+        {
+          "model": "veo3_1",
+          "params": {
+            "quality": "high"
+          },
+          "why": "Veo 3.1: realistic people speaking, native sound and lip-sync."
+        }
       ],
       "upscale": [
-        {"model": "topaz_video", "params": {}, "why": "Only if the delivery needs more than the model's size."}
+        {
+          "model": "topaz_video",
+          "params": {},
+          "why": "Only if the delivery needs more than the model's size."
+        }
       ],
       "notes": "Veo takes 4, 6 or 8 s: write lines that fit. Longer speeches are cut into several shots."
     },
@@ -142,17 +351,45 @@
       "kind": "video",
       "checked_at": "2026-11-24",
       "board": [
-        {"model": "soul_cinematic", "params": {"resolution": "1.5k"}, "why": "Cinematic key frames first."}
+        {
+          "model": "soul_cinematic",
+          "params": {
+            "resolution": "1.5k"
+          },
+          "why": "Cinematic key frames first."
+        }
       ],
       "draft": [
-        {"model": "cinematic_studio_video_3_5", "params": {"resolution": "480p"}, "why": "Cinematic Studio 3.5 at low resolution: the multi-shot sequence and camera style, cheaply."}
+        {
+          "model": "cinematic_studio_video_3_5",
+          "params": {
+            "resolution": "480p"
+          },
+          "why": "Cinematic Studio 3.5 at low resolution: the multi-shot sequence and camera style, cheaply."
+        }
       ],
       "final": [
-        {"model": "cinematic_studio_video_3_5", "params": {"resolution": "1080p"}, "why": "Cinematic Studio 3.5: multi-shot sequences, named camera styles, light schemes and grades."},
-        {"model": "seedance_2_5", "params": {"resolution": "1080p"}, "why": "Fallback: multi-shot with consistent identity."}
+        {
+          "model": "cinematic_studio_video_3_5",
+          "params": {
+            "resolution": "1080p"
+          },
+          "why": "Cinematic Studio 3.5: multi-shot sequences, named camera styles, light schemes and grades."
+        },
+        {
+          "model": "seedance_2_5",
+          "params": {
+            "resolution": "1080p"
+          },
+          "why": "Fallback: multi-shot with consistent identity."
+        }
       ],
       "upscale": [
-        {"model": "topaz_video", "params": {}, "why": "Only if the delivery needs more than 1080p."}
+        {
+          "model": "topaz_video",
+          "params": {},
+          "why": "Only if the delivery needs more than 1080p."
+        }
       ],
       "notes": "Always pass the duration (the model defaults to 15 s). Inline camera_style/light_scheme/color_grading cannot be mixed with style_prompt."
     },
@@ -160,33 +397,98 @@
       "kind": "video",
       "checked_at": "2026-11-24",
       "board": [
-        {"model": "recraft_v4_1", "params": {"model_type": "vector", "resolution": "1k"}, "why": "Style frame for the loop."},
-        {"model": "nano_banana_flash", "params": {"resolution": "1k"}, "why": "Style frame with references."}
+        {
+          "model": "recraft_v4_1",
+          "params": {
+            "model_type": "vector",
+            "resolution": "1k"
+          },
+          "why": "Style frame for the loop."
+        },
+        {
+          "model": "nano_banana_flash",
+          "params": {
+            "resolution": "1k"
+          },
+          "why": "Style frame with references."
+        }
       ],
       "draft": [
-        {"model": "kling3_0_turbo", "params": {"resolution": "720p"}, "why": "Cheap motion test of an approved style frame."},
-        {"model": "seedance_2_0", "params": {"mode": "fast", "resolution": "720p"}, "why": "Fallback draft with start and end frames for a seamless loop."}
+        {
+          "model": "kling3_0_turbo",
+          "params": {
+            "resolution": "720p"
+          },
+          "why": "Cheap motion test of an approved style frame."
+        },
+        {
+          "model": "seedance_2_0",
+          "params": {
+            "mode": "fast",
+            "resolution": "720p"
+          },
+          "why": "Fallback draft with start and end frames for a seamless loop."
+        }
       ],
       "final": [
-        {"model": "seedance_2_5", "params": {"resolution": "1080p"}, "why": "Start and end on the same frame for a loop."},
-        {"model": "kling3_0", "params": {"mode": "pro", "resolution": "1080p"}, "why": "Start and end frames, cheaper."}
+        {
+          "model": "seedance_2_5",
+          "params": {
+            "resolution": "1080p"
+          },
+          "why": "Start and end on the same frame for a loop."
+        },
+        {
+          "model": "kling3_0",
+          "params": {
+            "mode": "pro",
+            "resolution": "1080p"
+          },
+          "why": "Start and end frames, cheaper."
+        }
       ],
       "upscale": [],
-      "notes": "Logos, type and UI motion are usually better built in the motion-design stage (After Effects or code: HyperFrames, Lottie). Generate only textures, backgrounds and organic loops."
+      "notes": "Logos, type and UI motion are better built in your motion graphics tool (After Effects or code), outside shotcraft. Generate only textures, backgrounds and organic loops here."
     },
     "storyboard-frame": {
       "kind": "image",
       "checked_at": "2026-11-24",
       "board": [
-        {"model": "z_image", "params": {}, "why": "Fastest frames for a board."},
-        {"model": "nano_banana_flash", "params": {"resolution": "1k"}, "why": "Frames that need references (characters stay the same)."}
+        {
+          "model": "z_image",
+          "params": {},
+          "why": "Fastest frames for a board."
+        },
+        {
+          "model": "nano_banana_flash",
+          "params": {
+            "resolution": "1k"
+          },
+          "why": "Frames that need references (characters stay the same)."
+        }
       ],
       "draft": [
-        {"model": "z_image", "params": {}, "why": "Fastest frames."},
-        {"model": "nano_banana_flash", "params": {"resolution": "1k"}, "why": "Consistent characters across frames."}
+        {
+          "model": "z_image",
+          "params": {},
+          "why": "Fastest frames."
+        },
+        {
+          "model": "nano_banana_flash",
+          "params": {
+            "resolution": "1k"
+          },
+          "why": "Consistent characters across frames."
+        }
       ],
       "final": [
-        {"model": "nano_banana_flash", "params": {"resolution": "1k"}, "why": "Boards stay cheap: 1k is enough for an animatic."}
+        {
+          "model": "nano_banana_flash",
+          "params": {
+            "resolution": "1k"
+          },
+          "why": "Boards stay cheap: 1k is enough for an animatic."
+        }
       ],
       "upscale": [],
       "notes": "Board frames are for timing and framing, not finish."
@@ -206,13 +508,59 @@
       "the card is an image",
       "the card already has a start frame input"
     ],
-    "people_words": ["person", "people", "man", "woman", "boy", "girl", "child", "kid", "face", "portrait",
-                     "presenter", "host", "actor", "character", "crowd", "dancer", "worker", "chef",
-                     "speaker", "customer", "couple", "family", "athlete"],
-    "accuracy_words": ["product", "logo", "packshot", "bottle", "label", "brand", "text", "title", "headline",
-                       "packaging", "sign"],
-    "complex_moves": ["orbit", "arc", "crane", "jib", "dolly zoom", "vertigo", "fpv", "bullet time", "snorricam",
-                      "whip pan", "crash zoom", "boom", "360"],
+    "people_words": [
+      "person",
+      "people",
+      "man",
+      "woman",
+      "boy",
+      "girl",
+      "child",
+      "kid",
+      "face",
+      "portrait",
+      "presenter",
+      "host",
+      "actor",
+      "character",
+      "crowd",
+      "dancer",
+      "worker",
+      "chef",
+      "speaker",
+      "customer",
+      "couple",
+      "family",
+      "athlete"
+    ],
+    "accuracy_words": [
+      "product",
+      "logo",
+      "packshot",
+      "bottle",
+      "label",
+      "brand",
+      "text",
+      "title",
+      "headline",
+      "packaging",
+      "sign"
+    ],
+    "complex_moves": [
+      "orbit",
+      "arc",
+      "crane",
+      "jib",
+      "dolly zoom",
+      "vertigo",
+      "fpv",
+      "bullet time",
+      "snorricam",
+      "whip pan",
+      "crash zoom",
+      "boom",
+      "360"
+    ],
     "min_duration_s": 8
   }
 }

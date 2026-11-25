@@ -30,8 +30,7 @@ FOLDERS = [
     "05_prompts",
     "06_generations", "06_generations/boards", "06_generations/drafts", "06_generations/finals",
     "06_generations/upscaled", "06_generations/contact-sheets",
-    "07_mograph", "07_mograph/ae", "07_mograph/code",
-    "08_sound", "09_assembly", "10_delivery", "11_handoff",
+    "07_sound", "08_assembly", "09_delivery", "10_handoff",
     ".shotcraft", ".shotcraft/qa", ".shotcraft/rules",
 ]
 

@@ -97,11 +97,10 @@ project.json                 manifest (§3) — written only via sc.py (guard bl
 04_bible/    characters/ environments/ props/ moodboard/ look.md
 05_prompts/  S010.md, S020.md ...  (one prompt card per shot; shots numbered by 10s)
 06_generations/ boards/ drafts/ finals/ upscaled/ contact-sheets/
-07_mograph/  ae/ code/
-08_sound/
-09_assembly/
-10_delivery/
-11_handoff/  canvas-build-sheet.md, upload-list.json
+07_sound/
+08_assembly/
+09_delivery/
+10_handoff/  canvas-build-sheet.md, upload-list.json
 .shotcraft/  stages.json (guard-protected), qa/<stage>/round-N.json, lessons.md, rules/ (project rules)
 ```
 
@@ -136,7 +135,7 @@ On the `refine` track a project is optional. `sc.py refine save` writes the card
      "created": iso}
   ],
   "decisions": [{"at": iso, "stage": "concept", "text": "Picked direction B", "user_said": "go with B"}],
-  "handoff": {"uploaded": [], "canvas_sheet": "11_handoff/canvas-build-sheet.md"}
+  "handoff": {"uploaded": [], "canvas_sheet": "10_handoff/canvas-build-sheet.md"}
 }
 ```
 
@@ -144,12 +143,12 @@ On the `refine` track a project is optional. `sc.py refine save` writes the card
 
 Tracks (in order):
 
-- **full**: intake, research, concept, script, shotlist, bible, prompts, boards, drafts, finals, mograph, sound,
+- **full**: intake, research, concept, script, shotlist, bible, prompts, boards, drafts, finals, sound,
   assembly, delivery, handoff, learn
 - **single**: intake, prompts, drafts, finals, delivery, handoff, learn
 - **refine**: refine   (no generation allowed at all)
 
-Optional stages (the user can drop them at intake, recorded with their words): research, concept, mograph,
+Optional stages (the user can drop them at intake, recorded with their words): research, concept,
 sound, assembly, boards, handoff. Dropping one is `sc.py stage skip <stage> --user-said "..."`.
 
 Stage table (owner = the role that does the work; gate = what closes it):
@@ -166,18 +165,17 @@ Stage table (owner = the role that does the work; gate = what closes it):
 | boards | generation-tech | ≥1 generation tier=board per video shot that needs image-first; contact sheet | `--user-said` |
 | drafts | generation-tech | ≥1 completed draft per shot; contact sheet | continuity QA PASS + `--user-said` |
 | finals | generation-tech | a completed final (or upscale) per approved shot, all approved | `--user-said` |
-| mograph | motion-designer | files in 07_mograph/ | QA PASS + `--user-said` |
-| sound | sound agent | files in 08_sound/ + licence notes | `--user-said` |
-| assembly | assistant-editor agent | 09_assembly/animatic.mp4 or EDL/notes | `--user-said` |
-| delivery | delivery agent | 10_delivery/ files + delivery-report.json with all checks PASS | spec check PASS |
-| handoff | producer (handoff skill) | 11_handoff/canvas-build-sheet.md + upload-list.json | evidence only |
+| sound | sound agent | files in 07_sound/ + licence notes | `--user-said` |
+| assembly | assistant-editor agent | 08_assembly/animatic.mp4 or EDL/notes | `--user-said` |
+| delivery | delivery agent | 09_delivery/ files + delivery-report.json with all checks PASS | spec check PASS |
+| handoff | producer (handoff skill) | 10_handoff/canvas-build-sheet.md + upload-list.json | evidence only |
 | learn | learner agent → producer | lessons decided (each accepted/rejected with the user's words) | `--user-said` |
 | refine | refine skill | a valid prompt card saved | evidence only |
 
 State machine (`.shotcraft/stages.json`): each stage is `pending|open|done|skipped`, with `opened_at`,
 `done_at`, `evidence`, `user_said`, and `qa_rounds`.
 - `start` is refused unless every earlier included stage is done or skipped. Only one stage is open at a
-  time, except that `mograph` and `sound` may be open alongside each other.
+  time.
 - `done` checks the evidence itself; it never takes evidence on trust.
 - `reopen <stage>` sets that stage to open and every later stage back to pending, keeping their history.
 - `skip` needs `--user-said` and the stage must be optional (or the user's words must name the stage).
@@ -327,8 +325,8 @@ It exits with code 2 and a reason to block; otherwise it exits 0.
   active and the path is inside it. `00_inputs/` and `.shotcraft/lessons.md` are always allowed.
   Map: 00_brief→intake, 01_research→research, 02_concept→concept, 03_script/script*→script,
   03_script/shotlist*→shotlist, 04_bible→bible, 05_prompts→prompts (also refine), 06_generations/boards→boards,
-  drafts→drafts, finals|upscaled→finals, 07_mograph→mograph, 08_sound→sound, 09_assembly→assembly,
-  10_delivery→delivery, 11_handoff→handoff. A stage marked `done` is writable only if it is reopened.
+  drafts→drafts, finals|upscaled→finals, 07_sound→sound, 08_assembly→assembly,
+  09_delivery→delivery, 10_handoff→handoff. A stage marked `done` is writable only if it is reopened.
 - Fail open when there is no active project, except that raw generation is always routed through `sc.py`.
   The guard never crashes a tool call: on an internal error, print a note and exit 0.
 
@@ -354,7 +352,6 @@ Skills (`skills/<name>/SKILL.md`):
 | creative-director | Concept stage: 2–3 directions from the brief and research. Presents them and records the user's pick. |
 | director | Shot list stage (and the light version for single shots): beats, shot purpose, coverage, exact durations, image-first flags, continuity notes. |
 | review | Contact sheet review for boards, drafts and finals: builds the sheet, collects approve/reject/adjust in chat, records it with the user's words, and sends rejections back to the right crew member. |
-| motion-design | Motion graphics stage: picks the route (AE template fill > AE build > HyperFrames/code > Lottie for icons), runs the AE route on the Mac (MCP bridge or osascript JSX), the code route anywhere. |
 | handoff | Higgsfield hand-off: uploads approved assets, writes the Canvas build sheet, and offers browser-assisted Canvas setup (Claude in Chrome) on the Mac. Watches for a Canvas API. |
 | learn | End-of-job learning: runs the learner agent and puts the rule proposals to the user. Writes only to personal or project rules. |
 | model-scout | Runs the model-scout agent, presents proposed routing and models changes, and applies the approved ones to personal rules (or proposes a PR to the plugin). |
@@ -362,7 +359,7 @@ Skills (`skills/<name>/SKILL.md`):
 
 Agents (`agents/<name>.md`, frontmatter `name`, `description`, `tools` or `disallowedTools`, `color`):
 researcher, screenwriter, production-designer, character-designer, cinematographer, generation-tech,
-script-supervisor (continuity QA), motion-designer, sound, assistant-editor, delivery, qa-supervisor,
+script-supervisor (continuity QA), sound, assistant-editor, delivery, qa-supervisor,
 qa-verifier, learner, model-scout.
 
 Each agent file states what it gets in the prompt (project path, stage, shot ids, round), the files it must
@@ -376,7 +373,7 @@ How they work together:
 producer ─ intake ─► researcher×N ─► creative-director ─► screenwriter ─► director
           ─► production-designer ∥ character-designer ─► script-supervisor
           ─► cinematographer ─► generation-tech (cards) ─► boards ─► review ─► drafts ─► script-supervisor ─► review
-          ─► finals ─► motion-design ∥ sound ─► assistant-editor ─► delivery ─► handoff ─► learn
+          ─► finals ─► sound ─► assistant-editor ─► delivery ─► handoff ─► learn
 qa-supervisor + qa-verifier after every building stage (max 3 rounds).
 ```
 
@@ -395,6 +392,9 @@ qa-supervisor + qa-verifier after every building stage (max 3 rounds).
 - REST API (`api.higgsfield.ai`, separate USD billing) is a documented optional mode in README. Not built.
 
 ## 10. Extension points (design only)
+
+- Motion graphics are out of scope (removed 2026-11-25): they are built in the user's own motion graphics
+  tool. shotcraft hands over the shot list's `graphics` column and leaves clean frame space for them.
 
 - `providers/`: other generators (Artlist, fal, Runway, …) follow `base.py`.
 - Input sources: Blender (via a Blender MCP), the user's own shoots, After Effects renders. They land in

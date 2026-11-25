@@ -58,10 +58,11 @@ On the **single** track there is no shot list stage: see section 6.
    logo that must look exact, readable text, a complex camera move, shots of 8 s or more, or a shot that needs
    an end frame (match cut, loop).
 5. Mark the **kind**: `video` or `image` (a still used as a held frame or a Ken Burns move is an `image`).
-6. Mark what belongs to **motion graphics** (titles, lower thirds, end card, captions, icons, charts). Text is
-   added in mograph, not generated into the picture, unless the user wants it in-world. If an abstract
-   animated loop is better generated, keep it as a shot on this list (use case `mograph-loop`), because the
-   mograph stage cannot generate.
+6. Mark what belongs to **motion graphics** in the `graphics` column (titles, lower thirds, end card,
+   captions, icons, charts). shotcraft does not build motion graphics: they are added afterwards in the
+   user's own motion graphics tool, so leave clean space in the frame for them and never generate the text
+   into the picture unless the user wants it in-world. An abstract animated loop that is better generated
+   stays a shot on this list (use case `mograph-loop`).
 7. Mark shots the user's own material covers (`source: 00_inputs/...`) so nothing is generated twice.
 8. Write continuity notes: who and what recurs, screen direction, light and time of day, the frame this shot
    must match at its start or end.
@@ -71,7 +72,7 @@ On the **single** track there is no shot list stage: see section 6.
 Write `03_script/shotlist.md` in the format in `references/shotlist-format.md` (start from
 `${CLAUDE_PLUGIN_ROOT}/templates/shotlist.md` if it exists). Shot ids are `S010`, `S020` ... (steps of 10, so
 an insert can become `S015`). Required columns: `id`, `duration_s`, `purpose`. Strongly recommended: `kind`,
-`image_first`, `beat`, `shot`, `move`, `continuity`, `mograph`, `source`.
+`image_first`, `beat`, `shot`, `move`, `continuity`, `graphics`, `source`.
 
 Under the table add:
 - **Total:** the sum of `duration_s` and the delivery length.
@@ -79,7 +80,7 @@ Under the table add:
   for each video shot (it adds the handles and picks a length the model allows). Note any shot that needs a
   chain of two takes or a different model.
 - **Bible needs:** the characters, environments and props that recur.
-- **Mograph list:** the items for the mograph stage.
+- **Graphics list:** everything for the user's motion graphics tool, per shot, with timing.
 
 ## 4. Ask the creative calls
 

@@ -947,8 +947,8 @@ def _is_pass(v):
 
 
 def _ev_delivery_report(project, spec):
-    """The delivery check recorded in project.json by `sc.py delivery check` (the report file in 10_delivery/ is
-    for people; it is not trusted). It must have passed, and 10_delivery/ must hold exactly the files it checked,
+    """The delivery check recorded in project.json by `sc.py delivery check` (the report file in 09_delivery/ is
+    for people; it is not trusted). It must have passed, and 09_delivery/ must hold exactly the files it checked,
     unchanged (sha256)."""
     from . import delivery
     rec = manifest.load(project).get("delivery_check")
@@ -956,12 +956,12 @@ def _ev_delivery_report(project, spec):
         return False, None, "no delivery check recorded yet (sc.py delivery check)"
     if not _is_pass(rec.get("verdict")):
         return False, None, "the last delivery check failed: %s (fix them, then sc.py delivery check)" % (
-            ", ".join(rec.get("failed") or []) or "see 10_delivery/delivery-report.json")
+            ", ".join(rec.get("failed") or []) or "see 09_delivery/delivery-report.json")
     now = delivery.fingerprints(project)
     was = rec.get("files") or {}
     if set(now) != set(was):
         diff = sorted(set(now) ^ set(was))
-        return False, None, "10_delivery/ changed since the last delivery check (%s); run sc.py delivery check " \
+        return False, None, "09_delivery/ changed since the last delivery check (%s); run sc.py delivery check " \
                             "again" % ", ".join(diff[:5])
     changed = sorted(k for k in now if now[k] != was.get(k))
     if changed:

@@ -60,7 +60,7 @@ Skills talk to you. Agents do heavy, parallel or fresh-eyes work and report back
 producer ─ intake ─► researcher×N ─► creative-director ─► screenwriter ─► director
           ─► production-designer ∥ character-designer ─► script-supervisor
           ─► cinematographer ─► generation-tech (cards) ─► boards ─► review ─► drafts ─► script-supervisor ─► review
-          ─► finals ─► motion-design ∥ sound ─► assistant-editor ─► delivery ─► handoff ─► learn
+          ─► finals ─► sound ─► assistant-editor ─► delivery ─► handoff ─► learn
 qa-supervisor + qa-verifier after every building stage (max 3 rounds).
 ```
 
@@ -75,25 +75,24 @@ qa-supervisor + qa-verifier after every building stage (max 3 rounds).
 | creative-director | Two or three concept directions from the brief and research; records your pick. |
 | director | The shot list: beats, what each shot is for, exact durations, which shots start as a still, continuity notes. |
 | review | Contact sheets for boards, drafts and finals. Collects approve, reject or adjust, and sends rejections to the right crew member. |
-| motion-design | Motion graphics: After Effects on a Mac, or the code route (HTML and animation to MP4) anywhere. |
 | handoff | Uploads approved assets to Higgsfield and writes the Canvas build sheet. |
 | learn | End-of-job learning: turns your corrections into rule proposals, and changes rules only after your yes. |
 | model-scout | Reviews new or changed Higgsfield models and proposes routing changes. |
 | prompt-craft | Reference: the six-layer prompt structure, the vocabulary, the negatives system, per-model notes. |
 
 **Agents** (the producer spawns these): researcher, screenwriter, production-designer, character-designer,
-cinematographer, generation-tech, script-supervisor (continuity QA), motion-designer, sound, assistant-editor,
+cinematographer, generation-tech, script-supervisor (continuity QA), sound, assistant-editor,
 delivery, qa-supervisor, qa-verifier, learner, model-scout.
 
 ## Tracks and stage gates
 
 | Track | Stages, in order |
 |---|---|
-| full | intake, research, concept, script, shotlist, bible, prompts, boards, drafts, finals, mograph, sound, assembly, delivery, handoff, learn |
+| full | intake, research, concept, script, shotlist, bible, prompts, boards, drafts, finals, sound, assembly, delivery, handoff, learn |
 | single | intake, prompts, drafts, finals, delivery, handoff, learn |
 | refine | refine (no generation at all) |
 
-Optional stages, which you can drop at intake (your words are recorded): research, concept, boards, mograph,
+Optional stages, which you can drop at intake (your words are recorded): research, concept, boards,
 sound, assembly, handoff. Motion graphics and sound may run at the same time; otherwise one stage is open at
 a time.
 
@@ -109,11 +108,10 @@ a time.
 | boards | generation-tech | a still for every shot marked image-first; a contact sheet | your words |
 | drafts | generation-tech | a draft for every shot; a contact sheet | continuity QA pass + your words |
 | finals | generation-tech | an approved final for every shot | your words |
-| mograph | motion-designer | files in `07_mograph/` | QA pass + your words |
-| sound | sound agent | files in `08_sound/` + licence notes | your words |
+| sound | sound agent | files in `07_sound/` + licence notes | your words |
 | assembly | assistant-editor | an animatic, an EDL or notes | your words |
 | delivery | delivery agent | delivered files + `delivery-report.json` with every check passing | spec check |
-| handoff | producer (handoff skill) | `11_handoff/canvas-build-sheet.md` + `upload-list.json` | evidence |
+| handoff | producer (handoff skill) | `10_handoff/canvas-build-sheet.md` + `upload-list.json` | evidence |
 | learn | learner → producer | every lesson accepted or rejected with your words | your words |
 
 QA runs in rounds: a QA supervisor checks the stage, a verifier double-checks its judgement calls, the crew
@@ -127,7 +125,7 @@ A project folder looks like this:
 <projects_root>/<project-slug>/
   project.json      the manifest: assets, rights, generations, costs, decisions (changed only by sc.py)
   00_brief/  00_inputs/  01_research/  02_concept/  03_script/  04_bible/  05_prompts/
-  06_generations/  07_mograph/  08_sound/  09_assembly/  10_delivery/  11_handoff/
+  06_generations/  07_sound/  08_assembly/  09_delivery/  10_handoff/
   .shotcraft/       stage state, QA rounds, the lessons inbox, project rules
 ```
 
@@ -174,7 +172,6 @@ Optional (detected; shotcraft says what is missing when a stage needs it):
 | `ffmpeg` and `ffprobe` | delivery checks (resolution, length, fps, codec), the animatic, still frames |
 | `yt-dlp` | downloading reference videos (kept as `reference-only`) |
 | `node` | the code route for motion graphics (HTML and animation rendered to MP4) |
-| Adobe After Effects (Mac or Windows) | the After Effects route for motion graphics |
 
 Run `python3 "<plugin folder>/scripts/sc.py" doctor`, or just ask the producer to "check my setup".
 
@@ -286,7 +283,7 @@ Model limits and costs are never trusted from memory:
 
 ## The Higgsfield hand-off and the Canvas limitation
 
-A full production ends with a hand-off package in `11_handoff/`:
+A full production ends with a hand-off package in `10_handoff/`:
 
 - every approved asset uploaded to your Higgsfield account (`upload-list.json` records what went up), and
 - a **Canvas build sheet** (`canvas-build-sheet.md`): the nodes, their prompts, settings and inputs, and how

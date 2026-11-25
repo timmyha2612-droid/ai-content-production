@@ -1,6 +1,6 @@
-"""Delivery checks (SPEC section 4, delivery stage): every file in 10_delivery/ is measured with ffprobe (and
+"""Delivery checks (SPEC section 4, delivery stage): every file in 09_delivery/ is measured with ffprobe (and
 ffmpeg's ebur128 filter for loudness) against the delivery spec, and the result goes to
-10_delivery/delivery-report.json. The delivery stage closes only when every check there is PASS.
+09_delivery/delivery-report.json. The delivery stage closes only when every check there is PASS.
 
 The spec comes from, lowest to highest: the preset (rules/presets.json, the project's use case or --spec), then
 project.json "delivery", then command-line overrides. What is checked per file:
@@ -34,7 +34,7 @@ import subprocess
 
 from . import Refused, ShotcraftError, jsonio, manifest
 
-REPORT = "10_delivery/delivery-report.json"
+REPORT = "09_delivery/delivery-report.json"
 SKIP_EXT = {".json", ".md", ".txt", ".csv", ".srt", ".vtt", ".pdf", ".edl", ".xml", ".fcpxml", ".html"}
 DEFAULT_LUFS = -14.0
 LUFS_TOL = 1.0
@@ -279,7 +279,7 @@ def _item(results, rel, name, ok, expected, actual, note=None):
 
 
 def _delivery_files(project):
-    d = os.path.join(project, "10_delivery")
+    d = os.path.join(project, "09_delivery")
     out = []
     for root, dirs, files in os.walk(d):
         dirs[:] = [x for x in dirs if not x.startswith(".")]
@@ -291,7 +291,7 @@ def _delivery_files(project):
 
 
 def fingerprints(project):
-    """{relative path: sha256} of every delivery file in 10_delivery/ (what the stage evidence compares)."""
+    """{relative path: sha256} of every delivery file in 09_delivery/ (what the stage evidence compares)."""
     out = {}
     for f in _delivery_files(project):
         rel = os.path.relpath(f, project).replace(os.sep, "/")
@@ -407,8 +407,8 @@ def check(project, preset_id=None, duration=None, tolerance=None, lufs=None, wri
     results, notes, probes = [], [], {}
     if not files:
         results.append({"name": "files present", "check": "files present", "file": None,
-                        "expected": "at least one media file in 10_delivery/", "actual": "none",
-                        "verdict": "FAIL", "note": "Export the delivery files into 10_delivery/ first."})
+                        "expected": "at least one media file in 09_delivery/", "actual": "none",
+                        "verdict": "FAIL", "note": "Export the delivery files into 09_delivery/ first."})
     else:
         if not have_tools():
             raise ShotcraftError("ffprobe is not installed, so delivery files cannot be checked. Install ffmpeg.")

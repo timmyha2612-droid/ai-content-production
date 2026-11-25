@@ -9,7 +9,7 @@ planned length. Every segment is scaled and padded to the delivery frame (never 
 rate. An optional audio file is laid under the whole cut (padded with silence or cut to length). Shot ids can be
 burned in (top left) with --burn-ids.
 
-Writes 09_assembly/animatic.mp4 and 09_assembly/shots.csv (an EDL-like list: order, shot, source, in/out points
+Writes 08_assembly/animatic.mp4 and 08_assembly/shots.csv (an EDL-like list: order, shot, source, in/out points
 and record in/out).
 
 API:
@@ -29,8 +29,8 @@ import tempfile
 from . import Refused, ShotcraftError, manifest
 from .delivery import parse_wh, probe, ratio_of, run
 
-OUT = "09_assembly/animatic.mp4"
-CSV = "09_assembly/shots.csv"
+OUT = "08_assembly/animatic.mp4"
+CSV = "08_assembly/shots.csv"
 DEFAULT_STILL_S = 3.0
 TIER_PREFERENCE = (("upscale", True), ("final", True), ("final", None), ("draft", True), ("draft", None),
                    ("board", True), ("board", None))

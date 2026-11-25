@@ -83,7 +83,7 @@ go, before anything is built. Full question bank, round plan and recommended-ans
    - Round 1 Brief: goal, audience, platform/use case, length and delivery.
    - Round 2 Money and material: budget and per-job threshold, the user's own material (footage, photos,
      Blender scenes, brand files) and its rights, references, deadline.
-   - Round 3 Scope: which optional stages to drop (research, concept, boards, mograph, sound, assembly,
+   - Round 3 Scope: which optional stages to drop (research, concept, boards, sound, assembly,
      handoff), who does what (for example "I'll do the sound"), the hand-off target.
    - Rounds 4 to 6 Look and feel, only where it is still open: subject and world, camera, light and look,
      time and output (the six layers, see `references/intake.md`).
@@ -132,7 +132,6 @@ Every stage follows the same loop. Full map, with what to pass each crew member:
 | boards | `shotcraft:generation-tech`, then **review** skill | user's words |
 | drafts | `shotcraft:generation-tech`, continuity QA, then **review** | continuity QA PASS + user's words |
 | finals | `shotcraft:generation-tech`, then **review** | user's words, every final approved or rejected |
-| mograph | **motion-design** skill (`shotcraft:motion-designer`) | QA PASS + user's words |
 | sound | `shotcraft:sound` | user's words |
 | assembly | `shotcraft:assistant-editor` | user's words |
 | delivery | `shotcraft:delivery` | delivery report all PASS |
@@ -140,7 +139,7 @@ Every stage follows the same loop. Full map, with what to pass each crew member:
 | learn | **learn** skill (`shotcraft:learner`) | every lesson decided with the user's words |
 
 The single track runs intake, prompts (one card per asset; use the director skill's light version), drafts,
-finals, delivery, handoff, learn. mograph and sound may be open at the same time; every other stage is one at
+finals, delivery, handoff, learn. Every stage is one at
 a time.
 
 **Prompt cards need the user's approval before any generation.** During the prompts stage, show each card's

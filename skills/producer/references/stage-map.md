@@ -5,13 +5,13 @@
 checks the evidence listed here itself (from `rules/stages.json`); it never takes it on trust.
 
 Tracks:
-- **full**: intake, research, concept, script, shotlist, bible, prompts, boards, drafts, finals, mograph,
+- **full**: intake, research, concept, script, shotlist, bible, prompts, boards, drafts, finals,
   sound, assembly, delivery, handoff, learn
 - **single**: intake, prompts, drafts, finals, delivery, handoff, learn
 - **refine**: refine (no generation; normally no project at all, see the refine skill)
 
 Optional (droppable at intake with the user's words, `sc stage skip <stage> --user-said "..."`): research,
-concept, mograph, sound, assembly, boards, handoff. mograph and sound may be open together.
+concept, sound, assembly, boards, handoff. Motion graphics are not a shotcraft stage: they are done in the user's own motion graphics tool, from the shot list's graphics column.
 
 ## What every agent gets
 
@@ -113,28 +113,24 @@ the files exist, and never pass its words on as the user's.
 - Then the **review** skill: every final approved or rejected with the user's words.
 - Evidence: an approved final (or upscale) for every shot, none undecided. Gate: the user's words.
 
-### mograph (optional)
-- Who: the **motion-design** skill (route choice, After Effects or code), with `shotcraft:motion-designer`.
-- Evidence: files in `07_mograph/`. Gate: QA PASS + the user's words.
-
-### sound (optional; may run alongside mograph)
+### sound (optional)
 - Who: `shotcraft:sound`. Pass the script's sound column, the audio plan and the licence rules.
-- Evidence: files in `08_sound/` and a licence note (a file with "licence" or "license" in its name).
+- Evidence: files in `07_sound/` and a licence note (a file with "licence" or "license" in its name).
 - Gate: the user's words.
 
 ### assembly (optional)
 - Who: `shotcraft:assistant-editor`. Commands: `sc assembly animatic [--audio <file>] [--burn-ids]`.
-- Evidence: `09_assembly/animatic.mp4`, an EDL or notes. Gate: the user's words.
+- Evidence: `08_assembly/animatic.mp4`, an EDL or notes. Gate: the user's words.
 
 ### delivery
 - Who: `shotcraft:delivery`. Commands: `sc delivery check [--spec <preset>] [--duration S] [--tolerance S]
   [--lufs L]`.
-- Evidence: delivered files in `10_delivery/` and `10_delivery/delivery-report.json` with every check PASS.
+- Evidence: delivered files in `09_delivery/` and `09_delivery/delivery-report.json` with every check PASS.
 - Gate: the spec check. A FAIL goes back to the stage that made the file.
 
 ### handoff (optional; default on the full track)
 - Who: the **handoff** skill. Commands: `sc handoff build`, `sc handoff upload [--dry-run]`.
-- Evidence: `11_handoff/canvas-build-sheet.md` and `11_handoff/upload-list.json`.
+- Evidence: `10_handoff/canvas-build-sheet.md` and `10_handoff/upload-list.json`.
 - Result for the user: the approved assets uploaded to Higgsfield and a Canvas build sheet that sets out
   every node, input and setting, plus browser-assisted Canvas set-up where available. Higgsfield has no
   Canvas API yet; say so plainly if asked.

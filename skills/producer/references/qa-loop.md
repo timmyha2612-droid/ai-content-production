@@ -15,7 +15,6 @@ Every building stage is checked by someone who did not build it, before the user
 | bible | continuity QA PASS + user | `shotcraft:script-supervisor` |
 | prompts | QA PASS | `shotcraft:qa-supervisor` (and every card must pass `sc card validate`) |
 | drafts | continuity QA PASS + user | `shotcraft:script-supervisor` |
-| mograph | QA PASS + user | `shotcraft:qa-supervisor` |
 
 Other stages have no QA gate, but you may still run a reviewer when the user asks ("QA this").
 

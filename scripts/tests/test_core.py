@@ -77,7 +77,7 @@ class ProjectTests(Base):
         self.assertEqual(data["track"], "full")
         self.assertEqual(data["budget"], {"credits": 300, "threshold_single_job": 40, "spent": 0, "reserved": 0})
         self.assertEqual(data["stages_included"], stages.track_stages("full"))
-        self.assertEqual(data["handoff"]["canvas_sheet"], "11_handoff/canvas-build-sheet.md")
+        self.assertEqual(data["handoff"]["canvas_sheet"], "10_handoff/canvas-build-sheet.md")
         st = stages.load_state(proj)
         self.assertTrue(all(st["stages"][s]["status"] == "pending" for s in st["order"]))
         self.assertTrue(os.path.isfile(paths.project_lessons_file(proj)))
@@ -268,18 +268,13 @@ class StageTests(Base):
         stages.reopen(proj, "research")
         self.assertIn("research", manifest.load(proj)["stages_included"])
 
-    def test_mograph_sound_parallel(self):
+    def test_sound_then_assembly_in_order(self):
         proj = self.make()
         order = stages.track_stages("full")
-        self.force(proj, **{s: "done" for s in order[:order.index("mograph")]})
-        stages.start(proj, "mograph")
+        self.assertNotIn("mograph", order)  # motion graphics live outside shotcraft
+        self.force(proj, **{s: "done" for s in order[:order.index("sound")]})
         stages.start(proj, "sound")
-        self.assertEqual(stages.status(proj)["open"], ["mograph", "sound"])
         with self.assertRaises(Refused):
-            stages.start(proj, "assembly")
-        self.force(proj, mograph="done", sound="done", assembly="pending")
-        self.force(proj, delivery="open")
-        with self.assertRaises(Refused):  # assembly not done and delivery open
             stages.start(proj, "assembly")
 
     def test_one_open_at_a_time(self):
@@ -372,17 +367,17 @@ class StageTests(Base):
 
     def test_delivery_and_sound_evidence(self):
         proj = self.make()
-        self.write(proj, "08_sound/music.wav", "x")
+        self.write(proj, "07_sound/music.wav", "x")
         self.assertFalse(stages.check_evidence(proj, "sound")[0])
-        self.write(proj, "08_sound/licences.md", "Track from X, licensed")
+        self.write(proj, "07_sound/licences.md", "Track from X, licensed")
         self.assertTrue(stages.check_evidence(proj, "sound")[0])
         from shotcraft import delivery
-        self.write(proj, "10_delivery/delivery-report.json", json.dumps({"verdict": "PASS"}))
+        self.write(proj, "09_delivery/delivery-report.json", json.dumps({"verdict": "PASS"}))
         self.assertFalse(stages.check_evidence(proj, "delivery")[0])  # a hand-written report does not count
-        self.write(proj, "10_delivery/reel.mp4", "x")
+        self.write(proj, "09_delivery/reel.mp4", "x")
         delivery.record(proj, {"verdict": "PASS", "checks": [{"name": "fps"}], "failed": [], "spec": {}})
         self.assertTrue(stages.check_evidence(proj, "delivery")[0])
-        self.write(proj, "10_delivery/reel.mp4", "changed")
+        self.write(proj, "09_delivery/reel.mp4", "changed")
         self.assertFalse(stages.check_evidence(proj, "delivery")[0])  # file changed since the check
         delivery.record(proj, {"verdict": "FAIL", "checks": [{}, {}], "failed": ["loudness"], "spec": {}})
         ok, _, probs = stages.check_evidence(proj, "delivery")

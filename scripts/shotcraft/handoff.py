@@ -30,8 +30,8 @@ import re
 
 from . import ShotcraftError, jsonio, manifest, paths
 
-SHEET = "11_handoff/canvas-build-sheet.md"
-UPLOAD_LIST = "11_handoff/upload-list.json"
+SHEET = "10_handoff/canvas-build-sheet.md"
+UPLOAD_LIST = "10_handoff/upload-list.json"
 MEDIA_PARAMS = ("start_image", "end_image", "image_references", "video_references", "audio_references")
 PORT_FOR_AS = {"start_frame": "start_image", "end_frame": "end_image", "reference": "image_references",
                "character": "image_references", "style": "image_references"}

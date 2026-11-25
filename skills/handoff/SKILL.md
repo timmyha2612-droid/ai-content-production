@@ -70,8 +70,8 @@ sc.py handoff build
 
 - `upload` sends each file once (a file already uploaded and unchanged is not sent again), records the upload ids,
   and rebuilds the sheet. Failed uploads are listed; retry them with the same command.
-- `build` writes `11_handoff/canvas-build-sheet.md` (the human sheet, one node group per shot: input nodes,
-  prompt node, model node with settings, edges) and `11_handoff/upload-list.json` (the same plan as data, under
+- `build` writes `10_handoff/canvas-build-sheet.md` (the human sheet, one node group per shot: input nodes,
+  prompt node, model node with settings, edges) and `10_handoff/upload-list.json` (the same plan as data, under
   `canvas`). Run it after any change.
 
 Read the sheet yourself. Check that every approved shot is there, each prompt is the compiled one from its card,
@@ -90,7 +90,7 @@ The browser build, step by step:
 
 1. Ask the user to open Higgsfield in Chrome, signed in, and to open (or create) the Canvas board for this
    project. Do not sign in for them and never type passwords.
-2. Work one shot at a time, in shot-list order, following `11_handoff/upload-list.json` → `canvas`:
+2. Work one shot at a time, in shot-list order, following `10_handoff/upload-list.json` → `canvas`:
    add the input nodes (pick each file from the user's uploads by its upload id or file name), add the prompt
    node and paste the prompt exactly, add the model node, choose the model and settings from the sheet, connect
    the edges.
@@ -110,8 +110,8 @@ The gate is evidence only: the sheet and the upload list.
 sc.py stage done handoff --user-said "<the user's words, if they confirmed the hand-off>"
 ```
 
-Tell the user where everything is: the Canvas board (if built), `11_handoff/canvas-build-sheet.md`, and the
-delivery files in `10_delivery/`. Then the producer moves on to the learn stage.
+Tell the user where everything is: the Canvas board (if built), `10_handoff/canvas-build-sheet.md`, and the
+delivery files in `09_delivery/`. Then the producer moves on to the learn stage.
 
 ## Never
 

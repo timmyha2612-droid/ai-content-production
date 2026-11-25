@@ -6,24 +6,61 @@
       "label": "Full production",
       "when": "A full piece of content: research to hand-off, ending in the Higgsfield hand-off (assets uploaded + Canvas build sheet).",
       "generation_allowed": true,
-      "stages": ["intake", "research", "concept", "script", "shotlist", "bible", "prompts", "boards", "drafts",
-                 "finals", "mograph", "sound", "assembly", "delivery", "handoff", "learn"]
+      "stages": [
+        "intake",
+        "research",
+        "concept",
+        "script",
+        "shotlist",
+        "bible",
+        "prompts",
+        "boards",
+        "drafts",
+        "finals",
+        "sound",
+        "assembly",
+        "delivery",
+        "handoff",
+        "learn"
+      ]
     },
     "single": {
       "label": "Single asset",
       "when": "One asset: an icon, a thumbnail, a single shot.",
       "generation_allowed": true,
-      "stages": ["intake", "prompts", "drafts", "finals", "delivery", "handoff", "learn"]
+      "stages": [
+        "intake",
+        "prompts",
+        "drafts",
+        "finals",
+        "delivery",
+        "handoff",
+        "learn"
+      ]
     },
     "refine": {
       "label": "Prompt refinement",
       "when": "The user only wants a prompt. Quick questions, then a prompt card. No generation at all.",
       "generation_allowed": false,
-      "stages": ["refine"]
+      "stages": [
+        "refine"
+      ]
     }
   },
-  "optional": ["research", "concept", "mograph", "sound", "assembly", "boards", "handoff"],
-  "parallel": [["mograph", "sound"]],
+  "optional": [
+    "research",
+    "concept",
+    "sound",
+    "assembly",
+    "boards",
+    "handoff"
+  ],
+  "parallel": [],
   "qa_max_rounds": 3,
-  "gen_tier_stage": {"board": "boards", "draft": "drafts", "final": "finals", "upscale": "finals"}
+  "gen_tier_stage": {
+    "board": "boards",
+    "draft": "drafts",
+    "final": "finals",
+    "upscale": "finals"
+  }
 }
