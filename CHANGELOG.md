@@ -7,6 +7,15 @@ dates; rule changes that alter what gets generated are listed here too.
 
 ## [Unreleased]
 
+### Added
+
+- Studio interview lighting: 8 `interview_` setups in `rules/light_setups.json` (documentary soft key,
+  three-point, high-key white, low-key void, dressed set with practicals, coloured wash, window-style side
+  light, podcast and multi-person), from `docs/research/studio-interview-lighting-guide.md`. Every row now
+  has a `category` (`cinematic` or `interview`); interview rows add `people`, a `rig` with the practical
+  numbers (key, fill, rim, background stops and distance, A/B lenses, contrast) and a 2-3 light
+  `small_kit`.
+
 ## [0.2.0] - 2026-11-26
 
 ### Added

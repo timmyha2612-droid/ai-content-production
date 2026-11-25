@@ -41,6 +41,8 @@ Format of the last column: `setup` / `quality` / `direction` / `color_temp` / `p
 | Period, intimacy, folk horror, survival | Firelight / candlelight | firelight / small source, fast falloff / low, from below and side / candlelight 1900K, cool night outside / candles, lantern, torch, campfire |
 | Power, interrogation, isolation in a pool | Top light | top light / hard, fast falloff / overhead 60-90 degrees / tungsten 3200K or fluorescent green / pendant lamp, ceiling fixture |
 
+**Interviews.** Sit-down studio interviews and podcasts have their own guide: [docs/research/studio-interview-lighting-guide.md](studio-interview-lighting-guide.md). It covers 8 interview setups with rigs, small-kit versions, camera placement and reference frames. This guide stays general; the two link to each other.
+
 ---
 
 ## 1. Rembrandt lighting

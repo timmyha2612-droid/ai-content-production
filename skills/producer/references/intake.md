@@ -124,6 +124,9 @@ not read them out as a list.
 
 - **Subject.** "Who or what is on screen?" [Concrete: "a woman in her 30s, flour on her apron", not "a person".]
 - **Action.** "What do they do?" One clear action per shot. [Present tense, physical verbs.]
+- **People on camera.** For interviews and podcasts: "How many people are on camera, and who sits where?"
+  Options: one person; two; three or four. [Record it on the job card's Subject line. The cinematographer
+  picks the interview light from it.]
 - **Wardrobe and props.** Fixed items that must stay the same across shots.
 - **Consistency.** "Does the same character or product appear in several shots?" [Yes means a character
   sheet in the bible and a Soul ID or reference images.]

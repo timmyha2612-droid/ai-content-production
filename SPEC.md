@@ -315,12 +315,19 @@ A JSON front matter block between `---` lines, followed by a markdown body:
   family setups (low key, split, Rembrandt, "short lighting" named as such, practicals, top light, firelight, night exterior,
   chiaroscuro) in `light_look.setup` or `quality`, but not on high key or overcast. The trigger words live
   in the rule file, not in code. `card new` cannot add these: `setup` is filled after the card is made.
-- `light_setups.json`: one entry per lighting setup in the lighting guide's quick chooser
-  (`docs/research/cinematic-lighting-guide.md`), 16 in all. Each has `id`, `name`, `intent` (list), `setup`,
-  `quality`, `direction`, `color_temp`, `practicals`, `finish` (a default), `stays_dark` (what the card must
-  say falls into darkness), `do_not_use_when` (list), `low_key` (true when the setup text triggers the
-  `flat_light` guards) and `board_url` (the Cosmos study board with reference frames). The cinematographer
-  picks the row whose intent fits the shot and copies the fields into `light_look`, adding the side of frame.
+- `light_setups.json`: 24 lighting setups. `category` says where a row comes from: 16 `cinematic` rows (the
+  quick chooser of `docs/research/cinematic-lighting-guide.md`) and 8 `interview` rows (the studio setups of
+  `docs/research/studio-interview-lighting-guide.md`, ids starting `interview_`). Each has `id`, `name`,
+  `category`, `intent` (list), `setup`, `quality`, `direction`, `color_temp`, `practicals`, `finish` (a
+  default), `stays_dark` (what the card must say falls into darkness), `do_not_use_when` (list), `low_key` (true
+  when the setup text triggers the `flat_light` guards) and `board_url` (the Cosmos study board with reference
+  frames). Interview rows add three optional fields. `people` is a number or a `[min, max]` range. `rig` holds
+  the practical numbers for a crew brief: `key` (`source`, `side`, `angle`, `height`, `distance_m`, `kelvin`),
+  `fill` (often negative fill: a black panel that soaks up bounce), `rim`, `background` (`stops_vs_face`,
+  `subject_distance_m`, `notes`), `camera` (`a_mm`, `b_mm`, `aperture`, `eyeline`) and `contrast_ratio`.
+  `small_kit` is the same look with 2-3 lights, one line per light. Ranges are `[min, max]`. The rig is for
+  planning, not for the prompt. The cinematographer picks the row whose intent fits the shot (filtering on
+  `category`) and copies the fields into `light_look`, adding the side of frame.
 - `positive_rewrites.json`: `{ "<avoid term>": "<positive phrasing>" }`, for example "camera shake" →
   "locked-off tripod shot, perfectly stable frame".
 - `models.json`: `{ "rules_version": "...", "providers": { "higgsfield": { "surface": "cli", "models": { "<id>":

@@ -55,16 +55,71 @@ class LightSetupsTest(unittest.TestCase):
     def test_loads_with_required_keys(self):
         doc = load("light_setups")
         self.assertTrue(doc.get("version") and doc.get("about"))
+        for word in ("category", "rig", "small_kit"):
+            self.assertIn(word, doc["about"])
         setups = doc["setups"]
-        self.assertEqual(len(setups), 16)
-        self.assertEqual(len({s["id"] for s in setups}), 16)
+        self.assertEqual(len(setups), 24)
+        self.assertEqual(len({s["id"] for s in setups}), len(setups))
         for s in setups:
-            for k in self.KEYS:
+            for k in self.KEYS + ("id", "name", "category"):
                 self.assertIn(k, s, s.get("id"))
                 self.assertTrue(s[k], "{}: {} is empty".format(s["id"], k))
             self.assertIsInstance(s["intent"], list)
             self.assertIsInstance(s["do_not_use_when"], list)
+            self.assertIsInstance(s["low_key"], bool, s["id"])
+            self.assertIn(s["category"], ("cinematic", "interview"), s["id"])
             self.assertTrue(s["board_url"].startswith("https://www.cosmos.so/"), s["id"])
+        cats = [s["category"] for s in setups]
+        self.assertEqual(cats.count("cinematic"), 16)
+        self.assertEqual(cats.count("interview"), 8)
+
+    def test_interview_entries(self):
+        rows = [s for s in load("light_setups")["setups"] if s["category"] == "interview"]
+        self.assertEqual(len(rows), 8)
+        self.assertEqual(sum(s["low_key"] for s in rows), 3)  # doc soft key, black void, podcast
+        for s in rows:
+            sid = s["id"]
+            self.assertTrue(sid.startswith("interview_"), sid)
+            self.assertTrue(s["board_url"].startswith("https://www.cosmos.so/timmy111/"), sid)
+            self.assertIn("natural skin texture", s["finish"], sid)
+            # people: one number, or a [min, max] range
+            p = s["people"]
+            if isinstance(p, list):
+                self.assertEqual(len(p), 2, sid)
+                self.assertLessEqual(p[0], p[1], sid)
+            else:
+                self.assertIsInstance(p, int, sid)
+            # small kit: the 2-3 light version (a fourth line may hold flags or a note)
+            self.assertIsInstance(s["small_kit"], list, sid)
+            self.assertTrue(2 <= len(s["small_kit"]) <= 4, sid)
+            self.assertTrue(all(isinstance(x, str) and x for x in s["small_kit"]), sid)
+            rig = s["rig"]
+            for k in ("key", "fill", "rim", "background", "camera", "contrast_ratio"):
+                self.assertIn(k, rig, sid)
+                self.assertTrue(rig[k], "{}: rig.{} is empty".format(sid, k))
+            for k in ("source", "side", "angle", "height", "distance_m", "kelvin"):
+                self.assertIn(k, rig["key"], sid)
+            for k in ("stops_vs_face", "subject_distance_m"):
+                self.assertIn(k, rig["background"], sid)
+            for k in ("a_mm", "b_mm", "aperture", "eyeline"):
+                self.assertIn(k, rig["camera"], sid)
+            ranges = [rig["key"]["distance_m"], rig["key"]["kelvin"], rig["background"]["stops_vs_face"],
+                      rig["background"]["subject_distance_m"], rig["camera"]["a_mm"], rig["camera"]["b_mm"]]
+            for r in ranges:
+                self.assertIsInstance(r, list, sid)
+                self.assertEqual(len(r), 2, sid)
+                self.assertTrue(all(isinstance(x, (int, float)) for x in r), sid)
+                self.assertLessEqual(r[0], r[1], sid)
+            # kelvin in a sane range; dark looks sit under the face, high key over it
+            self.assertTrue(2000 <= rig["key"]["kelvin"][0] <= rig["key"]["kelvin"][1] <= 6500, sid)
+            if s["low_key"]:
+                self.assertLess(rig["background"]["stops_vs_face"][1], 0, sid)
+
+    def test_cinematic_entries_carry_no_rig(self):
+        for s in load("light_setups")["setups"]:
+            if s["category"] == "cinematic":
+                self.assertFalse(s["id"].startswith("interview_"), s["id"])
+                self.assertNotIn("rig", s, s["id"])
 
     def test_low_key_flag_matches_the_compiler_trigger(self):
         for s in load("light_setups")["setups"]:

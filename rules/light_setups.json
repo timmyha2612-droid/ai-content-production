@@ -1,10 +1,11 @@
 {
-  "version": "0.1.0",
-  "about": "One lighting setup per row of the lighting guide's quick chooser (docs/research/cinematic-lighting-guide.md). Pick the row whose intent matches the shot, then copy setup, quality, direction, color_temp, practicals and the finish default into light_look. 'stays_dark' is what the card must say falls into darkness. 'do_not_use_when' lists moods the setup is wrong for. 'low_key' marks setups whose setup text triggers the flat_light guards (negatives.json applies_when); the loop row is left false because its broad version is open and bright. 'board_url' is the Cosmos study board with reference frames. Direction words are a starting point: always name the side (frame-left, frame-right, behind, above).",
+  "version": "0.2.0",
+  "about": "Lighting setups for the cinematographer. 'category' says which guide a row comes from: 'cinematic' rows are the quick chooser of docs/research/cinematic-lighting-guide.md; 'interview' rows are the studio interview setups of docs/research/studio-interview-lighting-guide.md. Pick the row whose intent matches the shot, then copy setup, quality, direction, color_temp, practicals and the finish default into light_look. 'stays_dark' is what the card must say falls into darkness. 'do_not_use_when' lists moods the setup is wrong for. 'low_key' marks setups whose setup text triggers the flat_light guards (negatives.json applies_when); the loop row is left false because its broad version is open and bright, and the dressed-set interview row is left false because its set never goes black. 'board_url' is the Cosmos study board with reference frames. Interview rows also carry 'people' (a number, or [min, max]), 'rig' (the practical numbers for a shot list or crew brief: key source, side, angle, height, distance_m and kelvin; fill or negative fill (a black panel that soaks up bounce); rim; background stops_vs_face and subject_distance_m; camera a_mm, b_mm, aperture and eyeline; contrast_ratio) and 'small_kit' (the same look with 2-3 lights). Ranges are [min, max]. The rig is for planning and crew notes, not for the prompt. Direction words are a starting point: always name the side (frame-left, frame-right, behind, above).",
   "setups": [
     {
       "id": "rembrandt",
       "name": "Rembrandt",
+      "category": "cinematic",
       "intent": [
         "hidden motives",
         "gravitas",
@@ -28,6 +29,7 @@
     {
       "id": "butterfly",
       "name": "Butterfly / Paramount",
+      "category": "cinematic",
       "intent": [
         "glamour",
         "star reveal",
@@ -52,6 +54,7 @@
     {
       "id": "split",
       "name": "Split",
+      "category": "cinematic",
       "intent": [
         "duality",
         "threat",
@@ -78,6 +81,7 @@
     {
       "id": "loop_broad_short",
       "name": "Loop, broad, short",
+      "category": "cinematic",
       "intent": [
         "everyday drama close-ups",
         "open vs closed character"
@@ -99,6 +103,7 @@
     {
       "id": "high_key",
       "name": "High key",
+      "category": "cinematic",
       "intent": [
         "optimism",
         "clean commercial",
@@ -125,6 +130,7 @@
     {
       "id": "low_key",
       "name": "Low key",
+      "category": "cinematic",
       "intent": [
         "menace",
         "secrets",
@@ -150,6 +156,7 @@
     {
       "id": "window",
       "name": "Window light",
+      "category": "cinematic",
       "intent": [
         "introspection",
         "period",
@@ -172,6 +179,7 @@
     {
       "id": "backlight_rim",
       "name": "Backlight / rim",
+      "category": "cinematic",
       "intent": [
         "mystery",
         "longing",
@@ -195,6 +203,7 @@
     {
       "id": "practicals",
       "name": "Motivated practicals",
+      "category": "cinematic",
       "intent": [
         "real night interiors",
         "insomnia",
@@ -217,6 +226,7 @@
     {
       "id": "golden_hour",
       "name": "Golden hour",
+      "category": "cinematic",
       "intent": [
         "nostalgia",
         "romance",
@@ -240,6 +250,7 @@
     {
       "id": "blue_hour",
       "name": "Blue hour",
+      "category": "cinematic",
       "intent": [
         "melancholy",
         "transition",
@@ -262,6 +273,7 @@
     {
       "id": "night_exterior",
       "name": "Night exterior mixed colour",
+      "category": "cinematic",
       "intent": [
         "urban noir",
         "alienation",
@@ -284,6 +296,7 @@
     {
       "id": "overcast",
       "name": "Overcast",
+      "category": "cinematic",
       "intent": [
         "grief",
         "austerity",
@@ -308,6 +321,7 @@
     {
       "id": "hard_sun_dappled",
       "name": "Hard sun / dappled",
+      "category": "cinematic",
       "intent": [
         "heat",
         "summer",
@@ -332,6 +346,7 @@
     {
       "id": "firelight",
       "name": "Firelight / candlelight",
+      "category": "cinematic",
       "intent": [
         "period",
         "intimacy",
@@ -356,6 +371,7 @@
     {
       "id": "top_light",
       "name": "Top light",
+      "category": "cinematic",
       "intent": [
         "power",
         "interrogation",
@@ -375,6 +391,615 @@
       ],
       "low_key": true,
       "board_url": "https://www.cosmos.so/timmy111/top-light-and-overhead-single-source"
+    },
+    {
+      "id": "interview_doc_soft_key_dark_bg",
+      "name": "Documentary interview: soft key, dark background",
+      "category": "interview",
+      "intent": [
+        "documentary sit-down",
+        "founder or personal story",
+        "grief or comeback",
+        "premium brand film",
+        "executive or artist profile"
+      ],
+      "setup": "low-key documentary interview lighting, one large soft key",
+      "quality": "soft wraparound key, deep shadow falloff, no fill",
+      "direction": "short side (the side the subject looks towards), 30-60 degrees off the eyeline, 30-45 degrees above eye height, angled down",
+      "color_temp": "key 4300-5000K, warm tungsten practical 2700-3000K, faint cool 6500-8000K accent",
+      "practicals": "a dimmed warm table lamp in the back third of frame, a soft slash of light on the back wall, optional low cool LED strip on the floor",
+      "finish": "natural skin texture with pores and fine lines, large round catchlight in both eyes, gently lifted blacks",
+      "stays_dark": "the shadow side of the face falls into a smooth dark; the room sits 2-4 stops under the face, broken only by the lamp and the slash",
+      "do_not_use_when": [
+        "bright comedy",
+        "upbeat corporate explainer",
+        "a series that must look clean and even"
+      ],
+      "low_key": true,
+      "people": [
+        1,
+        2
+      ],
+      "rig": {
+        "key": {
+          "source": "120-150cm deep octa or parabolic, or a 4x4-6x6 diffusion frame, gridded",
+          "side": "short",
+          "angle": "30-60 degrees off the eyeline",
+          "height": "30-45 degrees above eye height, angled down",
+          "distance_m": [
+            1,
+            1.5
+          ],
+          "kelvin": [
+            4300,
+            5000
+          ]
+        },
+        "fill": "none; a black 4x4 floppy 1-1.5m off the shadow cheek (if fill is needed, a far bounce 2-3 stops under the key)",
+        "rim": "optional small LED behind on the key side, only to pull dark hair off black",
+        "background": {
+          "stops_vs_face": [
+            -4,
+            -2
+          ],
+          "subject_distance_m": [
+            3,
+            5
+          ],
+          "notes": "warm practical plus a slash or pool 1-2 stops under the face; dark textured wall; never a pure black void"
+        },
+        "camera": {
+          "a_mm": [
+            35,
+            50
+          ],
+          "b_mm": [
+            85,
+            100
+          ],
+          "aperture": "T2-T2.8",
+          "eyeline": "interviewer beside the A lens on the shadow side; B on the same side of the eyeline, 20-30 degrees further round"
+        },
+        "contrast_ratio": "high: no fill, the far cheek falls to a smooth dark"
+      },
+      "small_kit": [
+        "Key: 300-600W COB in a 120cm gridded deep octa, short side, about 45 degrees, slightly above eye level, 1.2m away",
+        "Negative fill: black 4x4 or V-flat on the shadow side, plus a flag between the key and the wall",
+        "Background: a 2700K dimmable table lamp and/or a small barn-doored LED raking a slash across the wall"
+      ],
+      "board_url": "https://www.cosmos.so/timmy111/documentary-interview-soft-key-dark-background"
+    },
+    {
+      "id": "interview_three_point",
+      "name": "Classic three-point interview",
+      "category": "interview",
+      "intent": [
+        "corporate testimonial",
+        "charity or non-profit film",
+        "explainer",
+        "testimonial series",
+        "professional but human"
+      ],
+      "setup": "three-point interview lighting",
+      "quality": "large soft key, gentle falloff on the far cheek, low fill",
+      "direction": "key on the short side, 30-50 degrees off the lens, centre 20-40cm above the eyes, angled down; rim high behind on the opposite side",
+      "color_temp": "daylight 5600K key (4300-5000K on a mixed location), warm practicals 2700-3200K, cool backdrop against warm skin",
+      "practicals": "a small accent lamp or hidden tube off to one side, kept 1-2 stops under the face",
+      "finish": "natural skin texture with pores and fine lines, soft catchlights at 10 or 2 o'clock",
+      "stays_dark": "the far cheek sits 1-1.5 stops under the near side; a darker zone stays right behind the head",
+      "do_not_use_when": [
+        "confessional or true-crime gravitas",
+        "bold brand colour",
+        "a raw handheld doc look"
+      ],
+      "low_key": false,
+      "people": 1,
+      "rig": {
+        "key": {
+          "source": "90-120cm gridded deep octa or parabolic, or a 4x4-6x6 grid-cloth frame",
+          "side": "short",
+          "angle": "30-50 degrees off the lens",
+          "height": "centre 20-40cm above the eyes, angled down",
+          "distance_m": [
+            1,
+            1.2
+          ],
+          "kelvin": [
+            4300,
+            5600
+          ]
+        },
+        "fill": "often none: a black floppy 1-1.5m off the shadow cheek; for a brighter corporate look, a bounce near the lens at 1/4 to 1/8 of the key",
+        "rim": "small Fresnel or 60-120W COB 120-160 degrees from camera, opposite the key, 2.2-3m high, flagged off the lens",
+        "background": {
+          "stops_vs_face": [
+            -1.5,
+            -0.5
+          ],
+          "subject_distance_m": [
+            1.5,
+            3
+          ],
+          "notes": "coloured seamless lit on its own (evenly for a series), or a real room with the ambient pulled down"
+        },
+        "camera": {
+          "a_mm": [
+            50,
+            85
+          ],
+          "b_mm": [
+            85,
+            135
+          ],
+          "aperture": "T2-T2.8",
+          "eyeline": "interviewer beside the A lens, subject slightly off-axis; B 20-40 degrees away in angle"
+        },
+        "contrast_ratio": "about 2:1 to 3:1 (far cheek 1-1.5 stops under)"
+      },
+      "small_kit": [
+        "Key: 300-600W COB in a 90cm gridded parabolic, 40 degrees on the short side, 1-1.2m away, 30cm above the eyes, lens side flagged",
+        "Rim: 60-150W COB or small Fresnel, high, 130-150 degrees behind on the opposite side",
+        "Background: a small gridded or snooted LED pool on the wall 2m behind, or a practical"
+      ],
+      "board_url": "https://www.cosmos.so/timmy111/classic-three-point-interview"
+    },
+    {
+      "id": "interview_high_key_white",
+      "name": "High-key white studio interview",
+      "category": "interview",
+      "intent": [
+        "two-chair editorial conversation",
+        "brand talk show",
+        "open and honest",
+        "lifestyle or beauty",
+        "social vertical with room for captions"
+      ],
+      "setup": "high-key white studio interview lighting",
+      "quality": "soft overhead wraparound light, low contrast, gentle shadows under brow and chin",
+      "direction": "one parabolic per subject on a boom, 30-45 degrees off the nose towards the eyeline, 1-1.5m above head height, tilted down; soft top fill overhead",
+      "color_temp": "daylight 5600K throughout, key and cyc matched (or warmed to 4300-5000K for creamy white)",
+      "practicals": "none; booms and stands may show on purpose in the wide",
+      "finish": "natural skin texture with pores and fine lines, slightly warm skin, no shine on the forehead",
+      "stays_dark": "nothing large; only wardrobe, chairs and a black solid on the far side of the face hold shape",
+      "do_not_use_when": [
+        "confessional or grief stories",
+        "true crime",
+        "subjects in white clothes"
+      ],
+      "low_key": false,
+      "people": [
+        1,
+        2
+      ],
+      "rig": {
+        "key": {
+          "source": "120-150cm parabolic or deep octa per subject, on a boom",
+          "side": "short",
+          "angle": "30-45 degrees off the nose towards the eyeline",
+          "height": "1-1.5m above head height, tilted down 30-45 degrees",
+          "distance_m": [
+            1,
+            1.5
+          ],
+          "kelvin": [
+            5600,
+            5600
+          ]
+        },
+        "fill": "overhead lantern or space light 3-4m high plus the white floor; black floppies above and beside each key, a black solid on the far side for shape",
+        "rim": "rarely; a small gridded top-back light only when hair blends into the cyc",
+        "background": {
+          "stops_vs_face": [
+            1,
+            2
+          ],
+          "subject_distance_m": [
+            3,
+            5
+          ],
+          "notes": "cyc lit by its own units, never by the keys; about level for light grey, with a soft halo between the chairs"
+        },
+        "camera": {
+          "a_mm": [
+            24,
+            35
+          ],
+          "b_mm": [
+            50,
+            85
+          ],
+          "aperture": "f/2.8-f/4",
+          "eyeline": "at least three cameras: a centred locked-off wide, singles from beside the other person's shoulder 15-30 degrees off the eyeline"
+        },
+        "contrast_ratio": "low: the white floor bounces fill back up"
+      },
+      "small_kit": [
+        "Key: 120cm parabolic on a boom, about 45 degrees to the side the subject faces, 1m above the eyes",
+        "Background: a COB or 60cm softbox behind the subject aimed at the paper, flagged off the subject, pushing the paper 1-1.5 stops over the face",
+        "Optional: a china ball as top fill, or a white 4x4 bounce; grey rug if faces go flat"
+      ],
+      "board_url": "https://www.cosmos.so/timmy111/high-key-white-studio-interview"
+    },
+    {
+      "id": "interview_low_key_void",
+      "name": "Low-key black void interview",
+      "category": "interview",
+      "intent": [
+        "testimony",
+        "true crime",
+        "celebrity sit-down",
+        "founder origin with gravitas",
+        "brand manifesto",
+        "confessional"
+      ],
+      "setup": "low-key black void interview lighting",
+      "quality": "single soft key, chiaroscuro falloff to black, small Rembrandt patch on the shadow cheek",
+      "direction": "key on the short side, 45-70 degrees off the lens, 20-40 degrees above the eyeline; for wides, one hard source high at three-quarter back",
+      "color_temp": "key 4300-5000K, neutral black void (never gelled), any rim matched or slightly cooler",
+      "practicals": "none; at most a soft pool of light on the floor around the chair",
+      "finish": "natural skin texture with pores and fine lines, crushed blacks with no milky shadows, soft catchlight in both eyes",
+      "stays_dark": "the shadow side of the face goes near-black; the background sits 4-6 stops under and nothing behind the subject reads",
+      "do_not_use_when": [
+        "upbeat corporate",
+        "lifestyle or social pop",
+        "subjects in all-black clothes with no rim"
+      ],
+      "low_key": true,
+      "people": 1,
+      "rig": {
+        "key": {
+          "source": "4-5ft octa or 4x4 grid-cloth frame with a 40-degree grid and a black skirt",
+          "side": "short",
+          "angle": "45-70 degrees off the lens",
+          "height": "20-40 degrees above the eyeline",
+          "distance_m": [
+            1,
+            1.5
+          ],
+          "kelvin": [
+            4300,
+            5000
+          ]
+        },
+        "fill": "none, or a bounce or very low LED near the lens 2-3 stops under; a black 4x4 close on the shadow side is required",
+        "rim": "optional faint rim from a 1x1 LED or barn-doored Fresnel behind; leave out for the purest void",
+        "background": {
+          "stops_vs_face": [
+            -6,
+            -4
+          ],
+          "subject_distance_m": [
+            3,
+            4
+          ],
+          "notes": "black duvetyne or velvet, no background light; any texture comes from key spill only"
+        },
+        "camera": {
+          "a_mm": [
+            50,
+            85
+          ],
+          "b_mm": [
+            85,
+            135
+          ],
+          "aperture": "T2.8-T4",
+          "eyeline": "interviewer tight beside the lens on the far side from the key (or an Interrotron, a device that lets the subject look into the lens); wide C-cam 24-35mm of the chair in its pool"
+        },
+        "contrast_ratio": "4:1 to 8:1 or more"
+      },
+      "small_kit": [
+        "Key: 300-600W COB in a 90-120cm gridded parabolic, 60 degrees off-axis on the short side, about 30 degrees up, 1-1.2m away",
+        "Edge (optional): 60-100W LED, high three-quarter back, at low output",
+        "Black duvetyne or the darkest wall 2-3m behind, all room lights off, negative fill and a grid"
+      ],
+      "board_url": "https://www.cosmos.so/timmy111/low-key-black-void-interview"
+    },
+    {
+      "id": "interview_dressed_set_practicals",
+      "name": "Dressed set with practicals (lamps, shelves, bokeh)",
+      "category": "interview",
+      "intent": [
+        "long-form podcast",
+        "founder or author",
+        "warm and premium",
+        "recurring brand set",
+        "wellness or lifestyle client"
+      ],
+      "setup": "dressed-set interview lighting, one large soft key with warm lamps behind",
+      "quality": "soft key from high above the face, set lit in pools with dark gaps, never flat",
+      "direction": "key 20-45 degrees off the lens on the side the subject faces, hung 30-50cm above the eyeline, tilted down; over a table, one disc centred above",
+      "color_temp": "key 4300-5000K, lamps and shelf LEDs 2400-3000K, one cool or magenta accent",
+      "practicals": "1-3 dimmed warm lamps (Edison bulbs, sconces, shelf LED tape) at different depths, beside the head, never growing out of it",
+      "finish": "natural skin texture with pores and fine lines, creamy round bokeh from the bulbs, warm mids with neutral skin",
+      "stays_dark": "the gaps between the lamp pools; the set sits 1.5-3 stops under the face but never goes fully black",
+      "do_not_use_when": [
+        "clean corporate series",
+        "stark testimony",
+        "bold single brand colour"
+      ],
+      "low_key": false,
+      "people": [
+        1,
+        2
+      ],
+      "rig": {
+        "key": {
+          "source": "120-150cm parabolic or octa, or a 1.2-2m round diffusion, gridded when walls are close",
+          "side": "short",
+          "angle": "20-45 degrees off the lens",
+          "height": "30-50cm above the eyeline, tilted down 30-45 degrees",
+          "distance_m": [
+            1,
+            1.5
+          ],
+          "kelvin": [
+            4300,
+            5000
+          ]
+        },
+        "fill": "usually none; tabletop and walls bounce enough, negative fill if a light wall flattens the face",
+        "rim": "optional small gridded strip 120-150 degrees behind at low level; the practicals often do it",
+        "background": {
+          "stops_vs_face": [
+            -3,
+            -1.5
+          ],
+          "subject_distance_m": [
+            2,
+            4
+          ],
+          "notes": "real dressed set in pools; lamps dimmed to 25-60%; one accent colour at most; key a few hundred kelvin cooler than the lamps"
+        },
+        "camera": {
+          "a_mm": [
+            50,
+            85
+          ],
+          "b_mm": [
+            24,
+            35
+          ],
+          "aperture": "T1.8-T2.8",
+          "eyeline": "A slightly off-axis with a lamp in the empty side; B a wide of the set; optional OTS on 35-50mm"
+        },
+        "contrast_ratio": "3:1 to 6:1"
+      },
+      "small_kit": [
+        "Key: 200-300W COB in a 90-120cm gridded parabolic, high, about 30 degrees off-axis, 1-1.2m away",
+        "Set: a roll of dimmable warm LED tape, or two small RGB tubes hidden behind shelves or a plant",
+        "Practicals: a shaded table lamp and a paper or Edison lamp with dimmable 2700K bulbs at different depths"
+      ],
+      "board_url": "https://www.cosmos.so/timmy111/dressed-set-with-practicals-lamps-shelves-bokeh"
+    },
+    {
+      "id": "interview_coloured_wash",
+      "name": "Coloured background wash and gels",
+      "category": "interview",
+      "intent": [
+        "tech or start-up",
+        "music or youth brand",
+        "creator talking head",
+        "launch testimonial",
+        "brand colour on screen",
+        "scroll-stopping social"
+      ],
+      "setup": "coloured background wash, neutral soft key on the face",
+      "quality": "soft clean key, saturated colour on the wall only",
+      "direction": "key on the short side, 30-45 degrees off the lens, 20-40 degrees up; colour units 2-4m behind the subject, aimed only at the wall",
+      "color_temp": "white balance locked to a 5600K key; saturated teal, magenta, deep blue or amber gels on the background",
+      "practicals": "an RGB tube, neon sign or logo in frame to motivate the colour",
+      "finish": "natural skin texture with pores and fine lines, clean natural skin tones with no colour spill",
+      "stays_dark": "the edges of the colour field; the subject's shadow never lands in the middle of a wash",
+      "do_not_use_when": [
+        "grief or testimony",
+        "sober corporate",
+        "naturalistic documentary"
+      ],
+      "low_key": false,
+      "people": [
+        1,
+        2
+      ],
+      "rig": {
+        "key": {
+          "source": "90-150cm octa, parabolic or gridded 4x4, ungelled",
+          "side": "short",
+          "angle": "30-45 degrees off the lens",
+          "height": "20-40 degrees up",
+          "distance_m": [
+            1,
+            1.5
+          ],
+          "kelvin": [
+            4300,
+            5600
+          ]
+        },
+        "fill": "low bounce from the camera side, or none plus negative fill for a moodier look",
+        "rim": "optional small gridded source in the second colour, 120-150 degrees behind at head height, kept off the cheek",
+        "background": {
+          "stops_vs_face": [
+            -2,
+            0
+          ],
+          "subject_distance_m": [
+            2,
+            4
+          ],
+          "notes": "its own lighting zone: a hard gelled circle, even RGB uplights, or one deep room colour; two hues at most"
+        },
+        "camera": {
+          "a_mm": [
+            85,
+            85
+          ],
+          "b_mm": [
+            35,
+            50
+          ],
+          "aperture": "f/2-f/2.8",
+          "eyeline": "off-axis to the interviewer on the key side, subject centred on the colour pool; creator setups go on-axis to the lens"
+        },
+        "contrast_ratio": "2:1 to 4:1"
+      },
+      "small_kit": [
+        "Key: 120-150cm octa or 90cm parabolic on a COB at 5600K, 35-45 degrees on the short side, gridded",
+        "Background: a COB with a Fresnel or projection attachment and a gel, or an RGB panel, low behind the subject and aimed at the wall",
+        "Optional: an RGB tube as a coloured rim or practical"
+      ],
+      "board_url": "https://www.cosmos.so/timmy111/coloured-background-wash-and-gels"
+    },
+    {
+      "id": "interview_window_side",
+      "name": "Window-style soft side light in studio",
+      "category": "interview",
+      "intent": [
+        "brand-doc interview",
+        "CEO case study",
+        "calm and documentary",
+        "subjects in glasses",
+        "moody long-form conversation"
+      ],
+      "setup": "window light from the side, studio built",
+      "quality": "very large soft source, gradual falloff across the face",
+      "direction": "side light 60-90 degrees off the lens on the side the subject faces, top edge at or above head height, 1-2m from the face",
+      "color_temp": "daylight 5000-5600K key, warm practicals 2700-3200K, slightly cool shadows",
+      "practicals": "2-3 dimmed warm lamps in the background, optional bright sheer curtain on the key side",
+      "finish": "natural skin texture with pores and fine lines, one set of catchlights, no hard nose shadow",
+      "stays_dark": "the far cheek, held by a black solid; the background sits 1-2 stops under",
+      "do_not_use_when": [
+        "pop colour brand",
+        "two-chair high-key conversation",
+        "a dark void look"
+      ],
+      "low_key": false,
+      "people": 1,
+      "rig": {
+        "key": {
+          "source": "6x6-8x8ft diffusion frame (4x4 minimum) with a COB pushed through, or a 5-7ft parabolic feathered across",
+          "side": "the side the subject faces",
+          "angle": "60-90 degrees off the lens",
+          "height": "top edge at or above head height, bottom near seat height",
+          "distance_m": [
+            1,
+            2
+          ],
+          "kelvin": [
+            5000,
+            5600
+          ]
+        },
+        "fill": "none for moody work; a black 4x4 close on the opposite side; for corporate, a white bounce near camera lifting the far cheek 1/2 to 1 stop",
+        "rim": "optional faint back edge from the window side, 120-150 degrees from camera",
+        "background": {
+          "stops_vs_face": [
+            -2,
+            -1
+          ],
+          "subject_distance_m": [
+            2,
+            4
+          ],
+          "notes": "dressed room in deep green, navy or timber, flagged from the key"
+        },
+        "camera": {
+          "a_mm": [
+            35,
+            85
+          ],
+          "b_mm": [
+            85,
+            135
+          ],
+          "aperture": "f/2-f/2.8",
+          "eyeline": "interviewer beside the A lens on the key side; B 30-45 degrees off on the opposite side"
+        },
+        "contrast_ratio": "3:1 to 4:1 moody, about 2:1 corporate"
+      },
+      "small_kit": [
+        "Key: 300-600W COB through a 4x4 or 6x6 frame (or a 120-150cm parabolic), 70-90 degrees to one side, centre just above eye height, 1-1.5m away, with a black 4x4 or V-flat opposite",
+        "A warm practical or small LED tube in the background, dimmed",
+        "Optional: a gridded 60-100W LED as a low back kick, or skimming the back wall"
+      ],
+      "board_url": "https://www.cosmos.so/timmy111/window-style-soft-side-light-in-studio"
+    },
+    {
+      "id": "interview_podcast_multi",
+      "name": "Podcast and multi-person studio",
+      "category": "interview",
+      "intent": [
+        "long-form podcast",
+        "host and guest at a table",
+        "panel or roundtable",
+        "multi-hour multi-camera shoot",
+        "lean in and listen"
+      ],
+      "setup": "low-key podcast lighting, one matched soft key per seat overhead",
+      "quality": "soft wraparound light on each face, pool of light on the table, room falls off",
+      "direction": "each key overhead and in front of its seat, 20-35 degrees off that person's eyeline, aimed down 30-40 degrees; in a two-hander the keys cross-key from the other side",
+      "color_temp": "every key the same, 4300-5600K; uplights 2700-3200K plus one purple, teal or cyan accent",
+      "practicals": "warm uplights, cyan or purple shelf strips, pendants or lamps, dimmed separately",
+      "finish": "natural skin texture with pores and fine lines, boom-arm mics in shot, warm mids with slightly cool shadows",
+      "stays_dark": "the room beyond the table pool and the floor around the table; the set sits 1.5-3 stops under the faces",
+      "do_not_use_when": [
+        "single-subject confessional",
+        "bright editorial white",
+        "a set that must look like a real home"
+      ],
+      "low_key": true,
+      "people": [
+        2,
+        4
+      ],
+      "rig": {
+        "key": {
+          "source": "1.2-1.5m octa or Light Dome per seat on a pipe or boom, identical model, power, height and Kelvin",
+          "side": "short (cross-keyed from the other person's side)",
+          "angle": "20-35 degrees off that person's eyeline",
+          "height": "1-1.5m above head height, aimed down 30-40 degrees",
+          "distance_m": [
+            1.5,
+            2.5
+          ],
+          "kelvin": [
+            4300,
+            5600
+          ]
+        },
+        "fill": "usually none; tabletop and the other key's spill fill it; black flags on the outside of each seat and a floor cutter",
+        "rim": "optional shared round source behind the table between two facing people, with low front fill",
+        "background": {
+          "stops_vs_face": [
+            -3,
+            -1.5
+          ],
+          "subject_distance_m": [
+            3,
+            6
+          ],
+          "notes": "dark textured room lit on its own in pools; floor around the table kept dark"
+        },
+        "camera": {
+          "a_mm": [
+            24,
+            35
+          ],
+          "b_mm": [
+            50,
+            85
+          ],
+          "aperture": "f/2-f/2.8",
+          "eyeline": "3-4 cameras: a wide master, a cross single per person 20-40 degrees off-axis; eyelines to the other person, never the lens"
+        },
+        "contrast_ratio": "moderate; add white only if the contrast tops about 3:1"
+      },
+      "small_kit": [
+        "Keys: two 90-120cm gridded octas on booms, one per person, about 1m above head height, in front, angled down 35 degrees, same model, power and Kelvin",
+        "Background: a small COB or tube with a gel or RGB raking the back wall from low, or two practical lamps",
+        "Black flag outside each seat; for 3-4 people, one big overhead softbox or 4x4 frame plus a gridded panel on the main speaker"
+      ],
+      "board_url": "https://www.cosmos.so/timmy111/podcast-and-multi-person-studio-setups"
     }
   ]
 }

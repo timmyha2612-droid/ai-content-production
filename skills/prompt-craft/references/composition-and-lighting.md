@@ -150,6 +150,30 @@ warm lit window, otherwise black".
 - Eyeline just off-lens toward the near shoulder, never both at camera.
 - Name what sits in the gap (cups, a divider, a counter). State sizes and planes for a depth-staged two-shot.
 
+## Interviews
+
+For sit-down interviews and podcasts, use the `"category": "interview"` entries in `rules/light_setups.json`.
+The full rigs, small-kit versions, mistakes, prompt phrases and reference frames are in
+`${CLAUDE_PLUGIN_ROOT}/docs/research/studio-interview-lighting-guide.md`.
+
+**The rule under every setup:** one big soft key, close to the face, on the side the subject looks towards
+(*short side*: the cheek nearest the lens stays in shadow). Black *negative fill* (a flag that takes light
+away) does the shaping. The background is lit, or kept dark, on its own.
+
+| Interview type | Setup | Key phrase |
+|---|---|---|
+| Emotional story, founder, doc | Documentary soft key, dark background | "large soft key on the short side, negative fill, background two stops under, one warm practical" |
+| Corporate or charity testimonial | Classic three-point | "gridded soft key, low bounce fill, subtle high rim, backdrop lit separately" |
+| Two-chair editorial, clean brand talk | High-key white studio | "soft overhead key per chair, white cyc a stop over the face" |
+| Testimony, true crime, gravitas | Low-key black void | "one gridded soft key, no fill, black background, face falls off into shadow" |
+| Podcast host, author, recurring set | Dressed set with practicals | "high soft key, two dimmed warm lamps beside the head, shelves in soft pools" |
+| Tech, music, creator brand | Coloured background wash | "neutral key on the face, teal wash on the wall only, colour never on skin" |
+| Brand doc, subjects with glasses | Window-style soft side light | "big diffusion frame 60-90 degrees to the side, black flag opposite" |
+| Two to four people at a table | Podcast / multi-person | "matched soft key over each seat, background practicals, eyeline to the other person" |
+
+Write "natural skin texture" on every face; never smoothing or a beauty glow. State the background in stops
+against the face. Keep coloured light off the skin.
+
 ## Banned trigger words
 
 Never write these; they invite an invisible softbox, plastic skin or a generic look:

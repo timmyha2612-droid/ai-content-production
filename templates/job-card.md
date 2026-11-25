@@ -36,7 +36,7 @@ Tone: <three words>, like <one reference that nails it>
 
 ## Look (settled at intake)
 
-- Subject: <who or what, the action>
+- Subject: <who or what, the action; for interviews, how many people on camera>
 - World: <place, era, time of day, weather, atmosphere>
 - Camera: <camera language, movement appetite>
 - Light and look: <lighting, palette and grade, texture, finish (natural, true to life or clean), mood>

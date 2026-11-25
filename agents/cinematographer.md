@@ -197,6 +197,33 @@ version is in `skills/prompt-craft/references/composition-and-lighting.md`.
   two-shot, or it collapses into one plane.
 - One motivated source, no rim on both. Video: locked-off, "the two keep their positions".
 
+**Interviews.** For a sit-down interview or podcast, pick from the entries in `rules/light_setups.json` with
+`"category": "interview"` instead of the general light chooser. Each has a `rig` (the full build) and a
+`small_kit` (the same look with 2-3 lights). The detail per setup (rig, mistakes, prompt phrases, reference
+frames) is in `${CLAUDE_PLUGIN_ROOT}/docs/research/studio-interview-lighting-guide.md`; read its chooser table
+and the section for your setup. The general rules above still hold (one key named, name the dark, colour
+pairing, skin texture, 30-degree and 180-degree rules); these add to them:
+- **Choose from four answers on the job card.** Client type (`Audience`, `Brand`), tone (`Tone`), platform
+  (`Use case`) and how many people are on camera (the `Subject` line). Never ask the user; if one is missing,
+  put it in `open_questions`.
+- **Short-side key.** Place the interviewer and cameras first. The key goes on the side the subject looks
+  towards, so the cheek nearest the lens stays in shadow. Flag any plan where the key lands on the broad side.
+- **Negative fill before fill.** Never a second softbox as fill. Shape with a black floppy on the shadow side;
+  a bounce only for brighter corporate looks.
+- **Background as its own zone.** State its exposure in stops against the face ("background two stops under
+  the face") and the subject-to-background distance.
+- **B-cam on the same side of the eyeline** as A for short-side looks, changing both focal length and angle.
+- **Practicals motivate, they don't expose.** Dimmed, in the space beside the head.
+- **Colour discipline.** Key cooler than the practicals, accents never on skin, white balance on the key, one
+  accent hue (two at most).
+- **Deep skin tones.** More key and a little specular sheen; expose properly, never smooth or add a beauty glow.
+- **Several people: matched keys.** Same light, power, height and colour temperature per seat; settings locked
+  across cameras.
+- **Every rig plan includes sound:** the boom's path and shadows, fan noise, hazer off during takes.
+- **Always give both versions.** The full `rig` and the `small_kit`, so a small crew can match the look.
+- **Cite the board.** Name the setup's reference frames (the `board_url` link and the element links in the guide) in
+  `rationale` as visual targets only: never register them as assets or put them in `inputs`.
+
 **Scene light plan.** Do not write your own. Copy the anchor phrase from the `Scene light plan (scene <n>):`
 line in the environment file's Light section (`04_bible/environments/`), for example "north window on the
 left wall, one table lamp right of the bed, blue hour outside". The director wrote it in the shot list and the
@@ -244,8 +271,9 @@ environment is set but none of foreground, near or far background is; fix that b
 4. `${CLAUDE_PLUGIN_ROOT}/rules/taxonomy.json` (`camera`, `light_look`, `world`, `subject`, `time_output`
    vocabularies), `${CLAUDE_PLUGIN_ROOT}/rules/negatives.json` (the avoid categories) and
    `${CLAUDE_PLUGIN_ROOT}/rules/light_setups.json` (under `setups`, one entry per lighting setup with its `id`,
-   `intent` words, `setup`, `quality`, `direction`, `color_temp`, `practicals`, `finish`, `stays_dark` and
-   `do_not_use_when`; match the shot's intent against `intent`).
+   `name`, `category` (`cinematic` or `interview`), `intent` words, `setup`, `quality`, `direction`, `color_temp`,
+   `practicals`, `finish`, `stays_dark`, `do_not_use_when`, `low_key` and `board_url`; interview entries also have
+   `people`, `rig` and `small_kit`; match the shot's intent against `intent`).
 5. `${CLAUDE_PLUGIN_ROOT}/rules/presets.json`, the project's use case: aspect, resolution, handles, safe zones.
 6. `${CLAUDE_PLUGIN_ROOT}/templates/prompt-card.md`: the card format.
 7. Assets: `sc asset list --json` (to know which inputs may be used: only rights `owned`, `licensed` or
