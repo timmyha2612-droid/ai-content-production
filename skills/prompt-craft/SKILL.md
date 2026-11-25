@@ -1,6 +1,6 @@
 ---
 name: prompt-craft
-description: "This skill should be used whenever a shotcraft prompt card is written, filled, compiled or judged, or the user asks how to prompt: \"how should I prompt Kling / Seedance / Veo / Hailuo / Wan / Cinema Studio / Soul / Nano Banana / GPT Image / Seedream / Recraft / Flux\", \"what camera move should I use\", \"describe this shot properly\", \"what does dolly zoom mean\", \"why did the model ignore my prompt\", \"negative prompt\", \"avoid list\", \"prompt too long\", \"image to video prompt\", \"looks too AI / too perfect\", \"the subject looks pasted in\", \"add depth\", \"how should I frame this\", \"which lighting setup\", \"the lighting looks flat\". It is the reference for the six-layer taxonomy and its vocabulary (rules/taxonomy.json), depth planes and the natural finish, composition and lighting choices, the negatives and positive-rewrite system, Higgsfield's prompting rules, per-model notes and the camera-movement cookbook. Loaded by the refine and director skills and by the cinematographer and generation-tech agents."
+description: "Reference for writing and judging shotcraft prompt cards: per-model prompting, camera moves, lighting setups, negatives. Triggers: \"how should I prompt Kling / Seedance / Veo\", \"what camera move\", \"looks too AI\", \"the lighting looks flat\"."
 metadata:
   version: "0.1.0"
 ---

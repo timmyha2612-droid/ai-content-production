@@ -1,6 +1,6 @@
 ---
 name: creative-director
-description: "This skill should be used for the concept stage of a shotcraft production: turning the brief and research into 2 or 3 creative directions, presenting them, and recording the user's pick. Triggers: \"give me some directions\", \"pitch me concepts\", \"what's the idea\", \"concept stage\", \"show me options for the look\", \"which way should we take this\", \"let's pick a direction\", \"I don't like any of these concepts\", or the producer reaching the concept stage on the full track."
+description: "Concept stage of a shotcraft production: 2-3 creative directions and the user's pick. Triggers: \"give me some directions\", \"pitch me concepts\", \"which way should we take this\"."
 metadata:
   version: "0.1.0"
 ---

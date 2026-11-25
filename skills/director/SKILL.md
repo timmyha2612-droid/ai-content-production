@@ -1,6 +1,6 @@
 ---
 name: director
-description: "This skill should be used for the shot list stage of a shotcraft production, and for the light version on a single shot: breaking the script into beats and shots, each with an id, an exact duration, a purpose, coverage, image-first flags and continuity notes. Triggers: \"break it into shots\", \"make the shot list\", \"how many shots\", \"plan the shots\", \"what's the pacing\", \"fit it to 15 seconds\", \"which shots need a still first\", \"shot list stage\", or the producer reaching the shotlist stage. On the single track it also plans the one shot (beats and exact length) inside the prompts stage."
+description: "Shot list stage of a shotcraft production (and planning one shot): beats, shots, exact durations. Triggers: \"break it into shots\", \"make the shot list\", \"fit it to 15 seconds\"."
 metadata:
   version: "0.1.0"
 ---

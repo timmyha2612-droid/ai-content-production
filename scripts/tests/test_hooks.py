@@ -275,6 +275,20 @@ class GuardMcpTests(HookBase):
             code, _, err = self.guard(name, {})
             self.assertEqual(code, 0, "%s: %s" % (name, err))
 
+    def test_new_session_inside_the_last_project_is_still_guarded(self):
+        proj = self.make_project()
+        data = {"session_id": "after-clear", "tool_name": "mcp__higgsfield__generate_image",
+                "tool_input": {"prompt": "x"}, "cwd": proj}
+        code, _, _ = self.run_hook(GUARD, data)
+        self.assertEqual(code, 2)
+
+    def test_other_session_elsewhere_is_not_guarded(self):
+        self.make_project()
+        data = {"session_id": "other-plugin-session", "tool_name": "mcp__higgsfield__generate_image",
+                "tool_input": {"prompt": "x"}, "cwd": self.tmp}
+        code, _, _ = self.run_hook(GUARD, data)
+        self.assertEqual(code, 0)
+
     def test_mcp_generate_passes_with_note_without_project(self):
         code, _, err = self.guard("mcp__higgsfield__generate_image", {"prompt": "x"})
         self.assertEqual(code, 0)
@@ -352,6 +366,23 @@ class PromptNudgeTests(HookBase):
     def test_bad_input(self):
         code, _, _ = self.run_hook(NUDGE, "{{{")
         self.assertEqual(code, 0)
+
+    def test_quiet_on_an_ordinary_prompt(self):
+        self.make_project()
+        code, out, _ = self.run_hook(NUDGE, {"session_id": SID, "prompt": "cut the A-roll for C2"})
+        self.assertEqual((code, out), (0, ""))
+
+    def test_quiet_in_another_session(self):
+        self.make_project()
+        code, out, _ = self.run_hook(NUDGE, {"session_id": "some-other-session", "prompt": "no, warmer light"})
+        self.assertEqual((code, out), (0, ""))
+
+    def test_session_start_quiet_in_another_session(self):
+        self.make_project()
+        code, out, _ = self.run_hook(SESSION_START, {"session_id": "some-other-session"},
+                                     env=SessionStartTests.no_higgsfield_env(self))
+        self.assertEqual(code, 0)
+        self.assertNotIn("project", out)
 
 
 class HooksJsonTests(unittest.TestCase):

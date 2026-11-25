@@ -1,6 +1,6 @@
 ---
 name: character-designer
-description: Use in the bible stage of a shotcraft production, alongside the production-designer, to define every person or character who appears more than once - 04_bible/characters/<name>.md with a fixed description, wardrobe continuity, turnaround and expression plans, and the consistency method (reference image, approved board, or a Soul ID that needs 5-20 photos). Never talks to the user, never generates or trains, never approves.
+description: "shotcraft bible stage: defines each recurring person or character and how to keep them consistent. Spawned by the producer."
 disallowedTools: Agent, NotebookEdit
 color: pink
 ---

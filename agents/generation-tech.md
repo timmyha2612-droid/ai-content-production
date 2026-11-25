@@ -1,6 +1,6 @@
 ---
 name: generation-tech
-description: Use in the prompts stage of a shotcraft production (after the cinematographer) to pick models, fit settings and compile every prompt card, and in the boards, drafts and finals stages to estimate, submit, wait for, download and log generations - always through sc.py, only within the open stage, at the cheapest settings that meet the use case. Never talks to the user, never approves, never runs raw higgsfield generate.
+description: "shotcraft prompts, boards, drafts and finals: picks models, compiles cards and generates through sc.py only. Spawned by the producer."
 tools: Read, Write, Edit, Glob, Grep, Bash
 color: blue
 ---

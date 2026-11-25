@@ -1,6 +1,6 @@
 ---
 name: quick
-description: "This skill should be used when the user wants one shot generated now, without a production: \"just generate it\", \"do it\", \"make this one shot\", \"relight this clip\", \"golden hour on this drone shot\", \"change the sky\", \"restyle this video\", \"animate this photo\", \"one 1080p video straight\", \"skip the drafts\", \"go straight to the final\", or a yes to the refine skill's offer to generate. It is the quick track: one prompt card, one live price, one yes, then generate, wait and download. No intake grilling, no QA agents, no drafts unless asked. For a whole piece (reel, ad, campaign) use the producer skill; for a prompt only, the refine skill."
+description: "One shot generated now, no intake or drafts: one prompt, one live price, one yes. Also edits of the user's own video or still: relight, sky, clean up or remove objects, change background, animate, extend. Triggers: \"just generate it\", \"relight this\", \"refine this clip\", \"change the background\", \"clean this up\"."
 metadata:
   version: "0.1.0"
 ---
@@ -28,6 +28,12 @@ fill the front matter, `sc card validate`, then a read-only
   casts, the palette). The compiler drops camera fields and protects the light fields from trimming. Only
   models with an edit mode can do this (Seedance 2.5, Cinema Studio 4.0); `sc quick plan` refuses others.
 - **Animating a still**: the image is `--as start_frame`; the prompt is motion only.
+- **A file dropped in with a few words** ("refine this", "clean up the bins", "nicer sky"): run
+  `sc quick recipes --say "<their words>" --file <file>`. It names the recipe (relight, sky, cleanup,
+  background, animate, extend) with its prompt tips; ask only when it says there is no clear winner. Then
+  `sc quick plan ... --recipe <name>` sets the model, mode, input role, what must stay and the length.
+- **From an editing timeline** (DaVinci Resolve, Premiere): taking the shot out and putting the result back
+  is the editing tool's job; here the exported clip is just `--input` with its recipe.
 - **Length**: generate the cut length plus handles only when the model's minimum needs it (a 3 s insert on
   a 4 s minimum model is 3 s + 0.5 s handles).
 - **Tier**: `final` at the delivery resolution by default. `--tier draft` only when the user wants a cheap

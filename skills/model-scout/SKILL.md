@@ -1,6 +1,6 @@
 ---
 name: model-scout
-description: "This skill should be used when Higgsfield's model list may have changed and shotcraft's model and routing rules need reviewing: it runs the model check, sends the model-scout agent to study new, removed or changed models, presents the proposed model profiles and routing changes, applies the approved ones to the user's personal rules, and offers a pull request to the plugin's defaults. Triggers: \"run model-scout\", \"new Higgsfield models\", \"any new models?\", \"is there a better model for this now\", \"update the model list\", \"the routing is stale\", the session-start line \"N new Higgsfield models since ...\", or a model that errors because it no longer exists."
+description: "Review new, removed or changed Higgsfield models and update shotcraft's model and routing rules. Triggers: \"run model-scout\", \"any new models?\", \"is there a better model now\"."
 metadata:
   version: "0.1.0"
 ---

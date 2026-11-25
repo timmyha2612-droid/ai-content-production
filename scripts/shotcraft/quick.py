@@ -36,6 +36,120 @@ ROLES = ("source", "start_frame", "end_frame", "reference", "character", "style"
 
 # ---------------------------------------------------------------- helpers
 
+
+# ---------------------------------------------------------------- recipes (rules/recipes.json)
+
+IMAGE_EXT = (".png", ".jpg", ".jpeg", ".webp", ".tif", ".tiff", ".heic", ".bmp")
+
+
+def file_kind(path):
+    ext = os.path.splitext(str(path or ""))[1].lower()
+    if ext in VIDEO_EXT:
+        return "video"
+    if ext in IMAGE_EXT:
+        return "image"
+    return None
+
+
+def load_recipes(project=None):
+    from . import rules
+    try:
+        return (rules.load("recipes", project) or {}).get("recipes") or {}
+    except Exception:
+        return {}
+
+
+def suggest(text=None, file=None, project=None):
+    """Rank recipes for the user's words and file type. -> [{"recipe", "label", "score", "tips"}] best first."""
+    words = " %s " % re.sub(r"[^a-z0-9 ]+", " ", str(text or "").lower())
+    kind = file_kind(file) if file else None
+    out = []
+    for name, r in load_recipes(project).items():
+        if kind and kind not in (r.get("inputs") or []):
+            continue
+        score = 0
+        for w in r.get("words") or []:
+            if " %s " % w.lower() in words or (" " in w and w.lower() in words):
+                score += 2 if " " in w else 1
+        out.append({"recipe": name, "label": r.get("label") or name, "score": score, "tips": r.get("tips"),
+                    "known": r.get("known")})
+    out.sort(key=lambda x: -x["score"])
+    return out
+
+
+def _probe_seconds(path):
+    if not shutil.which("ffprobe"):
+        return None
+    try:
+        r = subprocess.run(["ffprobe", "-v", "error", "-show_entries", "format=duration", "-of", "csv=p=0", path],
+                           capture_output=True, text=True, timeout=60)
+        return float(r.stdout.strip())
+    except (ValueError, subprocess.SubprocessError, OSError):
+        return None
+
+
+def _apply_recipe(meta, name, in_kind, tier, model, project=None):
+    """Fill the card from a recipe. -> (model, notes). The user's own choices on the card or the command win."""
+    from . import rules
+    r = load_recipes(project).get(name)
+    if r is None:
+        raise Refused("Unknown recipe %r. Recipes: %s." % (name, ", ".join(sorted(load_recipes(project)))))
+    if in_kind not in (r.get("inputs") or []):
+        raise Refused("The %s recipe takes %s, not a %s." % (name, " or ".join(r.get("inputs") or []), in_kind))
+    out_kind = r.get("output") or in_kind
+    meta["kind"] = out_kind
+    if out_kind == "image":
+        st = meta.setdefault("settings", {})
+        for k in ("duration_s", "audio"):
+            st.pop(k, None)
+        meta["handles_s"] = 0
+    if not meta.get("use_case"):
+        meta["use_case"] = "broll-insert" if out_kind == "video" else "web-hero"
+    if out_kind == "video" and isinstance(r.get("duration"), (int, float)) and \
+            not (meta.get("settings") or {}).get("duration_s"):
+        meta.setdefault("settings", {})["duration_s"] = int(r["duration"])
+
+    def fits(mid):
+        prof, _ = rules.model_profile(mid, "higgsfield", project)
+        if not prof or prof.get("kind") != out_kind:
+            return False
+        if r.get("edit") and in_kind == "video" and r["edit"] not in (prof.get("edit_modes") or {}):
+            return False
+        return True
+    cur = (meta.get("model") or {}).get(tier) if isinstance(meta.get("model"), dict) else None
+    notes_pre = []
+    if model and not fits(model):
+        raise Refused("%s can't do the %s recipe on a %s (it makes %ss%s). Leave --model out to use %s." % (
+            model, name, in_kind, (rules.model_profile(model, "higgsfield", project)[0] or {}).get("kind") or "?",
+            ", or has no %s mode" % r["edit"] if r.get("edit") and in_kind == "video" else "",
+            " or ".join((r.get("models") or {}).get(in_kind) or []) or "a model that can"))
+    pick = model
+    if not pick and cur:
+        if fits(cur):
+            pick = cur
+        else:
+            notes_pre.append("The card's %s model %s can't do this recipe; using the recipe's model." % (tier, cur))
+    if not pick:
+        for mid in (r.get("models") or {}).get(in_kind) or []:
+            if fits(mid):
+                pick = mid
+                break
+    if not pick:
+        raise Refused("No profiled model for the %s recipe on a %s. Candidates to add with model-scout: %s."
+                      % (name, in_kind, ", ".join((r.get("candidates") or {}).get(in_kind) or []) or "none"))
+    m = meta.get("model") if isinstance(meta.get("model"), dict) else {}
+    m[tier] = pick
+    meta["model"] = m
+    if r.get("edit") and in_kind == "video":
+        meta["source_edit"] = r["edit"]
+    subj = meta.setdefault("layers", {}).setdefault("subject", {})
+    if r.get("keep") and not str(subj.get("consistency") or "").strip():
+        subj["consistency"] = r["keep"]
+    notes = notes_pre + ["Recipe %s: %s" % (r.get("label") or name, r.get("tips") or "")]
+    if r.get("known"):
+        notes.append("Known: %s" % r["known"])
+    return pick, notes
+
 def _cards():
     from . import cards
     return cards
@@ -195,7 +309,7 @@ def _left_after(b, total):
 
 def plan(card_file, name=None, inputs=None, rights=None, trim=None, crop=None, scale=None, tier=None,
          model=None, variants=None, budget_credits=None, threshold=None, root=None, session_id=None,
-         project=None, provider=None):
+         project=None, provider=None, recipe=None):
     """Set up (or, with project=, update) a quick project and price it. Spends nothing."""
     cards = _cards()
     gen = _gen()
@@ -206,6 +320,7 @@ def plan(card_file, name=None, inputs=None, rights=None, trim=None, crop=None, s
         tier = tier or prev.get("tier")
         model = model or prev.get("model")
         variants = variants or prev.get("variants")
+        recipe = recipe or prev.get("recipe")  # an update keeps the recipe (extend stays an extension)
     tier = tier or "final"
     if tier not in TIERS:
         raise Refused("--tier must be one of: %s." % ", ".join(TIERS))
@@ -216,6 +331,15 @@ def plan(card_file, name=None, inputs=None, rights=None, trim=None, crop=None, s
         raise ShotcraftError("No card at %s." % card_file)
     meta, body = cards.read(src_card)
     inputs = list(inputs or [])
+    recipe_notes = []
+    if recipe:
+        first = next((p for p, _ in inputs), None)
+        in_kind = file_kind(first) if first else ("video" if meta.get("kind") == "video" else "image")
+        if first and in_kind is None:
+            raise Refused("Can't tell whether %s is a video or a still (unknown extension)." % first)
+        model, recipe_notes = _apply_recipe(meta, recipe, in_kind, tier, model, project)
+        r = load_recipes(project)[recipe]
+        inputs = [(p, role or (r.get("as") or {}).get(file_kind(p) or in_kind, "reference")) for p, role in inputs]
     for p, role in inputs:
         if role not in ROLES:
             raise Refused("--as must be one of: %s." % ", ".join(ROLES))
@@ -234,7 +358,9 @@ def plan(card_file, name=None, inputs=None, rights=None, trim=None, crop=None, s
         if os.path.splitext(p)[1].lower() not in VIDEO_EXT:
             raise Refused("The source must be a video (%s); a still to animate is --as start_frame." % p)
     shot = meta.get("id") or "S010"
-    errs = cards.validate(dict(meta, inputs=[]), presets=_presets())
+    early = dict(meta, inputs=[])
+    early.pop("source_edit", None)  # checked again once the inputs are attached
+    errs = cards.validate(early, presets=_presets())
     if errs:
         raise Refused("The card does not validate:\n- " + "\n- ".join(errs))
     if project is not None:
@@ -297,6 +423,18 @@ def plan(card_file, name=None, inputs=None, rights=None, trim=None, crop=None, s
                                                       and i.get("as") == role)]
         card_inputs.append({"asset": a["id"], "as": role})
     meta["inputs"] = card_inputs
+    if recipe and load_recipes(project)[recipe].get("duration") is not None and meta.get("kind") == "video":
+        want = load_recipes(project)[recipe]["duration"]
+        if want == "source":
+            src_asset = next((i["asset"] for i in card_inputs if i.get("as") == "source"), None)
+            a = manifest.find_asset(manifest.load(project), src_asset) if src_asset else None
+            secs = _probe_seconds(os.path.join(project, a["path"])) if a else None
+            if secs:
+                meta.setdefault("settings", {})["duration_s"] = max(1, int(round(secs)))
+                meta["handles_s"] = 0
+                recipe_notes.append("Length matches the source: %d s." % int(round(secs)))
+        elif not meta.get("settings", {}).get("duration_s"):
+            meta.setdefault("settings", {})["duration_s"] = int(want)
     if model:
         m = meta.get("model") if isinstance(meta.get("model"), dict) else {}
         m[tier] = model
@@ -323,7 +461,8 @@ def plan(card_file, name=None, inputs=None, rights=None, trim=None, crop=None, s
                            "model": pl["model"], "variants": pl["variants"], "tier": tier,
                            "at": jsonio.now_iso(), "card_hash": pl["card_hash"], "used_by": None})
     summary = _summary(project, est)
-    summary[1:1] = ["Note: %s" % n for n in notes]
+    summary[1:1] = ["Note: %s" % n for n in recipe_notes + notes]
+    _save_settings(project, recipe=recipe)
     return {"ok": True, "project": project, "card": dest_card, "estimate": est, "summary": summary}
 
 
@@ -424,22 +563,44 @@ def _proj(args):
 
 
 def cli_quick_plan(args):
-    ins = []
-    for p, r in zip(getattr(args, "input", None) or [], getattr(args, "as_role", None) or []):
-        ins.append((p, r))
-    if len(getattr(args, "input", None) or []) != len(getattr(args, "as_role", None) or []):
+    files = getattr(args, "input", None) or []
+    roles = getattr(args, "as_role", None) or []
+    recipe = getattr(args, "recipe", None)
+    if roles and len(roles) != len(files):
         raise Refused("Give one --as for each --input (source, start_frame, end_frame, reference, character, style).")
+    if files and not roles and not recipe:
+        raise Refused("Say what each --input is with --as, or pick a --recipe (sc.py quick recipes) that knows.")
+    ins = list(zip(files, roles or [None] * len(files)))
     proj = _proj(args) if getattr(args, "update", False) else None
     res = plan(args.card, name=getattr(args, "name", None), inputs=ins, rights=getattr(args, "rights", None),
                trim=getattr(args, "trim", None), crop=getattr(args, "crop", None), scale=getattr(args, "scale", None),
                tier=getattr(args, "tier", None), model=getattr(args, "model", None),
                variants=getattr(args, "variants", None), budget_credits=getattr(args, "budget", None),
                threshold=getattr(args, "threshold", None), root=getattr(args, "root", None),
-               session_id=getattr(args, "session_id", None), project=proj)
+               session_id=getattr(args, "session_id", None), project=proj, recipe=recipe)
     out = dict(res)
     out["estimate"] = {k: v for k, v in res["estimate"].items() if k != "plan"}
     out["plan"] = res["estimate"]["plan"]
     _emit(args, out, "Project: %s\n%s" % (res["project"], "\n".join(res["summary"])))
+    return 0
+
+
+def cli_quick_recipes(args):
+    ranked = suggest(getattr(args, "say", None), getattr(args, "file", None))
+    if not ranked:
+        _emit(args, {"recipes": []}, "No recipe takes that kind of file.")
+        return 0
+    lines = []
+    for r in ranked:
+        lines.append("%-10s %s%s" % (r["recipe"], r["label"], ("  (match %d)" % r["score"]) if r["score"] else ""))
+    best = ranked[0]
+    if best["score"] and (len(ranked) == 1 or ranked[1]["score"] < best["score"]):
+        lines.append("Best: %s. %s" % (best["recipe"], best["tips"] or ""))
+        if best.get("known"):
+            lines.append("Known: %s" % best["known"])
+    elif getattr(args, "say", None):
+        lines.append("No clear winner: ask the user which one (one question).")
+    _emit(args, {"recipes": ranked}, "\n".join(lines))
     return 0
 
 

@@ -1,6 +1,6 @@
 ---
 name: delivery
-description: Use in the delivery stage of a shotcraft production (and its fix passes) to export the deliverables to the job's spec - resolution, aspect, frame rate, codec, loudness, file size, per the use-case preset and the job card - package them in 09_delivery/ with clear names and a delivery note, and run sc.py delivery check until every check passes or a problem needs someone else. Never talks to the user, never generates or upscales, never approves.
+description: "shotcraft delivery stage: exports to the job's spec and runs the delivery checks. Spawned by the producer."
 tools: Read, Write, Edit, Glob, Grep, Bash
 color: green
 ---

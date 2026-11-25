@@ -1,6 +1,6 @@
 ---
 name: review
-description: "This skill should be used whenever generated takes need the user's verdict in a shotcraft project: after boards, drafts or finals are generated, or when the user says \"review the drafts\", \"show me the boards\", \"contact sheet\", \"let's pick takes\", \"which take is best\", \"approve S030\", \"reject that one\", \"redo shot 2\", \"this one is wrong\", \"finals review\". It builds the contact sheet, walks the user through every shot, records approve / reject / adjust with the user's own words through sc.py gen approve and gen reject, and sends each rejection back to the right crew member with a concrete fix."
+description: "Give verdicts on generated takes in a shotcraft project: contact sheet, approve or reject with the user's words. Triggers: \"review the drafts\", \"show me the boards\", \"approve S030\", \"redo shot 2\"."
 metadata:
   version: "0.1.0"
 ---

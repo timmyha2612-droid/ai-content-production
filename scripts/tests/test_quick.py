@@ -458,5 +458,94 @@ class ReviewFixUnitTests(unittest.TestCase):
         self.assertEqual(calls.count(["generate", "wait"]), 1)
 
 
+class RecipePlanTests(Base):
+    def test_relight_recipe_fills_the_card(self):
+        relight_card(self.card)
+        res = quick.plan(self.card, name="R", inputs=[(self.clip, None)], rights="owned", root=self.root,
+                         recipe="relight", budget_credits=200)
+        pl = res["estimate"]["plan"]
+        self.assertEqual(pl["params"].get("mode"), "video_edit")
+        self.assertEqual(list(pl["inputs"]), ["video_references"])
+        self.assertTrue(any(line.startswith("Note: Recipe Relight") for line in res["summary"]))
+        if HAS_FFMPEG:
+            self.assertTrue(any("Length matches the source" in line for line in res["summary"]))
+
+    def test_extend_recipe_uses_the_extension_mode(self):
+        res = quick.plan(self.card, name="E", inputs=[(self.clip, None)], rights="owned", root=self.root,
+                         recipe="extend", budget_credits=200)
+        p = res["estimate"]["plan"]["params"]
+        self.assertEqual((p.get("mode"), p.get("extension_mode")), ("video_extension", "forward"))
+        self.assertIn("slow drone rise", res["estimate"]["plan"]["prompt"])  # camera kept for an extension
+
+    def test_recipe_rejects_the_wrong_file(self):
+        img = os.path.join(self.tmp, "still.png")
+        with open(img, "wb") as fh:
+            fh.write(b"x")
+        with self.assertRaises(Refused):
+            quick.plan(self.card, name="X", inputs=[(img, None)], rights="owned", root=self.root, recipe="extend")
+
+    def test_cleanup_on_a_still_makes_an_image_card(self):
+        img = os.path.join(self.tmp, "still.png")
+        if HAS_FFMPEG:
+            subprocess.run(["ffmpeg", "-v", "error", "-y", "-f", "lavfi", "-i", "color=c=red:s=64x64", "-frames:v",
+                            "1", img], check=True)
+        else:
+            with open(img, "wb") as fh:
+                fh.write(b"x")
+        res = quick.plan(self.card, name="C", inputs=[(img, None)], rights="owned", root=self.root,
+                         recipe="cleanup", budget_credits=200)
+        pl = res["estimate"]["plan"]
+        self.assertEqual(pl["kind"], "image")
+        self.assertEqual(list(pl["inputs"]), ["image_references"])
+
+    def test_cli_needs_as_or_recipe(self):
+        rc, out, err = run_cli("quick", "plan", self.card, "--input", self.clip, "--rights", "owned", "--root",
+                               self.root)
+        self.assertEqual(rc, 2)
+
+
+class ReviewFix03Tests(Base):
+    def test_update_keeps_the_recipe(self):
+        proj = quick.plan(self.card, name="E", inputs=[(self.clip, None)], rights="owned", root=self.root,
+                          recipe="extend", budget_credits=200)["project"]
+        res = quick.plan(self.card, project=proj)
+        self.assertEqual(res["estimate"]["plan"]["params"].get("mode"), "video_extension")
+
+    def test_card_video_model_is_not_used_for_a_still(self):
+        img = os.path.join(self.tmp, "still.png")
+        with open(img, "wb") as fh:
+            fh.write(b"x")
+        res = quick.plan(self.card, name="C", inputs=[(img, None)], rights="owned", root=self.root,
+                         recipe="cleanup", budget_credits=200)
+        self.assertNotEqual(res["estimate"]["plan"]["model"], "seedance_2_5")
+        with self.assertRaises(Refused):
+            quick.plan(self.card, name="C2", inputs=[(img, None)], rights="owned", root=self.root,
+                       recipe="cleanup", model="seedance_2_5")
+
+    def test_animate_a_still_card(self):
+        img = os.path.join(self.tmp, "still.png")
+        with open(img, "wb") as fh:
+            fh.write(b"x")
+        relight_card(self.card, kind="image", model="nano_banana_2")
+        res = quick.plan(self.card, name="A", inputs=[(img, None)], rights="owned", root=self.root,
+                         recipe="animate", budget_credits=200)
+        pl = res["estimate"]["plan"]
+        self.assertEqual((pl["kind"], pl["model"]), ("video", "seedance_2_5"))
+        self.assertEqual(list(pl["inputs"]), ["start_image"])
+
+    def test_image_card_with_a_start_frame_does_not_validate(self):
+        meta, _ = cards.read(relight_card(self.card, kind="image", model="nano_banana_2"))
+        meta["inputs"] = [{"asset": "A001", "as": "start_frame"}]
+        self.assertTrue(any("start or end frames" in e for e in cards.validate(meta)))
+
+
+class RecipeTests(unittest.TestCase):
+    def test_suggest(self):
+        self.assertEqual(quick.suggest("remove the bins on the left", "a.mp4")[0]["recipe"], "cleanup")
+        self.assertEqual(quick.suggest("make it golden hour", "a.mov")[0]["recipe"], "relight")
+        self.assertEqual(quick.suggest("animate this", "a.png")[0]["recipe"], "animate")
+        self.assertNotIn("extend", [r["recipe"] for r in quick.suggest("x", "a.jpg")])
+
+
 if __name__ == "__main__":
     unittest.main()

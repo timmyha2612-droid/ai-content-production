@@ -99,6 +99,8 @@ def scout_lines(paths):
             data = _read_json(last)
     if not isinstance(data, dict) or data.get("reviewed") or data.get("acknowledged"):
         return lines
+    if data.get("live_count") == 0 or data.get("error"):
+        return lines  # a failed check (no live models read) is not news about removed models
     new, removed, changed = (_count(data.get(k)) for k in ("new", "removed", "changed"))
     if new or removed or changed:
         since = data.get("since") or data.get("previous") or data.get("timestamp") or data.get("checked_at")
@@ -177,6 +179,8 @@ def routing_lines():
 def project_lines(paths, project, session_id):
     sid = session_id or os.environ.get("CLAUDE_SESSION_ID") or os.environ.get("CLAUDE_CODE_SESSION_ID") or None
     from_session = bool(sid) and os.path.isfile(paths.session_file(sid))
+    if not from_session:
+        return []  # only the session that opened a project hears about it; other sessions stay quiet
     proj = project.active_project(sid)
     if not proj:
         return []
@@ -189,8 +193,7 @@ def project_lines(paths, project, session_id):
         track = st.get("track") or "?"
     except Exception:
         name, stage, track = os.path.basename(proj), "stage state unreadable", "?"
-    where = "active project" if from_session else "last opened project"
-    return ["shotcraft: %s \"%s\" (%s track, %s) at %s." % (where, name, track, stage, proj)]
+    return ["shotcraft: active project \"%s\" (%s track, %s) at %s." % (name, track, stage, proj)]
 
 
 def export_session_id(session_id):

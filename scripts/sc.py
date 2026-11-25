@@ -645,6 +645,11 @@ def build_parser():
     sp.add_argument("--threshold", type=float)
     sp.add_argument("--root")
     sp.add_argument("--update", action="store_true", help="re-price the active quick project with a changed card")
+    sp.add_argument("--recipe", help="relight, sky, cleanup, background, animate, extend (sc.py quick recipes)")
+    sp = leaf(s, "recipes", delegate("quick", "recipes", ["quick"]),
+              help="which recipe fits the user's words and file (relight, sky, cleanup, background, ...)")
+    sp.add_argument("--say", help="the user's words")
+    sp.add_argument("--file", help="the file they gave")
     sp = leaf(s, "go", delegate("quick", "go", ["quick"]),
               help="the user's yes to the shown prompt and price: approve, generate, wait, download")
     sp.add_argument("--user-said", dest="user_said", required=True)

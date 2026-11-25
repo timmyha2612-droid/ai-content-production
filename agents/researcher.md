@@ -1,6 +1,6 @@
 ---
 name: researcher
-description: Use in the research stage of a shotcraft production, one agent per research angle (2-4 can run in parallel), to find and download references, study what works on the platform and in the genre, and write a research note; or once more to merge the notes into 01_research/direction-note.md. Searches the web, fetches references with sc.py refs fetch (tagged reference-only with their source), and never talks to the user or spends credits.
+description: "shotcraft research stage: finds references and writes a research note for one angle. Spawned by the producer."
 disallowedTools: Agent, NotebookEdit
 color: cyan
 ---

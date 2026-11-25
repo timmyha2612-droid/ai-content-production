@@ -1,6 +1,6 @@
 ---
 name: sound
-description: Use in the sound stage of a shotcraft production to plan and build the soundtrack - music, sound effects, ambience and voice-over - from the script's sound column. Searches the Artlist catalogue when the Artlist MCP is connected, plans Higgsfield audio jobs (music, sound effects, text to speech), writes the cue sheet, VO script, mix notes and licence notes in 07_sound/. Never talks to the user, never spends credits without the user's relayed words, never clones a voice without consent.
+description: "shotcraft sound stage: plans music, effects, ambience and voice-over and writes the cue sheet. Spawned by the producer."
 disallowedTools: Agent, NotebookEdit
 color: red
 ---

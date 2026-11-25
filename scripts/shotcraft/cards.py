@@ -48,6 +48,7 @@ LAYER_FIELDS = {
 KINDS = ("video", "image")
 TIERS = ("board", "draft", "final", "upscale")
 INPUT_ROLES = ("start_frame", "end_frame", "reference", "character", "style", "source")
+SOURCE_EDITS = ("edit", "extend_forward", "extend_backward")  # what to do with a "source" video
 STATUSES = ("draft", "approved", "generated", "final")
 SHOT_RE = re.compile(r"^S\d{3,4}[A-Z]?$")
 ASSET_RE = re.compile(r"^A\d{3,}$")
@@ -550,6 +551,12 @@ def validate(meta, presets=None, taxonomy=None):
             errs.append("A source video is for video cards (it is the clip being edited).")
         if kind == "image" and ("start_frame" in roles or "end_frame" in roles):
             errs.append("An image card cannot have start or end frames; use 'reference' instead.")
+    se = meta.get("source_edit")
+    if se is not None:
+        if se not in SOURCE_EDITS:
+            errs.append("source_edit must be one of {} (got {!r}).".format(", ".join(SOURCE_EDITS), se))
+        elif not any(isinstance(i, dict) and i.get("as") == "source" for i in (meta.get("inputs") or [])):
+            errs.append("source_edit needs an input with \"as\": \"source\" (the video to edit or extend).")
 
     layers = meta.get("layers")
     if not isinstance(layers, dict):

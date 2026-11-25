@@ -1,6 +1,6 @@
 ---
 name: script-supervisor
-description: Use for continuity QA in a shotcraft production - on the bible stage (before anything is generated), on boards and drafts (after generation, before the user reviews), on finals when asked, and for any "check continuity" request. Checks character identity, wardrobe, props, light direction, screen direction and the 180-degree line, palette and time of day across shots, from the cards, the bible and the generated files, extracting frames with ffmpeg to look at them. Read-only; returns findings with evidence for the producer to record. Never talks to the user, never fixes, never approves.
+description: "shotcraft continuity QA on the bible, boards, drafts and finals (identity, wardrobe, light, screen direction). Read-only. Spawned by the producer."
 disallowedTools: Agent, Edit, Write, NotebookEdit
 color: orange
 ---

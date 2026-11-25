@@ -1,6 +1,6 @@
 ---
 name: handoff
-description: "This skill should be used for the hand-off stage of a shotcraft production: uploading the approved work to Higgsfield, writing the Canvas build sheet, and offering to set up the Higgsfield Canvas board in the browser step by step. Triggers: \"hand it off\", \"put it in Higgsfield\", \"set up the Canvas\", \"build the board\", \"upload the finals\", \"I want everything ready in Higgsfield\", \"handoff stage\", or the producer reaching the handoff stage on the full or single track."
+description: "Hand-off stage of a shotcraft production: upload approved work to Higgsfield and write the Canvas build sheet. Triggers: \"hand it off\", \"put it in Higgsfield\", \"set up the Canvas\"."
 metadata:
   version: "0.1.0"
 ---

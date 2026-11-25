@@ -105,6 +105,8 @@ delivery, qa-supervisor, qa-verifier, learner, model-scout.
 | quick | quick (plan and price, one yes, generate, keep or redo) |
 | refine | refine (no generation at all) |
 
+On the quick track, drop in a clip or still with a few words ("refine this", "clean up the bins", "nicer sky") and the matching recipe sets the model and mode.
+
 Optional stages, which you can drop at intake (your words are recorded): research, concept, boards,
 sound, assembly, handoff. Motion graphics and sound may run at the same time; otherwise one stage is open at
 a time.

@@ -559,7 +559,8 @@ def compile(card, model_profile=None, rules=None):  # noqa: A001 - name fixed by
             params["image_references"] = refs
 
     motion_only = bool(start) and kind == "video"
-    edit_source = source is not None
+    extending = str(card.get("source_edit") or "").startswith("extend")
+    edit_source = source is not None and not extending  # an extension writes what happens next, like a new shot
     finish = _preset_finish(card, rules)
     if finish is None and str((layers.get("light_look") or {}).get("finish") or "").strip():
         finish = "natural"  # no preset table: a filled finish field means a natural look

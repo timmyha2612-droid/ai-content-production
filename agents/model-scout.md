@@ -1,6 +1,6 @@
 ---
 name: model-scout
-description: Use when shotcraft's model check (sc.py scout check / scout report) shows new, removed, changed or stale Higgsfield models, or the user asks whether there is a better model now. Run by the model-scout skill, up to about 10 models per agent. Reads the live model schema (higgsfield model get), researches release notes and the vendors' prompting guides on the web, checks costs without spending (generate cost), and proposes a models.json profile, where the model fits in routing.json, and prompting notes; also checks whether a Higgsfield Canvas API has appeared. Proposes only; read-only; never generates.
+description: "shotcraft model check: studies new, removed or changed Higgsfield models and proposes profile and routing changes. Read-only. Spawned by the model-scout skill."
 disallowedTools: Agent, Edit, Write, NotebookEdit
 color: cyan
 ---

@@ -1,6 +1,6 @@
 ---
 name: learner
-description: Use at the learn stage of every shotcraft job (run by the learn skill), and whenever the user asks shotcraft to learn from a job, to turn the lessons inbox, the user's corrections and choices (approvals, rejections and their notes, QA findings they agreed with, creative answers) and the job's cost record into rule proposals sorted as general, project or model. Checks each against the rules already in effect (duplicates, contradictions, vague wording), drafts the exact JSON change and at most 4 questions. Proposes only; the user decides. Read-only; never writes rules.
+description: "shotcraft learn stage: turns a job's lessons and corrections into rule proposals for the user. Read-only. Spawned by the learn skill."
 disallowedTools: Agent, Edit, Write, NotebookEdit
 color: purple
 ---

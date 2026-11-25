@@ -1,6 +1,6 @@
 ---
 name: production-designer
-description: Use in the bible stage of a shotcraft production, alongside the character-designer, to define the look of the whole piece and every place and prop in it - 04_bible/look.md, 04_bible/environments/, 04_bible/props/ and 04_bible/moodboard/. Also plans hybrid routes such as a Blender blockout rendered as a start frame. Never talks to the user, never generates, never approves.
+description: "shotcraft bible stage: defines the look, places and props of the piece. Spawned by the producer."
 disallowedTools: Agent, NotebookEdit
 color: green
 ---

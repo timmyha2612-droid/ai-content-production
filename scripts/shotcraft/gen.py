@@ -341,22 +341,26 @@ def plan(project, card, tier, model=None, variants=None, strict=True):
     if src:
         # edit the user's own video: the model's edit mode with exactly one video reference
         a = manifest.find_asset(data, src) or {}
-        em = profile.get("edit_mode") or {}
+        want = meta.get("source_edit") or "edit"
+        modes = profile.get("edit_modes") or {}
+        em = modes.get(want) or {}
         if a and a.get("kind") != "video":
             msg = "The source input %s is not a video (%s)." % (src, a.get("kind"))
             if strict:
                 raise Refused(msg)
             notes.append(msg)
-        elif not em.get("param"):
-            msg = ("%s cannot edit a video. Pick a model with an edit mode (Seedance 2.5 or Cinema Studio 4.0) "
-                   "with --model, or change the input from source to reference." % out["model_name"])
+        elif not em:
+            msg = ("%s cannot %s a video. Pick a model that can (Seedance 2.5 edits and extends; Cinema Studio 4.0 "
+                   "edits) with --model, or change the input from source to reference."
+                   % (out["model_name"], "extend" if want.startswith("extend") else "edit"))
             if strict:
                 raise Refused(msg)
             notes.append(msg)
         else:
             ids = {"video_references": [src]}
-            params[em["param"]] = em["value"]
-            notes.append("Editing the source video %s (%s %s)." % (src, em["param"], em["value"]))
+            params.update(em)
+            notes.append("%s the source video %s (%s)." % ("Extending" if want.startswith("extend") else "Editing",
+                                                           src, ", ".join("%s %s" % kv for kv in em.items())))
     refs = profile.get("refs") or {}
     for slot, lim_key in (("video_references", "video"), ("audio_references", "audio")):
         if ids.get(slot) and not refs.get(lim_key):

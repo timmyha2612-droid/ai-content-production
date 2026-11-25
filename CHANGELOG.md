@@ -7,6 +7,8 @@ dates; rule changes that alter what gets generated are listed here too.
 
 ## [Unreleased]
 
+## [0.3.0] - 2026-11-26
+
 ### Added
 
 - Studio interview lighting: 8 `interview_` setups in `rules/light_setups.json` (documentary soft key,
@@ -15,6 +17,26 @@ dates; rule changes that alter what gets generated are listed here too.
   has a `category` (`cinematic` or `interview`); interview rows add `people`, a `rig` with the practical
   numbers (key, fill, rim, background stops and distance, A/B lenses, contrast) and a 2-3 light
   `small_kit`.
+- **Recipes** for files dropped in with a few words (`rules/recipes.json`, read by sc.py only): relight, sky,
+  cleanup, background, animate, extend. `sc.py quick recipes --say "..." --file F` picks one from the words
+  and the file type; `sc.py quick plan --recipe NAME` sets the model, mode, input role, what must stay and the
+  length (matched to the source clip). Each recipe lists unprofiled Higgsfield candidates for model-scout.
+- Card field `source_edit` (`edit`, `extend_forward`, `extend_backward`) and named `edit_modes` per model
+  (Seedance 2.5 gains video extension).
+
+### Changed
+
+- **Smaller context footprint.** Skill and agent descriptions cut from about 14,500 to about 4,000
+  characters. The prompt hook speaks only in a session bound to a shotcraft project and only when the
+  prompt reads like a correction; the session-start hook ignores projects opened by other sessions; the
+  guard follows the session's own project, or the last opened project only when the work is inside its
+  folder; a failed model check is no longer reported as removed models.
+
+### Fixed
+
+- `card set-input --as source` keeps one source; an image card with a start or end frame is refused again.
+- Recipes never keep a model that can't make the recipe's output (a video model on a still), and an update
+  keeps the recipe (an extension stays an extension).
 
 ## [0.2.0] - 2026-11-26
 

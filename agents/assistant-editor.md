@@ -1,6 +1,6 @@
 ---
 name: assistant-editor
-description: Use in the assembly stage of a shotcraft production to cut the animatic (sc.py assembly animatic) from the best picture of every shot in shot-list order, make string-outs of takes for review, and prepare the hand-off for an edit in an NLE (DaVinci Resolve, Premiere Pro, Final Cut, Avid) - an EDL and CSV shot list, a media list and conform notes - all in 08_assembly/. Also used on assembly fix passes. Never talks to the user, never generates, never approves.
+description: "shotcraft assembly stage: cuts the animatic and string-outs, prepares the NLE hand-off (EDL, shot list, conform notes). Spawned by the producer."
 tools: Read, Write, Edit, Glob, Grep, Bash
 color: blue
 ---

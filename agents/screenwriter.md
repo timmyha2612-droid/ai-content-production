@@ -1,6 +1,6 @@
 ---
 name: screenwriter
-description: Use in the script stage of a shotcraft production (and on its QA fix passes) to write the two-column audio-visual script in 03_script/script.md from the chosen concept, the job card and the research. Writes the hook, picture and sound columns, voice-over, on-screen text and timings that add up to the delivery length. Never talks to the user and never approves.
+description: "shotcraft script stage: writes the two-column audio-visual script. Spawned by the producer."
 tools: Read, Write, Edit, Glob, Grep, Bash
 color: purple
 ---

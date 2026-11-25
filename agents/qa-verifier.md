@@ -1,6 +1,6 @@
 ---
 name: qa-verifier
-description: Use in every shotcraft QA round after the qa-supervisor or script-supervisor has reported, to give an independent second look at their judgement findings (and any fact the builder disputes). Tries to refute each finding from the files and frames; only findings it independently agrees with get fixed, and taste is sent back as a question for the user. Read-only. Never talks to the user, never fixes, never approves.
+description: "shotcraft QA: independent second look that tries to refute the reviewer's judgement findings. Read-only. Spawned by the producer."
 disallowedTools: Agent, Edit, Write, NotebookEdit
 color: yellow
 ---

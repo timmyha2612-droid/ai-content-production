@@ -1,6 +1,6 @@
 ---
 name: refine
-description: "This skill should be used when the user wants a prompt rather than a production: \"refine this prompt\", \"make this prompt better\", \"fix my prompt\", \"write me a Higgsfield prompt\", \"give me a prompt for ...\", \"prompt for Kling / Seedance / Veo / Hailuo / Wan / Cinema Studio / Soul / Nano Banana / GPT Image / Seedream / Recraft / Flux\", \"turn this idea into a video prompt\", \"image prompt for a thumbnail\", \"why does my prompt give bad results\". It is the fast path (the refine track): a complete, model-aware prompt card straight away, at most 3 questions and only where a wrong guess would waste credits, saved with sc.py refine save, and an offer to generate it (one question with the live price, through the quick skill)."
+description: "A paste-ready Higgsfield prompt, no generation: \"refine this prompt\", \"write me a Higgsfield prompt\", \"prompt for Kling / Seedance / Veo / Nano Banana\", \"why does my prompt give bad results\". With a clip or image to change, use quick instead."
 metadata:
   version: "0.1.0"
 ---

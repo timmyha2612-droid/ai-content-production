@@ -1,6 +1,6 @@
 ---
 name: learn
-description: "This skill should be used at the end of every shotcraft job (the learn stage) and whenever the user wants shotcraft to remember something: it reads the lessons inbox, runs the learner agent over the job, puts each proposed rule change to the user sorted as general, project or model, and writes the accepted ones to personal or project rules (never to the plugin's own defaults unless the user chooses to contribute a pull request). Triggers: \"learn from this job\", \"remember this for next time\", \"always do it this way\", \"only for this project\", \"what did we learn\", \"review the lessons\", \"learn stage\", or the producer reaching the learn stage."
+description: "End of every shotcraft job, or \"remember this\": turns lessons into rule changes the user approves. Triggers: \"learn from this job\", \"remember this for next time\", \"always do it this way\"."
 metadata:
   version: "0.1.0"
 ---

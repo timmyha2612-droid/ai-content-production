@@ -1,6 +1,6 @@
 ---
 name: producer
-description: "This skill should be used as the entry point for any shotcraft production: when the user says \"start a production\", \"new project\", \"make a video / ad / reel / short / commercial / explainer with shotcraft\", \"produce this for Higgsfield\", \"make me a thumbnail / icon / single shot\", \"continue project\", \"resume the project\", \"what stage are we on\", \"where are we\", \"next stage\", \"set up shotcraft\", or on the first use of shotcraft on a machine. It is the hub: first-run setup, choosing the track (refine, single or full), the mandatory intake grilling, the job card, running every stage through sc.py, which crew member to spawn for each stage, every user approval, the QA loop, budget and escalation. For a prompt only (\"write me a Higgsfield prompt\", \"refine this prompt\") hand over to the refine skill instead."
+description: "Entry point for shotcraft productions with stages (intake, drafts, finals, delivery, hand-off): \"set up shotcraft\" (first use), \"start a production\", \"make a reel / ad / explainer with shotcraft\", \"make me a thumbnail / icon with drafts\", \"continue project\", \"what stage are we on\". One shot now with no drafts goes to quick; a prompt only to refine."
 metadata:
   version: "0.1.0"
 ---

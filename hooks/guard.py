@@ -471,10 +471,20 @@ def load_core():
     return paths, project, stages
 
 
-def active_project(session_id):
+def active_project(session_id, cwd=None, target=None):
+    """The project this session opened; else the last opened project when the work is inside it (cwd or target
+    path in that project folder: a new session after /clear or a resume continuing the job). Other work on the
+    same machine, outside that project, is not held to its gates."""
     try:
-        _, project, _ = load_core()
-        return project.active_project(session_id or None)
+        paths, project, _ = load_core()
+        if session_id and os.path.isfile(paths.session_file(session_id)):
+            return project.active_project(session_id)
+        last = project.active_project(None)  # the last opened project (active.json)
+        if last:
+            for where in (target, cwd):
+                if where and project.find_project_root(where) == last:
+                    return last
+        return None
     except Exception as exc:
         note("could not look up the active project (%s: %s)" % (type(exc).__name__, exc))
         return None
@@ -549,8 +559,14 @@ def decide(data):
     ctx = {}
 
     def fill_ctx():
-        ctx["active"] = active_project(data.get("session_id"))
         cwd = data.get("cwd")
+        tin_ = data.get("tool_input") if isinstance(data.get("tool_input"), dict) else {}
+        target = tin_.get("file_path") or tin_.get("notebook_path") or tin_.get("path")
+        if isinstance(target, str) and target and cwd:
+            target = os.path.normpath(os.path.join(cwd, os.path.expanduser(target)))
+        elif not isinstance(target, str) or not target:
+            target = None
+        ctx["active"] = active_project(data.get("session_id"), cwd=cwd, target=target)
         ctx["cwd_in_project"] = bool(cwd) and _cwd_in_project(cwd)
 
     if tool == "Bash":

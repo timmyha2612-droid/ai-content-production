@@ -1,0 +1,78 @@
+{
+  "schema": 1,
+  "rules_version": "0.3.0",
+  "checked_at": "2026-11-26",
+  "about": "Recipes for the quick track: what to do with a video or still the user drops in (or an editing tool takes from a timeline) and a few words. sc.py quick recipes picks one from the words and the file type; sc.py quick plan --recipe applies it to the card (model, mode, input role, what must stay, length). Read by sc.py, never loaded into chat context. 'models' lists profiled models in preference order; 'candidates' are live Higgsfield models that fit but have no profile in models.json yet (add them with model-scout before use).",
+  "recipes": {
+    "relight": {
+      "label": "Relight",
+      "words": ["relight", "light", "lighting", "golden hour", "sunset", "sunrise", "blue hour", "dusk", "warmer", "moodier", "refine"],
+      "inputs": ["video", "image"],
+      "as": {"video": "source", "image": "reference"},
+      "models": {"video": ["seedance_2_5"], "image": ["nano_banana_2", "gpt_image_2_6"]},
+      "candidates": {"video": ["kling_video_edit", "kling4_0"], "image": ["nano_banana_2_relight"]},
+      "edit": "edit",
+      "keep": "same scene, buildings, framing, subject and camera path; only the light changes",
+      "duration": "source",
+      "tips": "Name one key light (source, side of frame, height, hard or soft), the shadows it casts on named surfaces, warm/cool split, what stays dark. Ask for the light ON the subject's surfaces, not only the sky.",
+      "known": "Seedance 2.5 video_edit tends to change the sky more than the light on surfaces (Nov 2026 drone relight came back as a sky swap with a flat facade)."
+    },
+    "sky": {
+      "label": "Sky swap",
+      "words": ["sky", "clouds", "sky replacement", "blue sky", "nicer sky", "overcast"],
+      "inputs": ["video", "image"],
+      "as": {"video": "source", "image": "reference"},
+      "models": {"video": ["seedance_2_5"], "image": ["nano_banana_2", "gpt_image_2_6"]},
+      "candidates": {"video": ["kling_video_edit", "hf_mult_replace_object_flash"]},
+      "edit": "edit",
+      "keep": "everything below the skyline stays identical: buildings, trees, people, framing and camera path; only the sky changes",
+      "duration": "source",
+      "tips": "Describe the new sky (clear, cloud type, time of day) and that the scene's light matches it softly. A reference image of the sky helps (add it as --as reference on stills)."
+    },
+    "cleanup": {
+      "label": "Clean up / remove objects",
+      "words": ["clean up", "cleanup", "remove", "erase", "get rid of", "declutter", "take out", "bins", "cars", "people in the background", "wires", "signs"],
+      "inputs": ["video", "image"],
+      "as": {"video": "source", "image": "reference"},
+      "models": {"video": ["seedance_2_5"], "image": ["nano_banana_2", "seedream_v5_pro", "flux_kontext"]},
+      "candidates": {"video": ["kling_video_edit", "kling4_0", "flux_3_video_edit"], "image": ["nano_banana_2_1", "ideogram_4_6_precise_edit"]},
+      "edit": "edit",
+      "keep": "everything else stays identical: framing, camera path, people, light and colour",
+      "duration": "source",
+      "tips": "Name exactly what goes and where (\"the two wheelie bins at frame left\"), and what fills the gap (\"the brick wall continues\"). One removal list per job; a frame grab with the area boxed avoids a wrong guess."
+    },
+    "background": {
+      "label": "Change background",
+      "words": ["background", "backdrop", "behind them", "change the background", "replace the background", "swap the background", "different location"],
+      "inputs": ["video", "image"],
+      "as": {"video": "source", "image": "reference"},
+      "models": {"video": ["seedance_2_5"], "image": ["nano_banana_2", "gpt_image_2_6", "seedream_v5_pro"]},
+      "candidates": {"video": ["hf_mult_replace_object", "kling_video_edit"], "image": ["nano_banana_pro"]},
+      "edit": "edit",
+      "keep": "the subject stays identical (face, hair, clothes, hands, motion, framing); only the background changes",
+      "duration": "source",
+      "tips": "Describe the new place and match its light to the subject's key (side, warmth), or the subject looks pasted in."
+    },
+    "animate": {
+      "label": "Animate a still",
+      "words": ["animate", "make it move", "bring to life", "motion", "photo to video", "image to video"],
+      "inputs": ["image"],
+      "as": {"image": "start_frame"},
+      "models": {"image": ["seedance_2_5"]},
+      "output": "video",
+      "candidates": {"image": ["kling3_0", "kling4_0"]},
+      "duration": 5,
+      "tips": "Motion only: one camera move with its speed and what moves in the scene. Never describe the frame again."
+    },
+    "extend": {
+      "label": "Extend a clip",
+      "words": ["extend", "longer", "lengthen", "continue", "add a few seconds", "carry on"],
+      "inputs": ["video"],
+      "as": {"video": "source"},
+      "models": {"video": ["seedance_2_5"]},
+      "edit": "extend_forward",
+      "duration": 4,
+      "tips": "Describe what happens next and that the camera keeps its move and speed. Use extend_backward (sc.py card front matter source_edit) for a lead-in."
+    }
+  }
+}

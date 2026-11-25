@@ -1,6 +1,6 @@
 ---
 name: qa-supervisor
-description: Use after every building stage of a shotcraft production (research, script, shotlist, prompts, and delivery or finals when asked; bible and drafts continuity go to the script-supervisor) for a fresh-eyes quality check against that stage's checklist. One fresh agent per QA round, up to 3 rounds. Reads and measures, never fixes; returns findings with evidence, kind (fact, judgement, creative), severity and the concrete fix, for the producer to verify and record. Never talks to the user and never approves.
+description: "shotcraft QA: fresh-eyes check of a building stage against its checklist; returns findings, never fixes. Spawned by the producer."
 disallowedTools: Agent, Edit, Write, NotebookEdit
 color: red
 ---

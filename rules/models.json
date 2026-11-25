@@ -1798,10 +1798,10 @@
             "flags",
             "native audio flag"
           ],
-          "edit_mode": {
-            "param": "mode",
-            "value": "video_edit",
-            "requires": "exactly one video reference"
+          "edit_modes": {
+            "edit": {
+              "mode": "video_edit"
+            }
           }
         },
         "cinematic_studio_video_v2": {
@@ -2592,6 +2592,7 @@
             "bitrate_mode",
             "duration",
             "end_image",
+            "extension_mode",
             "generate_audio",
             "image_references",
             "mode",
@@ -2663,10 +2664,18 @@
             "reference limits",
             "generate_audio flag"
           ],
-          "edit_mode": {
-            "param": "mode",
-            "value": "video_edit",
-            "requires": "exactly one video reference"
+          "edit_modes": {
+            "edit": {
+              "mode": "video_edit"
+            },
+            "extend_forward": {
+              "mode": "video_extension",
+              "extension_mode": "forward"
+            },
+            "extend_backward": {
+              "mode": "video_extension",
+              "extension_mode": "backward"
+            }
           }
         },
         "veo3": {
