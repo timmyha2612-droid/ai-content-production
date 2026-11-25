@@ -496,12 +496,26 @@ def gen_stage_for_tier(tier):
     return table[tier]
 
 
+def gen_stage(project, tier):
+    """The stage a tier generates in for this project: the track's own gen_stage (the quick track does every
+    tier in its one stage), else the usual table (board -> boards, draft -> drafts, final/upscale -> finals)."""
+    try:
+        state = load_state(project)
+        track = load_tracks()["tracks"].get(state["track"], {})
+    except ShotcraftError:
+        track = {}
+    if track.get("gen_stage"):
+        gen_stage_for_tier(tier)  # still refuses an unknown tier
+        return track["gen_stage"]
+    return gen_stage_for_tier(tier)
+
+
 def gen_allowed(project, tier):
     state = load_state(project)
     track = load_tracks()["tracks"].get(state["track"], {})
     if not track.get("generation_allowed", True):
         return False, "The %s track never generates. Start a single or full project to generate." % state["track"]
-    stage = gen_stage_for_tier(tier)
+    stage = gen_stage(project, tier)
     if stage not in state["order"]:
         return False, "Tier %s needs the %s stage, which is not on the %s track." % (tier, stage, state["track"])
     st = state["stages"][stage]["status"]

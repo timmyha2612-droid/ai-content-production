@@ -7,7 +7,7 @@ Commands used (from docs/research/higgsfield-cli/README.md and MODELS.md):
     higgsfield generate cost <job_set_type> [flags] --json     credit estimate, no job
     higgsfield generate create <job_set_type> --prompt .. [flags] --json   submit (no --wait: returns job ids)
     higgsfield generate get <job_id> --json               job status and result URLs
-    higgsfield generate wait <job_id> --json --wait-timeout <N>s --wait-interval 3s
+    higgsfield generate wait <job_id> --json --timeout <N>s --interval 3s --quiet
     higgsfield upload create <path> --json                upload a file, returns an upload id
 Flags: --aspect_ratio, --resolution, --duration, --mode ... (underscore spelling, as in MODELS.md); media flags
 --start-image, --end-image, --image-references, --video-references, --audio-references (repeated for several).
@@ -246,8 +246,17 @@ class HiggsfieldProvider(Provider):
         return data if data is not None else {"text": out}
 
     def estimate(self, model, params, inputs=None, prompt=None):
-        prep = self.prepare(model, prompt or "cost estimate", params, None)
-        data, out = self._json(["generate", "cost"] + build_argv(prep, "cost"), timeout=60)
+        prep = self.prepare(model, prompt or "cost estimate", params, inputs)
+        # `generate cost` uploads local media first: give it time in proportion to the files (about 1 MB/s)
+        size = 0
+        for v in (prep.get("media") or {}).values():
+            for f in (v if isinstance(v, list) else [v]):
+                try:
+                    size += os.path.getsize(f)
+                except (OSError, TypeError):
+                    pass
+        cost_timeout = int(min(1800, 60 + size / 1e6))
+        data, out = self._json(["generate", "cost"] + build_argv(prep, "cost"), timeout=cost_timeout)
         n = _number(data) if data is not None else None
         if n is None:
             m = re.search(r"(\d+(?:\.\d+)?)\s*credit", out or "", re.I) or re.search(r"(\d+(?:\.\d+)?)", out or "")
@@ -280,20 +289,46 @@ class HiggsfieldProvider(Provider):
         data, _ = self._json(["generate", "get", job_id], timeout=60)
         return self._status_from(job_id, data)
 
-    def wait(self, job_id, timeout=600):
-        args = ["generate", "wait", job_id, "--wait-timeout", "%ds" % int(timeout), "--wait-interval", "3s"]
-        out, err = self._run(args + ["--json"], timeout=int(timeout) + 60, check=False)
-        if out is not None:
+    def wait(self, job_id, timeout=600, poll_s=5):
+        """Wait for a job to finish. `higgsfield generate wait` (flags --timeout / --interval) does the polling;
+        if it errors or answers unreadably before the deadline, poll `generate get` ourselves until the job is
+        terminal or the time is up. A wait never returns early while the job is still running."""
+        deadline = time.time() + int(timeout)
+        # one CLI wait, bounded by our own deadline (no retry loop that would restart the full timeout)
+        argv = [self.cli, "generate", "wait", job_id, "--timeout", "%ds" % int(timeout), "--interval", "3s",
+                "--quiet", "--json"]
+        rc, out, err = self._runner(argv, int(timeout) + 60)
+        if rc != 0 and _AUTH_RX.search((out or "") + "\n" + (err or "")):
+            raise ProviderAuthError("Higgsfield needs you to sign in again. Run: higgsfield auth login (then sc.py "
+                                    "gen fetch GEN_ID). The job keeps running.")
+        if rc == 0 and out:
             data = _parse_json(out)
             if data is not None:
                 st = self._status_from(job_id, data)
                 if st["status"] in TERMINAL:
                     return st
-        # a timeout or an unreadable answer: ask for the current state
-        st = self.status(job_id)
-        if st["status"] in ACTIVE:
-            st["timed_out"] = True
-        return st
+        last = {"job_id": job_id, "status": "in_progress", "result_urls": [], "error": None, "cost": None}
+        fails = 0
+        while True:
+            try:
+                st = self.status(job_id)
+                last, fails = st, 0
+            except ProviderAuthError:
+                raise
+            except ProviderError as exc:
+                # a blip while polling is not a failed job: keep the last known state and keep waiting, but a
+                # status check that keeps failing (a job id Higgsfield does not know) is reported, not waited out
+                fails += 1
+                if fails >= 5:
+                    raise ProviderError("Could not read job %s %d times in a row: %s. Check it with sc.py gen "
+                                        "status GEN_ID." % (job_id, fails, str(exc)[:200]))
+                st = dict(last, note="status check failed: %s" % str(exc)[:200])
+            if st["status"] not in ACTIVE:
+                return st
+            if time.time() >= deadline:
+                st["timed_out"] = True
+                return st
+            self._sleep(min(poll_s, max(0.0, deadline - time.time())))
 
     def download(self, job_id, dest_dir, names=None):
         st = self.status(job_id)
@@ -332,7 +367,11 @@ class HiggsfieldProvider(Provider):
         return paths
 
     def upload(self, path):
-        data, out = self._json(["upload", "create", path], timeout=300)
+        try:
+            size = os.path.getsize(path)
+        except OSError:
+            size = 0
+        data, out = self._json(["upload", "create", path], timeout=int(min(1800, 300 + size / 1e6)))
         for j in _jobs(data):
             for k in ("id", "upload_id", "uuid", "media_id"):
                 if j.get(k):

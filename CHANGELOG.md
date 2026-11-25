@@ -7,7 +7,24 @@ dates; rule changes that alter what gets generated are listed here too.
 
 ## [Unreleased]
 
+## [0.2.0] - 2026-11-26
+
 ### Added
+
+- **Quick track** (`quick`): one shot, one prompt card, one live price, one yes, then it generates, waits
+  and downloads. No intake grilling, no QA agents, no drafts unless asked. New `sc.py quick plan` (sets up
+  the project, copies and optionally trims and crops the inputs with `--trim` / `--crop` / `--scale`, refuses
+  what submit would refuse, prices it live, spends nothing), `sc.py quick go --user-said` (the user's yes to
+  the shown prompt and price approves the card and the spend, then submits, waits and downloads),
+  `sc.py quick keep` and `sc.py quick redo`. `go` spends exactly what the latest plan priced (model, takes,
+  tier) and only once: the price is claimed before the first job, a higher live price is refused before
+  anything is submitted (`gen.submit --max_credits`), and a changed card needs a new plan. `--update` keeps the
+  project's inputs and earlier choices. Plain `sc.py gen submit` on a quick project keeps the draft gate. New `quick` skill; the refine skill now offers generation
+  through it, and the producer routes "just generate it" requests to it.
+- **Editing a source video** (relights, sky changes, restyles): a card input `"as": "source"` sends the
+  user's clip as the one video reference in the model's edit mode (`edit_mode` in models.json: Seedance
+  2.5 and Cinema Studio 4.0 use `--mode video_edit`). The compiler leaves out camera, framing and beat
+  fields (the source sets them) and trims the light fields last. A model with no edit mode is refused.
 
 - Depth planes on prompt cards: `world.background_far`, `world.background_near`, `world.foreground`,
   `world.parallax` and `subject.placement` compile into one depth sentence (far background; background;
@@ -67,6 +84,20 @@ dates; rule changes that alter what gets generated are listed here too.
 - `skills/prompt-craft/references/depth-and-finish.md`, plus updates to the cinematographer,
   production-designer, character-designer, sound, delivery and assistant-editor agents, the director and
   intake, the templates and the QA checklists.
+
+### Fixed
+
+- The price check (`generate cost`) now sends the card's inputs, so modes that need media (video edit,
+  omni reference) can be priced and submitted.
+- Waiting for a job: `higgsfield generate wait` was called with flags that do not exist
+  (`--wait-timeout`, `--wait-interval`), so every wait returned at once while the job still ran. It now uses
+  `--timeout` / `--interval` and falls back to polling until the job finishes or the time is up.
+- `card set-input --as source` replaces the source and asks for the card's approval again (it changes the
+  mode, prompt and price). Uploads get time in proportion to the file size. A wait keeps polling through
+  passing errors, stops after 5 failed status checks in a row, and no longer mistakes a "401" in a good answer
+  for a sign-in problem.
+- Beat timings no longer double the unit ("0-4 ss"), and an on-screen text of "none" adds nothing to the
+  prompt.
 
 ## [0.1.0] - 2026-11-24
 

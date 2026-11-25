@@ -25,8 +25,9 @@ API:
         the card must be approved through `sc.py card approve` and unchanged since (hash in project.json)
     estimate(project, card, tier, model=None, variants=None, record=True) -> result
     submit(project, card, tier, model=None, variants=None, user_said=None, wait=False, timeout=600,
-           provider=None, skip_draft_said=None) -> result     user_said = budget yes; skip_draft_said = the
-           separate yes for a final with no approved draft (or an upscale with no approved final)
+           provider=None, skip_draft_said=None, max_credits=None) -> result     user_said = budget yes;
+           skip_draft_said = the separate yes for a final with no approved draft (or an upscale with no approved
+           final); max_credits = the price the user said yes to (refused before any job if the live total is higher)
     refresh(project, gen_id, wait=False, timeout=600, provider=None) -> generation (status, download, budget)
     approve(project, gen_id, user_said, note=None) / reject(project, gen_id, user_said, note=None) -> generation
     cli_gen_estimate / cli_gen_submit / cli_gen_status / cli_gen_fetch / cli_gen_approve / cli_gen_reject (args)
@@ -45,7 +46,8 @@ TIER_DIR = {"board": "boards", "draft": "drafts", "final": "finals", "upscale": 
 TIER_ROLE = {"board": "board", "draft": "draft", "final": "final", "upscale": "upscaled"}
 TIER_LETTER = {"board": "b", "draft": "d", "final": "f", "upscale": "u"}
 APPROVED_CARD = ("approved", "generated", "final")
-MEDIA_KEYS = ("start_image", "end_image", "image_references", "video_references", "audio_references")
+MEDIA_KEYS = ("start_image", "end_image", "image_references", "video_references", "audio_references",
+              "source_video")
 MAX_VARIANTS = 8
 
 
@@ -335,6 +337,26 @@ def plan(project, card, tier, model=None, variants=None, strict=True):
         a = manifest.find_asset(data, aid) or {}
         slot = {"video": "video_references", "audio": "audio_references"}.get(a.get("kind"), "image_references")
         ids.setdefault(slot, []).append(aid)
+    src = compiled["params"].get("source_video")
+    if src:
+        # edit the user's own video: the model's edit mode with exactly one video reference
+        a = manifest.find_asset(data, src) or {}
+        em = profile.get("edit_mode") or {}
+        if a and a.get("kind") != "video":
+            msg = "The source input %s is not a video (%s)." % (src, a.get("kind"))
+            if strict:
+                raise Refused(msg)
+            notes.append(msg)
+        elif not em.get("param"):
+            msg = ("%s cannot edit a video. Pick a model with an edit mode (Seedance 2.5 or Cinema Studio 4.0) "
+                   "with --model, or change the input from source to reference." % out["model_name"])
+            if strict:
+                raise Refused(msg)
+            notes.append(msg)
+        else:
+            ids = {"video_references": [src]}
+            params[em["param"]] = em["value"]
+            notes.append("Editing the source video %s (%s %s)." % (src, em["param"], em["value"]))
     refs = profile.get("refs") or {}
     for slot, lim_key in (("video_references", "video"), ("audio_references", "audio")):
         if ids.get(slot) and not refs.get(lim_key):
@@ -354,7 +376,7 @@ def plan(project, card, tier, model=None, variants=None, strict=True):
 
 # ---------------------------------------------------------------- gates
 
-def gates(project, pl, skip_draft_said=None):
+def gates(project, pl, skip_draft_said=None, quick_priced=False):
     """Stage, card and approval gates for a submit. Returns problems (empty = pass).
     skip_draft_said: the user's words for a final with no approved draft (or an upscale with no approved final).
     It is a separate yes from the budget one (--user-said), so one answer never waives both."""
@@ -374,7 +396,11 @@ def gates(project, pl, skip_draft_said=None):
             problems.append("the card changed since the user approved it. Show them the change, then: sc.py card "
                             "approve %s --user-said \"<their words>\"" % pl.get("card_rel"))
     gens = data.get("generations", [])
-    if pl["tier"] == "final" and not _approved(gens, pl["shot"], ("draft",)) and not _said(skip_draft_said):
+    # The quick track goes straight to the tier the user chose, but only through `sc.py quick go`, whose one yes
+    # named that tier and its price. A plain `sc.py gen submit` on a quick project keeps the draft gate.
+    quick = quick_priced and data.get("track") == "quick"
+    if pl["tier"] == "final" and not quick and not _approved(gens, pl["shot"], ("draft",)) \
+            and not _said(skip_draft_said):
         problems.append("%s has no approved draft. Approve one (sc.py gen approve GEN_ID --user-said \"...\") or, if "
                         "the user wants to go straight to the final, pass their words with --skip-draft-said."
                         % pl["shot"])
@@ -416,9 +442,9 @@ def _public_plan(pl):
 
 
 def submit(project, card, tier, model=None, variants=None, user_said=None, wait=False, timeout=600,
-           provider=None, skip_draft_said=None):
+           provider=None, skip_draft_said=None, max_credits=None, quick_priced=False, on_job=None):
     pl = plan(project, card, tier, model=model, variants=variants, strict=True)
-    problems = gates(project, pl, skip_draft_said)
+    problems = gates(project, pl, skip_draft_said, quick_priced=quick_priced)
     if problems:
         raise Refused("Not generating %s %s: %s" % (pl["shot"], tier, " | ".join(problems)))
     if pl["input_problems"]:
@@ -429,11 +455,16 @@ def submit(project, card, tier, model=None, variants=None, user_said=None, wait=
                              % prov.name)
     each = _estimate_each(prov, pl)
     total = each * pl["variants"]
+    if max_credits is not None and total > float(max_credits) + 1e-6:
+        # the user said yes to a price; a higher live price needs a new yes before anything is submitted
+        raise Refused("%s %s now costs about %s credits (%d x %s), more than the %s the user said yes to. Show the "
+                      "new price and ask again." % (pl["shot"], tier, _clean(total), pl["variants"], _clean(each),
+                                                    _clean(max_credits)))
     chk = budget.check(project, total, user_said=user_said)
     if not chk["ok"]:
         raise Refused("%s %s would cost about %s credits (%d x %s): %s" % (
             pl["shot"], tier, _clean(total), pl["variants"], _clean(each), chk["reason"]))
-    gstage = stages.gen_stage_for_tier(tier)
+    gstage = stages.gen_stage(project, tier)
     if _said(user_said):
         overrides = ["budget: %s" % chk["reason"]] if chk.get("needs_user_said") else []
         manifest.add_decision(project, gstage, "Generate %s %s with %s, about %s credits%s"
@@ -441,7 +472,7 @@ def submit(project, card, tier, model=None, variants=None, user_said=None, wait=
                                  (" (the user overrode: %s)" % " | ".join(overrides)) if overrides else ""),
                               user_said)
     if _said(skip_draft_said):
-        skipped = [p for p in gates(project, pl, None) if "no approved" in p]
+        skipped = [p for p in gates(project, pl, None, quick_priced=quick_priced) if "no approved" in p]
         if skipped:
             manifest.add_decision(project, gstage, "Generate %s %s without the usual approval first (the user "
                                   "overrode: %s)" % (pl["shot"], tier, " | ".join(skipped)), skip_draft_said)
@@ -472,6 +503,8 @@ def submit(project, card, tier, model=None, variants=None, user_said=None, wait=
             raise
         g = manifest.update_generation(project, g["id"], job_id=job, status="submitted",
                                        submitted_at=jsonio.now_iso(), reserved=_clean(each), budget_settled=False)
+        if on_job:
+            on_job(g)
         if wait:
             g = refresh(project, g["id"], wait=True, timeout=timeout, provider=prov)
         results.append(g)
@@ -568,7 +601,7 @@ def _decide(project, gen_id, user_said, approved, note=None):
             gen_id, g.get("status"), "approved" if approved else "rejected"))
     g = manifest.update_generation(project, gen_id, approved=approved, approval_said=user_said,
                                    approval_note=note, decided_at=jsonio.now_iso())
-    stage = stages.gen_stage_for_tier(g["tier"]) if g.get("tier") else None
+    stage = stages.gen_stage(project, g["tier"]) if g.get("tier") else None
     manifest.add_decision(project, stage, "%s %s %s (%s)%s" % (
         "Approved" if approved else "Rejected", gen_id, g.get("shot"), g.get("tier"),
         (": " + note) if note else ""), user_said)

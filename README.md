@@ -12,6 +12,7 @@ What you get depends on what you ask for:
 | You ask for | Track | You get |
 |---|---|---|
 | "Just a prompt" ("write me a Higgsfield prompt for...", "refine this prompt") | `refine` | A complete prompt card right away, at most 3 quick questions, compiled for the model you will use, with settings and the reasons for them. No credits spent. |
+| "Just generate it" (one shot now: a relight, a clip, a still) | `quick` | One prompt card, the live price, one yes, then it generates, waits and downloads. No intake, no QA agents, no drafts unless you ask. |
 | One asset (an icon, a thumbnail, a single shot) | `single` | A short intake, a prompt card, cheap drafts, an approved final that matches the delivery spec, and the hand-off. |
 | A full piece (a reel, an ad, an explainer, a short film) | `full` | Research to hand-off: brief, concept, script, shot list, bible, cards, boards, drafts, finals, motion graphics, sound, an animatic, delivery checks, and a Higgsfield hand-off with every approved asset uploaded and a Canvas build sheet. |
 
@@ -101,6 +102,7 @@ delivery, qa-supervisor, qa-verifier, learner, model-scout.
 |---|---|
 | full | intake, research, concept, script, shotlist, bible, prompts, boards, drafts, finals, sound, assembly, delivery, handoff, learn |
 | single | intake, prompts, drafts, finals, delivery, handoff, learn |
+| quick | quick (plan and price, one yes, generate, keep or redo) |
 | refine | refine (no generation at all) |
 
 Optional stages, which you can drop at intake (your words are recorded): research, concept, boards,

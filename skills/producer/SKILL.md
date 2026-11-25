@@ -58,10 +58,11 @@ Decide from the request, then confirm in the first grilling round (with your pic
 | The user wants | Track | What they get at the end |
 |---|---|---|
 | A prompt to paste, or a better prompt | refine (load the **refine** skill; no project) | A paste-ready prompt card, saved |
-| One asset: an icon, a thumbnail, one shot, one still | single | The finished asset, delivery-checked, plus hand-off |
+| One shot, now: "just generate it", a relight, one clip or still | quick (load the **quick** skill; one question) | The file, downloaded, after one yes to the prompt and live price |
+| One asset with drafts, a delivery check and hand-off | single | The finished asset, delivery-checked, plus hand-off |
 | A whole piece: reel, ad, explainer, short film, campaign | full | Every stage, ending in the Higgsfield hand-off: assets uploaded and a Canvas build sheet set out node by node |
 
-Then: `sc project init --name "<name>" --track full|single [--use-case <preset>] [--budget <credits>]
+Quick track: hand over to the **quick** skill (it runs no intake). Otherwise: `sc project init --name "<name>" --track full|single [--use-case <preset>] [--budget <credits>]
 [--threshold <credits>]`. It creates the folder under the projects root and makes it active for this session.
 Use-case presets (from `rules/presets.json`): social-vertical, social-square, social-landscape, youtube,
 youtube-short, thumbnail, icon-ui, logo-animation, web-hero, banner-ad, broll-insert, real-estate,

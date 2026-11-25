@@ -38,6 +38,15 @@
         "learn"
       ]
     },
+    "quick": {
+      "label": "Quick shot",
+      "when": "One shot straight to the real thing: one prompt card, one live price, one yes from the user, then generate, wait and download. No intake, no QA agents, no drafts unless asked.",
+      "generation_allowed": true,
+      "stages": [
+        "quick"
+      ],
+      "gen_stage": "quick"
+    },
     "refine": {
       "label": "Prompt refinement",
       "when": "The user only wants a prompt. Quick questions, then a prompt card. No generation at all.",

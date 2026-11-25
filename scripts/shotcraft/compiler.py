@@ -79,6 +79,13 @@ IMAGE_SKIP = {"camera.movement", "camera.movement_speed", "time_output.beats", "
               "time_output.audio", "world.parallax"}
 # With a start frame the planes are already drawn; what still has to be said is how they move and how the
 # subject and the place act on each other over time (splashes, hair in the wind, light sweeping across).
+# A card with a `source` input edits that video (a relight, a sky change, a restyle): the source already sets
+# the framing, the camera move and the timing, so those fields are left out and the words go to what changes.
+EDIT_SKIP = {"camera.shot_size", "camera.angle", "camera.lens", "camera.dof", "camera.composition",
+             "camera.movement", "camera.movement_speed", "camera.camera_look", "time_output.beats",
+             "time_output.pacing", "time_output.transition_in", "time_output.transition_out",
+             "subject.placement", "subject.interaction"}
+
 MOTION_KEEP = {"subject.action", "subject.interaction", "world.parallax", "camera.movement",
                "camera.movement_speed", "time_output.beats",
                "time_output.pacing", "time_output.loop", "time_output.transition_in",
@@ -143,7 +150,10 @@ def _fragment(key, value):
             if isinstance(b, dict) and str(b.get("what") or "").strip():
                 t = str(b.get("t") or "").strip()
                 what = str(b["what"]).strip().rstrip(".")
-                parts.append("{}s: {}".format(t, what) if t else what)
+                t = str(t).strip() if t is not None else ""
+                if t and not re.search(r"[a-z]\s*$", t, re.I):
+                    t += " s"  # "0-4" -> "0-4 s"; "0-4 s" and "0-4s" stay as they are
+                parts.append("{}: {}".format(t, what) if t else what)
         return "; ".join(parts)
     if key == "time_output.loop":
         return "seamless loop, the last frame matches the first" if value is True else ""
@@ -159,6 +169,8 @@ def _fragment(key, value):
     if key == "time_output.audio":
         return v if v.lower().startswith(("audio", "sound", "no audio", "silent")) else "audio: " + v
     if key == "time_output.on_screen_text":
+        if str(v).strip().lower() in ("none", "no", "no text", "n/a", "-", "nothing"):
+            return ""
         if '"' in v or "“" in v or "text" in v.lower():
             return v
         return 'on-screen text reads "{}"'.format(v)
@@ -490,15 +502,30 @@ def compile(card, model_profile=None, rules=None):  # noqa: A001 - name fixed by
     refs_cfg = profile.get("refs")
     img_limit = refs_cfg.get("image") if isinstance(refs_cfg, dict) else None
     refs = []
-    start = end = None
+    start = end = source = None
     for inp in inputs:
         role, asset = inp.get("as"), inp.get("asset")
         if role == "start_frame":
             start = asset
         elif role == "end_frame":
             end = asset
+        elif role == "source":
+            if source is not None:
+                warnings.append("Only one source video can be edited; {} is left out.".format(asset))
+                continue
+            source = asset
         else:
             refs.append(asset)
+    if source is not None and kind != "video":
+        warnings.append("A source video is for video cards; it is sent as a reference instead.")
+        refs.insert(0, source)
+        source = None
+    if source is not None:
+        params["source_video"] = source
+        if start or end or refs:
+            warnings.append("Editing a source video takes that one video only; the other inputs are left out.")
+            start = end = None
+            refs = []
     if kind == "image" and (start or end):
         for a in (start, end):
             if a:
@@ -532,6 +559,7 @@ def compile(card, model_profile=None, rules=None):  # noqa: A001 - name fixed by
             params["image_references"] = refs
 
     motion_only = bool(start) and kind == "video"
+    edit_source = source is not None
     finish = _preset_finish(card, rules)
     if finish is None and str((layers.get("light_look") or {}).get("finish") or "").strip():
         finish = "natural"  # no preset table: a filled finish field means a natural look
@@ -561,20 +589,28 @@ def compile(card, model_profile=None, rules=None):  # noqa: A001 - name fixed by
             if kind == "image" and key in IMAGE_SKIP:
                 dropped.append({"field": key, "reason": "not used for a still image"})
                 continue
+            if edit_source and key in EDIT_SKIP:
+                dropped.append({"field": key, "reason": "the source video already sets this"})
+                continue
             if motion_only and key not in MOTION_KEEP:
                 dropped.append({"field": key, "reason": "the start frame already shows this"})
                 continue
             if key == "time_output.audio" and not params.get("audio"):
                 dropped.append({"field": key, "reason": "no native audio for this shot; sound is added in post"})
                 continue
+            pri = _priority(taxonomy, key)
+            if edit_source and key.startswith("light_look."):
+                # what changes is the point of an edit: light and look are trimmed last
+                if pri < protect:  # trimmed last, but still trimmable; already-protected fields stay protected
+                    pri = min(protect - 1, max(pri, 80 + pri // 5))
             items.append({"key": key, "group": group, "text": text,
-                          "priority": _priority(taxonomy, key), "idx": idx})
+                          "priority": pri, "idx": idx})
             idx += 1
 
     # A place with no planes reads as a flat backdrop behind a pasted-in subject. Only live-action looks
     # (or an unknown preset) need the planes; a clean graphic or product shot may be flat on purpose.
     world = layers.get("world") or {}
-    if (not motion_only and finish in NATURAL_FINISHES + (None,) and str(world.get("environment") or "").strip()
+    if (not motion_only and not edit_source and finish in NATURAL_FINISHES + (None,) and str(world.get("environment") or "").strip()
             and not any(str(world.get(k.split(".", 1)[1]) or "").strip() for k in DEPTH_FIELDS)):
         warnings.append("No depth planes: add a foreground and a background (near or far) so the subject "
                         "sits inside the place, not in front of a flat backdrop.")
@@ -665,6 +701,7 @@ def compile(card, model_profile=None, rules=None):  # noqa: A001 - name fixed by
         "max_prompt_words": max_words,
         "model": profile.get("id"),
         "motion_only": motion_only,
+        "edit_source": edit_source,
         "warnings": warnings,
         "requested_duration_s": requested,
     }

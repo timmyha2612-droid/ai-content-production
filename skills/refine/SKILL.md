@@ -1,6 +1,6 @@
 ---
 name: refine
-description: "This skill should be used when the user wants a prompt rather than a production: \"refine this prompt\", \"make this prompt better\", \"fix my prompt\", \"write me a Higgsfield prompt\", \"give me a prompt for ...\", \"prompt for Kling / Seedance / Veo / Hailuo / Wan / Cinema Studio / Soul / Nano Banana / GPT Image / Seedream / Recraft / Flux\", \"turn this idea into a video prompt\", \"image prompt for a thumbnail\", \"why does my prompt give bad results\". It is the fast path (the refine track): a complete, model-aware prompt card straight away, at most 3 questions and only where a wrong guess would waste credits, saved with sc.py refine save, and an offer to generate it (which starts a single-track project through the producer skill)."
+description: "This skill should be used when the user wants a prompt rather than a production: \"refine this prompt\", \"make this prompt better\", \"fix my prompt\", \"write me a Higgsfield prompt\", \"give me a prompt for ...\", \"prompt for Kling / Seedance / Veo / Hailuo / Wan / Cinema Studio / Soul / Nano Banana / GPT Image / Seedream / Recraft / Flux\", \"turn this idea into a video prompt\", \"image prompt for a thumbnail\", \"why does my prompt give bad results\". It is the fast path (the refine track): a complete, model-aware prompt card straight away, at most 3 questions and only where a wrong guess would waste credits, saved with sc.py refine save, and an offer to generate it (one question with the live price, through the quick skill)."
 metadata:
   version: "0.1.0"
 ---
@@ -142,13 +142,13 @@ If the user asks for the work to be tracked as a refine project instead: `sc pro
 
 ## 6. Offer to generate
 
-End with one line: "Want me to generate it? That starts a small single-track project: a short intake,
-then drafts at about <N> credits per take (live price from Higgsfield before anything is spent)."
+End with one line: "Want me to generate it? One question with the live price, then it renders and
+downloads (about <N> credits)."
 
-On yes, load the **producer** skill: `sc project init --name "<name>" --track single --use-case <preset>`,
-a short intake (the card already answers most of it, so ask only the job-card lines still missing:
-goal, audience, delivery, budget), then the prompts stage with this card as `05_prompts/S010.md`, approved
-with the user's words, then drafts. The refine track itself never generates.
+On yes, load the **quick** skill: `sc quick plan <this card> ...` prices it, one question with the price,
+`sc quick go` generates, waits and downloads. Use the **producer** skill (single or full track) only when the
+user wants drafts, a delivery check and hand-off, or more than one shot. The refine track itself never
+generates.
 
 ## Rules
 

@@ -47,7 +47,7 @@ LAYER_FIELDS = {
 
 KINDS = ("video", "image")
 TIERS = ("board", "draft", "final", "upscale")
-INPUT_ROLES = ("start_frame", "end_frame", "reference", "character", "style")
+INPUT_ROLES = ("start_frame", "end_frame", "reference", "character", "style", "source")
 STATUSES = ("draft", "approved", "generated", "final")
 SHOT_RE = re.compile(r"^S\d{3,4}[A-Z]?$")
 ASSET_RE = re.compile(r"^A\d{3,}$")
@@ -543,9 +543,11 @@ def validate(meta, presets=None, taxonomy=None):
             if r not in INPUT_ROLES:
                 errs.append("inputs[{}].as must be one of {} (got {!r}).".format(n, ", ".join(INPUT_ROLES), r))
             roles.append(r)
-        for r in ("start_frame", "end_frame"):
+        for r in ("start_frame", "end_frame", "source"):
             if roles.count(r) > 1:
                 errs.append("Only one input can be the {}.".format(r.replace("_", " ")))
+        if "source" in roles and kind == "image":
+            errs.append("A source video is for video cards (it is the clip being edited).")
         if kind == "image" and ("start_frame" in roles or "end_frame" in roles):
             errs.append("An image card cannot have start or end frames; use 'reference' instead.")
 
@@ -969,7 +971,7 @@ def cli_refine_save(args):
 # Both write the card through sc.py whatever the 05_prompts/ lock, but only while prompts, boards, drafts or
 # finals is open, so a late approval or a new start frame after boards does not need `stage reopen prompts`.
 
-CARD_EDIT_STAGES = ("prompts", "boards", "drafts", "finals")
+CARD_EDIT_STAGES = ("prompts", "boards", "drafts", "finals", "quick")
 
 
 def _card_in_project(project, path):
@@ -1041,8 +1043,15 @@ def set_input(project, path, asset_id, role, user_said):
                           asset_id, asset.get("rights"), asset_id))
     meta, body = read(path)
     was_approved = meta.get("status") in ("approved", "generated", "final")
+    if role == "source" and was_approved:
+        # a source turns the card into an edit of that video (another mode, prompt and price): the user sees the
+        # recompiled card and approves it again
+        was_approved = False
+        meta["status"] = "draft"
+        meta["approved_said"] = None
+        meta.pop("approved_hash", None)
     inputs = [i for i in (meta.get("inputs") or []) if isinstance(i, dict)]
-    if role in ("start_frame", "end_frame"):
+    if role in ("start_frame", "end_frame", "source"):
         inputs = [i for i in inputs if i.get("as") != role]
     inputs = [i for i in inputs if not (i.get("asset") == asset_id and i.get("as") == role)]
     inputs.append({"asset": asset_id, "as": role})
@@ -1084,7 +1093,7 @@ def cli_card_approve(args):
 
 
 def cli_card_set_input(args):
-    """sc.py card set-input PATH --asset A012 --as start_frame|end_frame|reference|character|style --user-said "..." """
+    """sc.py card set-input PATH --asset A012 --as start_frame|end_frame|reference|character|style|source --user-said "..." """
     project = _active_project(args)
     path = _path_arg(args, project)
     project = _project_of(path) or project

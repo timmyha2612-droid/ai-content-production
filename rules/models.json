@@ -1797,7 +1797,12 @@
             "duration range",
             "flags",
             "native audio flag"
-          ]
+          ],
+          "edit_mode": {
+            "param": "mode",
+            "value": "video_edit",
+            "requires": "exactly one video reference"
+          }
         },
         "cinematic_studio_video_v2": {
           "name": "Cinematic Studio Video V2",
@@ -2657,7 +2662,12 @@
             "aspects",
             "reference limits",
             "generate_audio flag"
-          ]
+          ],
+          "edit_mode": {
+            "param": "mode",
+            "value": "video_edit",
+            "requires": "exactly one video reference"
+          }
         },
         "veo3": {
           "name": "Google Veo 3",

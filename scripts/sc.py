@@ -511,7 +511,7 @@ def build_parser():
     s = group("project", "create, open and inspect projects")
     sp = leaf(s, "init", cmd_project_init)
     sp.add_argument("--name", required=True)
-    sp.add_argument("--track", required=True, choices=["full", "single", "refine"])
+    sp.add_argument("--track", required=True, choices=["full", "single", "quick", "refine"])
     sp.add_argument("--use-case", dest="use_case")
     sp.add_argument("--budget", type=float)
     sp.add_argument("--threshold", type=float)
@@ -617,12 +617,47 @@ def build_parser():
     sp.add_argument("path")
     sp.add_argument("--asset", required=True)
     sp.add_argument("--as", dest="as_role", required=True,
-                    choices=["start_frame", "end_frame", "reference", "character", "style"])
+                    choices=["start_frame", "end_frame", "reference", "character", "style", "source"])
     sp.add_argument("--user-said", dest="user_said", required=True)
 
     s = group("refine", "refine track")
     sp = leaf(s, "save", delegate("refine", "save", ["cards", "compiler"]))
     sp.add_argument("card_text_file")
+
+    s = group("quick", "quick track: one shot, one price, one yes")
+    sp = leaf(s, "plan", delegate("quick", "plan", ["quick"]),
+              help="set up a quick project from a card and get the live price (spends nothing)")
+    sp.add_argument("card", help="the prompt card (for example a refine card)")
+    sp.add_argument("--name", help="project name (default: the card's title); a date stamp is added")
+    sp.add_argument("--input", action="append", help="an input file (repeat for several)")
+    sp.add_argument("--as", dest="as_role", action="append",
+                    choices=["source", "start_frame", "end_frame", "reference", "character", "style"],
+                    help="its role, one per --input: source = the video to edit (relight, sky, restyle)")
+    sp.add_argument("--rights", choices=["owned", "licensed", "reference-only"],
+                    help="whose the inputs are (needed with --input)")
+    sp.add_argument("--trim", help="START-END seconds to cut from a video input, for example 22-26")
+    sp.add_argument("--crop", help="ffmpeg crop W:H:X:Y for a video input, for example 1215:2160:1400:0")
+    sp.add_argument("--scale", help="ffmpeg scale after the crop, for example 1080:1920")
+    sp.add_argument("--tier", choices=["draft", "final"], help="default final (on --update: the tier priced before)")
+    sp.add_argument("--model")
+    sp.add_argument("--variants", type=int)
+    sp.add_argument("--budget", type=float)
+    sp.add_argument("--threshold", type=float)
+    sp.add_argument("--root")
+    sp.add_argument("--update", action="store_true", help="re-price the active quick project with a changed card")
+    sp = leaf(s, "go", delegate("quick", "go", ["quick"]),
+              help="the user's yes to the shown prompt and price: approve, generate, wait, download")
+    sp.add_argument("--user-said", dest="user_said", required=True)
+    sp.add_argument("--timeout", type=int, help="seconds to wait (default 1800)")
+    sp.add_argument("--no-wait", dest="no_wait", action="store_true")
+    sp = leaf(s, "keep", delegate("quick", "keep", ["quick"]), help="the user keeps the result; closes the project")
+    sp.add_argument("--user-said", dest="user_said", required=True)
+    sp.add_argument("--gen-id", dest="gen_id")
+    sp.add_argument("--note")
+    sp = leaf(s, "redo", delegate("quick", "redo", ["quick"]), help="reject the result with what to change")
+    sp.add_argument("--user-said", dest="user_said", required=True)
+    sp.add_argument("--note", required=True)
+    sp.add_argument("--gen-id", dest="gen_id")
 
     sp = leaf(g, "route", delegate("route", None, ["routing"]), help="pick a model for a use case and tier")
     sp.add_argument("--use-case", dest="use_case", required=True)

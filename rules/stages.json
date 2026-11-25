@@ -30,6 +30,38 @@
         "00_brief/*"
       ]
     },
+    "quick": {
+      "owner": "producer (quick skill)",
+      "outputs": "an approved prompt card in 05_prompts/ and a completed generation the user kept",
+      "evidence": [
+        {
+          "check": "cards",
+          "per_shot": true
+        },
+        {
+          "check": "generations",
+          "tier": [
+            "board",
+            "draft",
+            "final",
+            "upscale"
+          ],
+          "scope": "all_shots",
+          "approved": true
+        }
+      ],
+      "gate": [
+        "user_said"
+      ],
+      "optional": false,
+      "folders": [
+        "05_prompts/*",
+        "06_generations/boards/*",
+        "06_generations/drafts/*",
+        "06_generations/finals/*",
+        "06_generations/upscaled/*"
+      ]
+    },
     "research": {
       "owner": "researcher agent(s)",
       "outputs": "01_research/direction-note.md, at least one asset with role=reference",
