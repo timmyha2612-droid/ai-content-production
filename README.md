@@ -35,7 +35,7 @@ What you get depends on what you ask for:
 
 ## How it works
 
-Five ideas run through the whole plugin:
+Six ideas run through the whole plugin:
 
 1. **Fast by default, grilled where it matters.** Quick work gets a complete answer at once. A project gets
    one deep intake interview at the start; the answers go on a job card and are never asked again.
@@ -51,6 +51,17 @@ Five ideas run through the whole plugin:
    recorded with your own words.
 5. **Rights are tracked.** Every downloaded reference keeps its source link and is tagged `reference-only`.
    It is never sent to a model as an input unless you mark it `owned` or `licensed`.
+6. **Shot, not generated.** Every live-action frame is built in planes, the way a multiplane cel set-up
+   was: far background, near background, the subject in the midground, then a foreground, plus how each
+   plane moves. Each card also says how the subject and the place act on each other (light, weather,
+   contact, scale), so the subject never looks pasted in. A natural finish guards against the too-perfect
+   AI look: lived-in detail, motivated light and real-lens character in the prompt (`natural`, or
+   `true_to_life` for real estate: true colour and real-lens character, no wear), per-scene room tone in the
+   sound mix, matched film grain and a room-tone safety floor in post, and delivery checks that fail pure
+   digital silence and audio that ends before the picture. This is a craft fix
+   for a natural look, not a way to hide that the work is AI-made or to beat AI detectors. shotcraft never
+   crops or covers a watermark. Content Credentials (C2PA) do not survive an edit or an ffmpeg re-encode,
+   so realistic AI content still needs the platform's own AI label when you post it.
 
 ## The crew
 
@@ -169,7 +180,7 @@ Optional (detected; shotcraft says what is missing when a stage needs it):
 
 | Tool | Used for |
 |---|---|
-| `ffmpeg` and `ffprobe` | delivery checks (resolution, length, fps, codec), the animatic, still frames |
+| `ffmpeg` and `ffprobe` | delivery checks (resolution, length, fps, codec, loudness, digital silence, audio covers picture), the animatic, still frames, the natural-finish pass (grain, room tone) |
 | `yt-dlp` | downloading reference videos (kept as `reference-only`) |
 | `node` | the code route for motion graphics (HTML and animation rendered to MP4) |
 
@@ -327,7 +338,16 @@ $sc route --use-case social-vertical --tier draft --kind video --duration 4
 $sc gen estimate 05_prompts/S010.md --tier draft
 $sc budget status
 $sc sheet build --tier draft --open
+$sc finish texture 08_assembly/reel.mp4 --grain subtle --out 08_assembly/reel_tex.mp4
+$sc finish roomtone 08_assembly/reel_tex.mp4 --out 09_delivery/bakery-reel_social-vertical_1080x1920_v1.mp4
 ```
+
+The finish pass chains: `texture` writes a work file outside `09_delivery/` (here `08_assembly/`), then `roomtone` runs on that file and
+writes the final file into `09_delivery/`. Paths are relative to the current directory. Without `--out`,
+finish refuses a file inside `09_delivery/`, because work files left there fail the delivery check. Skip
+`texture` when the job card's `Grain:` is off with no vignette. `roomtone` is a single-bed safety floor
+(generated pink noise, or one neutral `--bed`) for a deliverable that still fails the digital-silence check;
+the per-scene room tone and ambience beds belong in the sound mix.
 
 Every command takes `--json`, `--project PATH` and `--session-id ID`. Exit codes: 0 ok, 2 refused (a gate is
 not met; the message says why and what to do), 1 error. `$sc --help` and `$sc <group> --help` list the rest.

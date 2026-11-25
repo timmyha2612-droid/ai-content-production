@@ -39,7 +39,9 @@ Tone: <three words>, like <one reference that nails it>
 - Subject: <who or what, the action>
 - World: <place, era, time of day, weather, atmosphere>
 - Camera: <camera language, movement appetite>
-- Light and look: <lighting, palette and grade, texture, mood>
+- Light and look: <lighting, palette and grade, texture, finish (natural, true to life or clean), mood>
+
+Grain: <off | subtle | film>, vignette <yes | no> (decided at intake; the producer passes it to the delivery agent; off with no vignette skips the texture pass)
 - Time and output: <pacing, beats, loop or not, transitions>
 
 ## Material

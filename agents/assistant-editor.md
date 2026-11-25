@@ -30,6 +30,11 @@ counts, file paths, timecodes) and honest about gaps (missing shots, placeholder
   its rights and where it came from. Nothing the hand-off points at may be `reference-only`.
 - **Sound and graphics are layers, not afterthoughts.** If `07_sound/` has files, and the shot list's graphics column names graphics, list them
   with their in points on the record timeline (from the script's time ranges), so the editor can lay them in.
+- **No dead air between cuts.** Room tone or ambience (the quiet sound a place makes) runs under every cut and
+  gap, so the track never drops to digital silence. The sound stage's per-scene beds are laid in the mix or
+  the assembly; say which bed from `07_sound/` covers each scene, and flag any gap with no bed. Delivery's
+  `sc finish roomtone` is only a single-bed safety floor under the whole file, not a fix for a missing scene
+  bed.
 - **Don't edit creatively.** You assemble to the plan. If a cut looks wrong (a jump cut, a continuity break,
   a shot that plays too long), note it for the producer; changing the order or lengths is the director's and
   the user's call.
@@ -97,6 +102,8 @@ assembly --json`); the guard blocks writing into `08_assembly/` until it is.
    - the media list: shot, file, generation or asset id, tier, approved or not, rights, frame rate and size,
      handles available at head and tail;
    - placeholders and gaps (slates, unapproved takes in the cut);
+   - room tone: the bed under each scene, laid across the cuts and gaps; any silent gap, with its record in and
+     out;
    - layers to add: music and sound from `07_sound/` and the graphics from the shot list's graphics column (built outside shotcraft), each with its record in
      point from the script;
    - conform warnings: frame-rate mismatches, clips shorter than their shot plus handles, sizes below the
@@ -162,6 +169,7 @@ Reply with one JSON object and nothing else:
             {"shot": "S050", "tier": "slate", "generation": null, "approved": null}],
   "placeholders": ["S050: no picture yet, black slate"],
   "conform_warnings": ["S020: source 24 fps, timeline 30 fps"],
+  "silent_gaps": ["00:00:07:12-00:00:08:00: S030 to S040, no room tone bed"],
   "notes_for_producer": ["S030 to S040 is a jump cut: same size and angle of the cup"],
   "fixed": [],
   "blocked": []

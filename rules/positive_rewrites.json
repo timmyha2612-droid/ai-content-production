@@ -1,5 +1,6 @@
 {
   "blurry": "tack-sharp focus, crisp fine detail",
+  "blurry (shallow focus)": "sharp focus on the subject",
   "low resolution": "high-resolution, finely resolved detail",
   "jpeg artifacts": "clean, artifact-free image",
   "watermark": "clean unmarked image",
@@ -84,7 +85,7 @@
   "grain": "clean digital image",
   "text": "no lettering anywhere in the frame",
   "cartoon": "photorealistic",
-  "cgi look": "photorealistic, captured on camera",
+  "cgi look": "photographed on a real camera, real-world materials",
   "ugly": "carefully composed, attractive frame",
   "bad anatomy": "anatomically correct body",
   "fisheye distortion": "natural, undistorted perspective",
@@ -92,5 +93,19 @@
   "camera shake (moving camera)": "smooth, stabilised camera movement",
   "handheld wobble (moving camera)": "smooth, stabilised camera movement",
   "jitter (moving camera)": "smooth, fluid camera and subject motion",
-  "_note": "Keys are avoid terms. A key ending in ' (moving camera)' is used instead of the plain one when the shot has a camera move, so the wording never asks for a locked-off frame on a moving shot."
+  "_note": "Keys are avoid terms. A key ending in ' (moving camera)' is used instead of the plain one when the shot has a camera move, so the wording never asks for a locked-off frame on a moving shot. A key ending in ' (shallow focus)' is used instead when the shot asks for shallow focus, soft or out-of-focus planes, or has a natural / true-to-life finish, so the guard never asks for everything to be sharp.",
+  "too perfect": "subtle real-world imperfection",
+  "airbrushed skin": "natural skin texture with visible pores and fine lines",
+  "perfect symmetry": "natural, slightly asymmetric composition",
+  "sterile spotless set": "lived-in set with small signs of use",
+  "hyper-sharp everywhere": "natural depth of field, softer edges away from focus",
+  "flat even lighting": "motivated light that falls off naturally",
+  "stock-photo posing": "candid, unposed moment",
+  "evenly lit": "light falling off unevenly with one side darker",
+  "flat lighting": "one directional key that shapes the subject with shadow",
+  "softbox": "light from a real, motivated source in the scene",
+  "beauty lighting": "motivated light with real shadow on the face",
+  "rim light on both sides": "rim light on one side only",
+  "lifted shadows": "deep shadows that fall to black",
+  "HDR": "natural contrast with dark shadows and gently rolled-off highlights"
 }

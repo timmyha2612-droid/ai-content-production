@@ -21,9 +21,24 @@ Inputs usable: <owned, licensed or generated asset ids that may be start frames 
 
 ## Layers of depth
 
-- Foreground: <...>
-- Midground: <...>
-- Background: <...>
+<!-- Build the place in planes, like a multiplane set-up in classic animation. Each line feeds the matching
+     prompt card field: background_far, background_near, subject.placement, foreground, parallax. -->
+
+- Far background: <the most distant plane: sky, skyline, hills; often soft and hazy>
+- Near background: <the plane just behind the people: shopfront, back wall, shelves; may have several layers>
+- Midground: <where people stand, and what is around them>
+- Foreground: <what sits between camera and subject: rain on glass, a cup edge, leaves, a doorframe; usually soft>
+- What moves on each plane: <video only. e.g. far clouds drift slowly; traffic streaks in the near background; foreground slides past faster on a camera move>
+
+## Subject and environment
+
+<!-- How the place acts on the people in it, as cause and effect. Feeds subject.interaction on each card.
+     A subject that ignores the place looks pasted in. -->
+
+- Light: <what the place's light does to the people, e.g. neon spill on a cheek, window light on one side of the face>
+- Weather: <e.g. wet hair, breath fogging, wind in a coat>
+- Contact: <e.g. a footprint in a puddle, a hand on misted glass, elbows on the counter>
+- Scale: <e.g. small against the street, filling the booth>
 
 ## Light
 
@@ -31,6 +46,9 @@ Inputs usable: <owned, licensed or generated asset ids that may be start frames 
 - Time of day: <...>
 - Colour temperature: <e.g. warm 3200K key, cool blue fill>
 - Practicals: <lamps, screens, signs in frame>
+- Scene light plan (scene <n>): "<copied word for word from the Scene light plans block in 03_script/shotlist.md>"
+<!-- One line per scene set here; a place used at two times of day needs two lines. Cards repeat the anchor
+     phrase word for word and continuity is checked against it. -->
 
 ## Weather and atmosphere
 
@@ -39,6 +57,8 @@ Inputs usable: <owned, licensed or generated asset ids that may be start frames 
 ## Dressing
 
 - <object, colour, material, where it sits>
+
+Natural finish: <wear and signs of use that make the place lived-in, e.g. scuffed counter edge, a chipped mug, a menu with a coffee ring; or "clean" for a pristine product or graphic set>
 
 ## Never in frame
 

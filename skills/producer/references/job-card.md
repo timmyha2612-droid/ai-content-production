@@ -37,6 +37,7 @@ Keep each label exactly as written (capital first letter, no extra words before 
 | `Stages` | Dropped stages with the user's words; who owns what (e.g. "sound: the user") |
 | `Text on screen` | Exact copy, spelling checked with the user |
 | `Audio` | Native model audio, music bed, voice-over, or silent (and who supplies it) |
+| `Grain` | off, subtle or film, plus vignette yes or no (from the intake Texture question); the producer passes it to the delivery agent, and off with no vignette skips the texture pass |
 | `Hand-off` | Higgsfield Canvas build (default for full), files only, or both |
 | `Approver` | The user (always). Add others only if the user names them, and note that only the user's words close gates in shotcraft |
 | `Open questions` | Anything still open, and which stage will settle it |
@@ -63,6 +64,7 @@ References: <links / asset ids, reference-only>
 Stages: dropped <stage> ("<user's words>"); sound by the user
 Text on screen: "<exact copy>"
 Audio: <...>
+Grain: <off | subtle | film>, vignette <yes | no>
 Hand-off: Higgsfield Canvas build sheet + upload
 Approver: the user
 Open questions: <...>

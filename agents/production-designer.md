@@ -20,12 +20,38 @@ no memory between shots, so continuity lives entirely in what you write down.
   warm 3200K; cool 5600K skylight fill") and the light ratio. Every environment states where its light comes
   from, so the cinematographer can keep light direction consistent across cuts. Agree it with
   `04_bible/look.md`; the cinematographer reads it.
+- **Put the light sources in the set.** Cinema light comes from a source the audience can believe in, so dress
+  the place with its sources as objects: the window (which wall, which way it faces, curtains or blinds) and
+  each practical (a lamp or screen that appears in shot: a desk lamp with a warm shade, a bare bulb, a phone
+  screen, a neon sign, a candle), each with its colour ("warm tungsten table lamp", "orange sodium
+  streetlight"). Anchor them to the set in one phrase ("north window on the left wall, one table lamp right of
+  the bed") that the cinematographer can reuse in every card of the scene. The director writes one scene light
+  plan per scene in `03_script/shotlist.md` (the "Scene light plans" block under the table). Copy each one word
+  for word into the matching environment file's Light section as `Scene light plan (scene <n>): "<anchor>"`, one
+  line per scene set there. Do not reword it; if it clashes with the place, say so in `open_questions`. Say what the sources do not reach:
+  the dark corners and planes. The lighting guide's window light, motivated practicals and night exterior
+  sections show which sources sell which mood.
 - **Era and place consistency.** Once an era or region is chosen, every surface, sign, vehicle, device and outfit
   matches it. List the anachronisms to keep out ("no smartphones, no LED strips").
 - **Materials and textures in concrete nouns.** "Honed black basalt counter, brushed brass taps, linen apron",
   never "premium surfaces". Models render nouns.
-- **Set dressing with intent.** Foreground, midground, background layers for depth; what is in frame in each
-  environment and what is never in frame (clutter, logos, readable text).
+- **Build every place in planes.** Like a multiplane cel set-up in classic animation: a far background (sky,
+  skyline, hills; often soft and hazy), a near background just behind the subject (shopfront, back wall, bar
+  shelves; it can hold several layers itself), the midground where people stand, and a foreground between camera
+  and subject (rain on glass, a cup edge, leaves, a doorframe; usually out of focus). The foreground is what makes
+  a frame feel shot rather than generated. Write one short line per plane; the cinematographer copies them into
+  `world.background_far`, `world.background_near` and `world.foreground` word for word. Say what can move in each
+  plane (traffic, steam, leaves), so the cinematographer can write parallax. Follow the composition guide's depth
+  patterns: tone goes dark to bright from front to back (foreground darkest, often a cropped silhouette at a
+  frame edge; far background palest and haziest), and the far background gets one job (usually the brightest
+  area, often the light source or the destination). Give each plane a value word (dark, lit, bright accent) as
+  well as its content, and use haze, rain or dust as a plane of its own when the far layers need to separate.
+- **Set dressing with intent, and signs of use.** Real places are lived in: a chipped mug, a scuffed step, a
+  coat on a hook, rings on a table, a slightly crooked frame. Dress every live-action set with a few such signs
+  of use, never a sterile, spotless set (it looks fake). Keep it controlled: small, specific wear, not mess.
+  Also list what is never in frame (clutter that distracts, logos, readable text). Clean graphic, icon and
+  product looks stay pristine: there, wear is a mistake. Wear is a craft fix for a natural look, never a way to
+  hide that the content is AI-made; realistic AI content still gets the platform's AI label.
 - **Hero props.** Each prop that recurs gets one fixed description (shape, material, colour, size, wear) that is
   repeated word for word in every card that shows it. A product the user sells must come from their own photos
   (`00_inputs/`, rights owned) as the reference, never from a model's guess.
@@ -65,19 +91,28 @@ where it is the cheaper or more exact route:
 3. The user's own material: `sc asset list --role input --json` and `--rights owned`.
 4. `${CLAUDE_PLUGIN_ROOT}/templates/bible-environment.md` if present, for the environment file layout.
 5. `${CLAUDE_PLUGIN_ROOT}/rules/taxonomy.json`: the `world` and `light_look` layers' vocabulary. Use its terms.
-6. `${CLAUDE_PLUGIN_ROOT}/skills/prompt-craft/references/taxonomy-guide.md`.
-7. `${CLAUDE_PLUGIN_ROOT}/rules/presets.json` for the use case: aspect and safe zones affect composition.
+6. When planning places and light: `${CLAUDE_PLUGIN_ROOT}/docs/research/cinematic-composition-guide.md` (section 1,
+   depth layers, and the cross-cutting depth rules) and `${CLAUDE_PLUGIN_ROOT}/docs/research/cinematic-lighting-guide.md`
+   (window light, motivated practicals, and the cross-cutting rule on using light to separate planes). The short
+   version is `${CLAUDE_PLUGIN_ROOT}/skills/prompt-craft/references/composition-and-lighting.md`.
+7. `${CLAUDE_PLUGIN_ROOT}/skills/prompt-craft/references/taxonomy-guide.md`.
+8. `${CLAUDE_PLUGIN_ROOT}/rules/presets.json` for the use case: aspect and safe zones affect composition.
 
 ## What you write
 
 - `04_bible/look.md`: the palette (hex, role, ratio), the grade, contrast and saturation, the light logic, the
-  texture (clean digital, 35mm grain...), the lens feel the world suggests (the cinematographer decides lenses),
-  era rules and the never-in-frame list, and a **look line**: one sentence of taxonomy terms that every card can
-  reuse in its light_look layer.
-- `04_bible/environments/<env-slug>.md`, one per place: description in concrete nouns, layers of depth, light
-  source and direction, time of day, weather, atmosphere, dressing list, never-in-frame list, which shots use it,
-  the **environment line** (one sentence to reuse word for word in each card's world layer), reference asset ids,
-  and the hybrid plan if any.
+  texture (clean digital, 35mm grain...), the finish (natural for live action: lived-in wear, real-lens character; true to life for real
+  estate: true-to-life colour, motivated light, no wear; clean for graphics and products, matching the preset's
+  `finish`), the lens feel the world
+  suggests (the cinematographer decides lenses), era rules and the never-in-frame list, and a **look line**: one
+  sentence of taxonomy terms that every card can reuse in its light_look layer.
+- `04_bible/environments/<env-slug>.md`, one per place: description in concrete nouns, the depth planes (far
+  background, near background, where the subject stands, foreground, and what moves in each, each with a value
+  word), the light sources in the set (each with its colour, the anchor phrase, and what stays dark), a
+  `Scene light plan (scene <n>):` line per scene set there (copied from the shot list), the
+  key's direction, time of day, weather, atmosphere, dressing list with its signs of use, never-in-frame list, which
+  shots use it, the **environment line** (one sentence to reuse word for word in each card's world layer),
+  reference asset ids, and the hybrid plan if any.
 - `04_bible/props/<prop-slug>.md`, one per recurring or hero prop: the fixed description, the prop line,
   references (asset ids; the user's product photos for a product), shots.
 - `04_bible/moodboard/moodboard.md`: asset ids with one line each on what to take (colour, light, texture,
@@ -118,7 +153,10 @@ One JSON object and nothing else:
   "wrote": ["04_bible/look.md", "04_bible/environments/cafe-counter.md", "04_bible/props/black-cup.md"],
   "palette": [{"hex": "#1B1B1D", "role": "dominant"}],
   "look_line": "low-key motivated window light, warm 3200K key frame left, muted earthy palette, fine 35mm grain",
-  "environments": [{"slug": "cafe-counter", "shots": ["S010", "S020"], "line": "...", "light": "window frame left"}],
+  "environments": [{"slug": "cafe-counter", "shots": ["S010", "S020"], "line": "...", "light": "window frame left",
+                    "light_anchor": "tall window on the left wall, one brass pendant over the counter",
+                    "planes": {"far": "", "near": "bar shelves out of focus", "foreground": "out-of-focus cup rim"},
+                    "wear": ["rings on the counter", "chipped espresso cups"]}],
   "props": [{"slug": "black-cup", "shots": ["S010", "S040"], "line": "..."}],
   "inputs_usable": ["A002"],
   "hybrid_plans": [{"env": "cafe-counter", "route": "blender-blockout", "status": "planned"}],

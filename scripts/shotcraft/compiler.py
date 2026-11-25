@@ -14,7 +14,8 @@
 
 `card` is the card meta dict (front matter). `model_profile` is one entry of rules/models.json
 (it may carry "id"). `rules` is a dict with optional keys "taxonomy", "positive_rewrites",
-"negatives" (see rules.compiler_rules()). Missing pieces fall back to safe defaults:
+"negatives", "presets" (see rules.compiler_rules()). "presets" gives the card's finish value
+(natural | true_to_life | clean) from its use_case; without it the finish is unknown. Missing pieces fall back to safe defaults:
 max_prompt_words=120, negative_prompt=false.
 
 Params use the Higgsfield CLI flag names (aspect_ratio, resolution, duration, start_image,
@@ -32,32 +33,42 @@ DEFAULT_PROTECT = 90
 MIN_GUARDS = 2
 DEFAULT_GUARD_PRIORITY = 45
 
-# Prompt order: subject+action -> world -> camera -> light & look -> time/beats -> style.
+# Prompt order: subject+action -> world -> depth planes -> camera -> light & look -> time/beats -> style.
+# The depth group is the frame built like a multiplane cel set-up: far background, near background, the
+# subject's place in the midground, then the foreground, then how the planes move against each other.
 ORDER = [
-    ("subject", ["subject", "action", "wardrobe_props", "elements", "consistency"]),
+    ("subject", ["subject", "action", "interaction", "wardrobe_props", "elements", "consistency"]),
     ("world", ["environment", "era", "time_of_day", "weather_season", "atmosphere"]),
+    ("depth", ["background_far", "background_near", "placement", "foreground", "parallax"]),
     ("camera", ["shot_size", "angle", "lens", "dof", "composition", "movement", "movement_speed",
                 "camera_look"]),
     ("light_look", ["setup", "quality", "direction", "color_temp", "practicals", "palette_grade",
-                    "texture", "mood"]),
+                    "texture", "finish", "mood"]),
     ("time_output", ["beats", "pacing", "loop", "transition_in", "transition_out", "audio",
                      "on_screen_text"]),
     ("style", ["style_ref"]),
 ]
-# style_ref lives in the light_look layer of the card but prints last.
-FIELD_LAYER = {"style_ref": "light_look"}
+# Fields that print in a group other than their own card layer.
+FIELD_LAYER = {"style_ref": "light_look", "background_far": "world", "background_near": "world",
+               "foreground": "world", "parallax": "world", "placement": "subject"}
+# How fragments inside one group are joined (default ", ").
+GROUP_JOIN = {"depth": "; "}
+DEPTH_FIELDS = ("world.background_far", "world.background_near", "world.foreground")
 
 # Fallback priorities (higher = more important). texture, practicals, era, camera_look go first.
 DEFAULT_PRIORITY = {
     "subject.subject": 100, "subject.action": 98, "camera.movement": 94,
     "camera.movement_speed": 92, "camera.shot_size": 90, "world.environment": 88,
     "time_output.on_screen_text": 85, "time_output.beats": 84, "world.time_of_day": 82,
-    "light_look.setup": 80, "camera.angle": 78, "light_look.mood": 76, "camera.lens": 74,
+    "light_look.setup": 80, "camera.angle": 78, "light_look.mood": 76, "subject.placement": 75,
+    "camera.lens": 74, "subject.interaction": 73,
     "camera.composition": 72, "light_look.style_ref": 70, "time_output.loop": 70,
-    "time_output.audio": 68, "subject.elements": 66, "time_output.pacing": 64,
-    "world.atmosphere": 62, "light_look.palette_grade": 60, "camera.dof": 58,
-    "light_look.color_temp": 56, "light_look.direction": 54, "light_look.quality": 52,
-    "world.weather_season": 50, "subject.consistency": 48, "subject.wardrobe_props": 46,
+    "time_output.audio": 68, "world.foreground": 67, "subject.elements": 66, "time_output.pacing": 64,
+    "world.atmosphere": 62, "world.background_near": 61, "light_look.palette_grade": 60, "camera.dof": 58,
+    "light_look.color_temp": 56, "light_look.direction": 54,
+    "world.background_far": 53, "light_look.quality": 52,
+    "world.weather_season": 50, "world.parallax": 49, "subject.consistency": 48, "light_look.finish": 47,
+    "subject.wardrobe_props": 46,
     "time_output.transition_in": 44, "time_output.transition_out": 42,
     "camera.camera_look": 40, "world.era": 30, "light_look.practicals": 20,
     "light_look.texture": 10,
@@ -65,10 +76,38 @@ DEFAULT_PRIORITY = {
 
 IMAGE_SKIP = {"camera.movement", "camera.movement_speed", "time_output.beats", "time_output.pacing",
               "time_output.loop", "time_output.transition_in", "time_output.transition_out",
-              "time_output.audio"}
-MOTION_KEEP = {"subject.action", "camera.movement", "camera.movement_speed", "time_output.beats",
+              "time_output.audio", "world.parallax"}
+# With a start frame the planes are already drawn; what still has to be said is how they move and how the
+# subject and the place act on each other over time (splashes, hair in the wind, light sweeping across).
+MOTION_KEEP = {"subject.action", "subject.interaction", "world.parallax", "camera.movement",
+               "camera.movement_speed", "time_output.beats",
                "time_output.pacing", "time_output.loop", "time_output.transition_in",
                "time_output.transition_out", "time_output.audio"}
+
+# Depth labels: a plane is named so the model places it, unless the text already names it.
+DEPTH_LABEL = {
+    "world.background_far": ("far background", ("far background", "distance", "distant", "horizon")),
+    "world.background_near": ("background", ("background",)),
+    "subject.placement": ("midground", ("midground", "middle ground", "mid-ground", "foreground",
+                                        "background", "close to lens", "close to the lens")),
+    "world.foreground": ("foreground", ("foreground",)),
+    "world.parallax": ("depth motion", ("parallax", "moves", "drift", "streak", "slower", "faster")),
+}
+# A look that asks for grain: these words, plus taxonomy texture terms whose "means" mentions grain.
+GRAIN_WORDS = ("grain", "film stock", "35mm", "16mm", "super 8", "halation", "portra", "vision3", "500t",
+               "800t", "cinestill", "hp5", "ilford", "ektachrome", "kodak")
+# Negated grain wording is removed before matching ("clean digital, no grain" asks for no grain).
+GRAIN_NEGATED = re.compile(r"\b(?:no|without|zero|free of|minus)\s+(?:\w+\s+)?grain\b|\bgrain[- ]?(?:free|less)\b|"
+                           r"\bclean(?:\s+digital)?\b")
+# An avoid guard fights grain when it names grain or noise.
+GRAIN_GUARD_WORDS = ("grain", "noise")
+
+NATURAL_FINISHES = ("natural", "true_to_life")
+SHALLOW_WORDS = ("shallow", "out of focus", "out-of-focus", "bokeh", "blurred", "blurry", "soft")
+SHALLOW_FIELDS = (("camera", "dof"), ("world", "foreground"), ("world", "background_near"),
+                  ("world", "background_far"))
+SYMMETRY_RE = re.compile(r"(?<!a)symmetr|(?<!off-)(?<!off )\bcent(?:red|ered)\b|cent(?:re|er)[- ]punch|"
+                         r"one[- ]point")
 
 RES_RANK = {"360p": 360, "480p": 480, "540p": 540, "576p": 576, "720p": 720, "768": 768,
             "1080p": 1080, "1440p": 1440, "2160p": 2160, "4k": 2160, "1k": 1024, "2k": 2048,
@@ -123,6 +162,9 @@ def _fragment(key, value):
         if '"' in v or "“" in v or "text" in v.lower():
             return v
         return 'on-screen text reads "{}"'.format(v)
+    if key in DEPTH_LABEL:
+        label, names = DEPTH_LABEL[key]
+        return v if any(n in v.lower() for n in names) else "{}: {}".format(label, v)
     if key == "light_look.mood":
         return v if "mood" in v.lower() or "feel" in v.lower() else v + " mood"
     if key == "camera.movement_speed":
@@ -140,12 +182,12 @@ def _assemble(items):
     cur_group, cur = None, []
     for it in items:
         if it["group"] != cur_group and cur:
-            sentences.append(", ".join(cur))
+            sentences.append(GROUP_JOIN.get(cur_group, ", ").join(cur))
             cur = []
         cur_group = it["group"]
         cur.append(it["text"])
     if cur:
-        sentences.append(", ".join(cur))
+        sentences.append(GROUP_JOIN.get(cur_group, ", ").join(cur))
     return " ".join(_cap(s) + "." for s in sentences if s)
 
 
@@ -235,9 +277,81 @@ def _fit_duration(want, spec):
 
 # --------------------------------------------------------------------------- avoid
 
+def _rkey(s):
+    """Lookup key for an avoid term: commas are not significant ("flat, even lighting" = "flat even lighting")."""
+    return _norm(str(s or "").replace(",", " "))
+
+
 def _rewrite_lookup(rewrites):
-    return {_norm(k): v for k, v in (rewrites or {}).items()
+    return {_rkey(k): v for k, v in (rewrites or {}).items()
             if isinstance(v, str) and not str(k).startswith("_")}
+
+
+def _tokens(s):
+    """Normalised words for containment checks: lower case, no punctuation, plural 's' dropped."""
+    out = []
+    for w in re.findall(r"[a-z0-9]+(?:-[a-z0-9]+)*", str(s or "").lower()):
+        if len(w) > 3 and w.endswith("s") and not w.endswith("ss"):
+            w = w[:-1]
+        out.append(w)
+    return " " + " ".join(out) + " "
+
+
+def _contained(phrase, text):
+    p = _tokens(phrase)
+    return p.strip() != "" and p in _tokens(text)
+
+
+def _preset_finish(card, rules):
+    """The card's finish value from its preset (natural | true_to_life | clean), or None when unknown."""
+    presets = (rules or {}).get("presets") or {}
+    table = presets.get("presets", presets) if isinstance(presets, dict) else {}
+    p = table.get(card.get("use_case")) if isinstance(table, dict) else None
+    f = p.get("finish") if isinstance(p, dict) else None
+    return f if isinstance(f, str) and f else None
+
+
+def _grain_words(taxonomy):
+    words = set(GRAIN_WORDS)
+    tex = ((((taxonomy or {}).get("layers") or {}).get("light_look") or {}).get("fields") or {}).get("texture") or {}
+    for v in tex.get("vocab") or []:
+        if not isinstance(v, dict) or not v.get("term"):
+            continue
+        means = _norm(v.get("means"))
+        if "grain" in means and not GRAIN_NEGATED.search(means):
+            words.add(_norm(v["term"]))
+    return words
+
+
+def _asks_for_grain(look, taxonomy):
+    look = GRAIN_NEGATED.sub(" ", _norm(look))
+    return any(w in look for w in _grain_words(taxonomy))
+
+
+def _wants_shallow(layers, finish):
+    if finish in NATURAL_FINISHES:
+        return True
+    for layer, field in SHALLOW_FIELDS:
+        v = _norm((layers.get(layer) or {}).get(field))
+        if v and any(w in v for w in SHALLOW_WORDS):
+            return True
+    return False
+
+
+def _drop_asymmetry(text):
+    """Remove the comma/colon pieces of a finish that ask for asymmetry."""
+    parts = re.split(r"(\s*[,;:]\s*)", str(text or ""))
+    keep, changed = [], False
+    for i in range(0, len(parts), 2):
+        piece = parts[i]
+        if "asymmetr" in piece.lower():
+            changed = True
+            continue
+        if keep:
+            keep.append(parts[i - 1])
+        keep.append(piece)
+    out = "".join(keep).strip(" ,;:")
+    return out, changed
 
 
 STATIC_WORDS = ("static", "locked", "tripod", "no camera move", "still camera")
@@ -254,7 +368,43 @@ def _has_text(card):
     return bool(t) and t not in ("none", "no", "n/a", "-", "no text")
 
 
-def _gather_avoid(card, profile, rules):
+def _field_text(layers, dotted):
+    layer, _, field = str(dotted).partition(".")
+    return _norm((layers.get(layer) or {}).get(field))
+
+
+def _conditional_guards(card, neg, avoid, priorities=None):
+    """Guards negatives.json 'applies_when' adds on its own (e.g. flat_light on a low-key setup).
+
+    They go at the end of the list, so the card's own first MIN_GUARDS guards stay the protected ones. The
+    trigger and exception words live in the rule file, not here. A rule's optional 'priority' is the trim
+    priority of its rewrites; it is written into `priorities` (normalised term -> priority) when given."""
+    layers = card.get("layers") or {}
+    cats = neg.get("by_category") or {}
+    have = {_norm(a) for a in avoid}
+    out = []
+    for group, rule in (neg.get("applies_when") or {}).items():
+        if group.startswith("_") or not isinstance(rule, dict):
+            continue
+        text = " | ".join(_field_text(layers, f) for f in rule.get("fields") or [])
+        if not any(_norm(w) in text for w in rule.get("any") or []):
+            continue
+        fields_unless = rule.get("unless_fields") or rule.get("fields") or []
+        stop = " | ".join(_field_text(layers, f) for f in fields_unless)
+        if any(_norm(w) in stop for w in rule.get("unless") or []):
+            continue
+        terms = cats.get(group) or []
+        n = rule.get("add")
+        for t in (terms[:n] if isinstance(n, int) else terms):
+            if isinstance(t, str) and _norm(t) not in have:
+                have.add(_norm(t))
+                out.append(t)
+                if priorities is not None and isinstance(rule.get("priority"), (int, float)):
+                    priorities[_norm(t)] = rule["priority"]
+    return out
+
+
+def _gather_avoid(card, profile, rules, priorities=None):
     avoid = [a for a in (card.get("avoid") or []) if isinstance(a, str) and a.strip()]
     neg = (rules or {}).get("negatives") or {}
     mid = (profile or {}).get("id")
@@ -268,6 +418,7 @@ def _gather_avoid(card, profile, rules):
     if not _has_text(card):
         text_terms = {_norm(t) for t in ((neg.get("by_category") or {}).get("text") or [])}
         avoid = [a for a in avoid if _norm(a) not in text_terms and not _norm(a).endswith(" text")]
+    avoid.extend(_conditional_guards(card, neg, avoid, priorities))
     out, seen = [], set()
     for a in avoid:
         n = _norm(a)
@@ -381,6 +532,20 @@ def compile(card, model_profile=None, rules=None):  # noqa: A001 - name fixed by
             params["image_references"] = refs
 
     motion_only = bool(start) and kind == "video"
+    finish = _preset_finish(card, rules)
+    if finish is None and str((layers.get("light_look") or {}).get("finish") or "").strip():
+        finish = "natural"  # no preset table: a filled finish field means a natural look
+
+    # A symmetrical frame asked for in the composition outranks the generic finish's asymmetry.
+    symmetric = bool(SYMMETRY_RE.search(_norm((layers.get("camera") or {}).get("composition"))))
+    if symmetric:
+        ll0 = layers.get("light_look") or {}
+        trimmed, changed = _drop_asymmetry(ll0.get("finish"))
+        if changed:
+            layers = dict(layers)
+            layers["light_look"] = dict(ll0, finish=trimmed)
+            warnings.append("The composition asks for symmetry, so the asymmetry wording was left out of the "
+                            "finish.")
 
     # ---------------- prompt fields
     items = []
@@ -406,8 +571,31 @@ def compile(card, model_profile=None, rules=None):  # noqa: A001 - name fixed by
                           "priority": _priority(taxonomy, key), "idx": idx})
             idx += 1
 
+    # A place with no planes reads as a flat backdrop behind a pasted-in subject. Only live-action looks
+    # (or an unknown preset) need the planes; a clean graphic or product shot may be flat on purpose.
+    world = layers.get("world") or {}
+    if (not motion_only and finish in NATURAL_FINISHES + (None,) and str(world.get("environment") or "").strip()
+            and not any(str(world.get(k.split(".", 1)[1]) or "").strip() for k in DEPTH_FIELDS)):
+        warnings.append("No depth planes: add a foreground and a background (near or far) so the subject "
+                        "sits inside the place, not in front of a flat backdrop.")
+
     # ---------------- avoid
-    avoid = _gather_avoid(card, profile, rules)
+    auto_pri = {}  # auto-added guards with their own (lower) trim priority
+    avoid = _gather_avoid(card, profile, rules, auto_pri)
+    ll = layers.get("light_look") or {}
+    look = "{} {}".format(ll.get("texture") or "", ll.get("finish") or "")
+    if _asks_for_grain(look, taxonomy):
+        clash = [a for a in avoid if any(w in _norm(a) for w in GRAIN_GUARD_WORDS)]
+        if clash:
+            avoid = [a for a in avoid if a not in clash]
+            warnings.append("Dropped the avoid item(s) {} because the look asks for grain; a 'noise-free' "
+                            "guard would fight it.".format(", ".join(repr(a) for a in clash)))
+    if symmetric:
+        clash = [a for a in avoid if "symmetry" in _norm(a) and "asymmetr" not in _norm(a)]
+        if clash:
+            avoid = [a for a in avoid if a not in clash]
+            warnings.append("Dropped the avoid item(s) {} because the composition asks for symmetry."
+                            .format(", ".join(repr(a) for a in clash)))
     unguarded = []
     negative_prompt = None
     if has_negative:
@@ -415,20 +603,27 @@ def compile(card, model_profile=None, rules=None):  # noqa: A001 - name fixed by
     else:
         lookup = _rewrite_lookup(rules.get("positive_rewrites"))
         moving = kind == "video" and _camera_moves(layers)
+        shallow = _wants_shallow(layers, finish)
+        field_text = " ".join(it["text"] for it in items)
         used = set()
         for term in avoid:
             pos = None
             if moving:
-                pos = lookup.get(_norm(term) + " (moving camera)")
-            pos = pos or lookup.get(_norm(term))
+                pos = lookup.get(_rkey(term) + " (moving camera)")
+            if shallow and not pos:
+                pos = lookup.get(_rkey(term) + " (shallow focus)")
+            pos = pos or lookup.get(_rkey(term))
             if not pos:
                 unguarded.append(term)
                 continue
             if _norm(pos) in used:
                 continue
+            if _contained(pos, field_text):
+                continue  # the fields already say it (e.g. the finish carries the same wording)
             used.add(_norm(pos))
             items.append({"key": "avoid:" + term, "group": "guard", "text": pos,
-                          "priority": guard_pri, "idx": idx, "term": term})
+                          "priority": auto_pri.get(_norm(term), guard_pri), "idx": idx, "term": term,
+                          "auto": _norm(term) in auto_pri})
             idx += 1
 
     # ---------------- trim
@@ -440,7 +635,8 @@ def compile(card, model_profile=None, rules=None):  # noqa: A001 - name fixed by
         cands = [it for it in items if it["priority"] < protect]
         # Keep the first MIN_GUARDS avoid guards (the card's own, most important ones) while anything else
         # optional can still go: dropping every guard is how unwanted artefacts creep back in.
-        guards = [it for it in cands if it["key"].startswith("avoid:")]
+        # Auto-added guards with their own priority are never in that protected set.
+        guards = [it for it in cands if it["key"].startswith("avoid:") and not it.get("auto")]
         keep = {id(it) for it in sorted(guards, key=lambda it: it["idx"])[:MIN_GUARDS]}
         if any(id(it) not in keep for it in cands):
             cands = [it for it in cands if id(it) not in keep]

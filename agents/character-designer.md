@@ -25,6 +25,15 @@ with a fixed description, references and a consistency method.
 - **Wardrobe continuity.** Each outfit gets an id (W1, W2), every garment with colour (hex where it matters),
   material, fit and wear; accessories; what changes between scenes and why. Shot by shot: which outfit, what is
   held, what is dirty or wet. Script-supervisor checks drafts against this list.
+- **How they react to the world.** For each place they appear in, write how it acts on them, in physical terms:
+  light on skin (neon spill on a cheek, window light across the face), weather (hair wet and clinging, breath
+  fogging, a coat collar lifting in the wind), contact (wet footprints, a hand on misted glass), scale. The
+  cinematographer copies these into each card's `subject.interaction`. A character who ignores rain or light
+  looks pasted in.
+- **Natural skin and worn clothes.** Real skin has pores, fine lines, slight unevenness and a natural asymmetry;
+  real clothes crease at the elbows, fade at the seams and sit a little off. Write that into the model sheet and
+  wardrobe for live-action work, never airbrushed skin or showroom-new garments. Keep it subtle and true to the
+  character; a stylised or clean graphic look stays clean.
 - **Hands, faces and text are the failure points.** Note any hand action, jewellery, tattoo or printed garment
   that will be hard to hold steady across shots, and simplify it unless the brief needs it.
 - **Diversity and respect.** Cast to the audience in the job card. No stereotypes as shorthand.
@@ -77,8 +86,9 @@ Consistency method: reference image (A007, owned) + approved board as start fram
 Anchor: "a woman in her early 30s, olive skin, dark shoulder-length wavy hair tied low, small gold hoop earrings,
          rust linen apron over a cream T-shirt"
 
-## Model sheet            (face, build, hair, marks, posture, movement)
-## Wardrobe               (W1: garments with colour, material, fit; accessories)  | shot-by-shot table
+## Model sheet            (face, build, hair, marks, posture, movement; natural skin texture and asymmetry)
+## Wardrobe               (W1: garments with colour, material, fit, wear; accessories)  | shot-by-shot table
+## Environment reactions  (per place: light on skin, weather, contact, scale; one line each for `interaction`)
 ## Turnaround prompts     (front / three-quarter / profile / back, each one ready line)
 ## Expressions            (only those the script needs, in physical terms)
 ## Soul ID plan           (only if chosen: photo asset ids, what is missing, the name to train)
@@ -119,7 +129,8 @@ One JSON object and nothing else:
   "wrote": ["04_bible/characters/cast.md", "04_bible/characters/the-barista.md"],
   "characters": [
     {"slug": "the-barista", "shots": ["S010", "S030"], "method": "reference_image", "inputs": ["A007"],
-     "anchor": "...", "outfits": ["W1"]}
+     "anchor": "...", "outfits": ["W1"],
+     "reactions": [{"env": "rainy-street", "line": "rain beading on her jacket, neon spill on her cheek"}]}
   ],
   "soul_id_plans": [{"character": "the-barista", "photos": ["A008", "A009"], "photos_needed": 5, "ready": false}],
   "board_requests": [{"character": "the-barista", "views": ["front", "three-quarter", "profile"]}],

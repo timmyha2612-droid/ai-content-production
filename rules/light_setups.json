@@ -1,0 +1,380 @@
+{
+  "version": "0.1.0",
+  "about": "One lighting setup per row of the lighting guide's quick chooser (docs/research/cinematic-lighting-guide.md). Pick the row whose intent matches the shot, then copy setup, quality, direction, color_temp, practicals and the finish default into light_look. 'stays_dark' is what the card must say falls into darkness. 'do_not_use_when' lists moods the setup is wrong for. 'low_key' marks setups whose setup text triggers the flat_light guards (negatives.json applies_when); the loop row is left false because its broad version is open and bright. 'board_url' is the Cosmos study board with reference frames. Direction words are a starting point: always name the side (frame-left, frame-right, behind, above).",
+  "setups": [
+    {
+      "id": "rembrandt",
+      "name": "Rembrandt",
+      "intent": [
+        "hidden motives",
+        "gravitas",
+        "moral weight"
+      ],
+      "setup": "Rembrandt lighting",
+      "quality": "hard or soft, high contrast",
+      "direction": "45-degree key, high, frame-left",
+      "color_temp": "tungsten 3200K key, cool dark background",
+      "practicals": "one lamp or window in background",
+      "finish": "natural skin with pores and fine lines, faint shadow-side bounce but no fill",
+      "stays_dark": "the far side of the face except the small triangle; the background falls to near-black",
+      "do_not_use_when": [
+        "bright comedy",
+        "upbeat lifestyle",
+        "beauty shots that need open skin"
+      ],
+      "low_key": true,
+      "board_url": "https://www.cosmos.so/timmy111/rembrandt-lighting"
+    },
+    {
+      "id": "butterfly",
+      "name": "Butterfly / Paramount",
+      "intent": [
+        "glamour",
+        "star reveal",
+        "icon",
+        "beauty"
+      ],
+      "setup": "butterfly lighting",
+      "quality": "hard light (classic) or soft clamshell (beauty)",
+      "direction": "key on lens axis, above, angled down",
+      "color_temp": "tungsten 3200K",
+      "practicals": "none, or overhead fixture implied",
+      "finish": "natural skin with pores and fine lines, backlit flyaway hairs",
+      "stays_dark": "cheek hollows and eye sockets; the background is dark or one halo",
+      "do_not_use_when": [
+        "naturalistic drama",
+        "grit",
+        "documentary"
+      ],
+      "low_key": false,
+      "board_url": "https://www.cosmos.so/timmy111/butterfly-slash-paramount-lighting"
+    },
+    {
+      "id": "split",
+      "name": "Split",
+      "intent": [
+        "duality",
+        "threat",
+        "a decision",
+        "interrogation"
+      ],
+      "setup": "split lighting",
+      "quality": "hard light, fast falloff",
+      "direction": "side light at 90 degrees, eye height",
+      "color_temp": "tungsten 3200K or neutral",
+      "practicals": "one lamp, window or blind slats",
+      "finish": "natural skin with pores and fine lines, slight underexposure",
+      "stays_dark": "the unlit half of the face merges into a black room",
+      "do_not_use_when": [
+        "comedy",
+        "warm romance",
+        "beauty",
+        "product",
+        "both eyes must read"
+      ],
+      "low_key": true,
+      "board_url": "https://www.cosmos.so/timmy111/split-lighting"
+    },
+    {
+      "id": "loop_broad_short",
+      "name": "Loop, broad, short",
+      "intent": [
+        "everyday drama close-ups",
+        "open vs closed character"
+      ],
+      "setup": "loop lighting + short (moody) or broad (open)",
+      "quality": "soft or hard",
+      "direction": "30-45 degree key, slightly high",
+      "color_temp": "warm tungsten key, cool shadow",
+      "practicals": "window or lamp off-frame",
+      "finish": "natural skin with pores and fine lines, faint shadow-side bounce but no fill",
+      "stays_dark": "the shadow side of the face (short version); the background is dark or a soft gradient",
+      "do_not_use_when": [
+        "the face must sit in a pool or silhouette",
+        "a graphic half-face is wanted (use split)"
+      ],
+      "low_key": false,
+      "board_url": "https://www.cosmos.so/timmy111/loop-broad-and-short-lighting"
+    },
+    {
+      "id": "high_key",
+      "name": "High key",
+      "intent": [
+        "optimism",
+        "clean commercial",
+        "clinical",
+        "dream"
+      ],
+      "setup": "high key",
+      "quality": "soft, wraparound, low contrast",
+      "direction": "large frontal or overhead",
+      "color_temp": "one temperature throughout (cool white or warm cream)",
+      "practicals": "ceiling panels, big window",
+      "finish": "true-to-life colour, natural skin with pores and fine lines",
+      "stays_dark": "nothing large; only costume and small objects carry true black",
+      "do_not_use_when": [
+        "menace",
+        "secrets",
+        "noir",
+        "isolation",
+        "night scenes"
+      ],
+      "low_key": false,
+      "board_url": "https://www.cosmos.so/timmy111/high-key"
+    },
+    {
+      "id": "low_key",
+      "name": "Low key",
+      "intent": [
+        "menace",
+        "secrets",
+        "noir",
+        "isolation"
+      ],
+      "setup": "low key",
+      "quality": "hard, fast falloff",
+      "direction": "single high key or backlight",
+      "color_temp": "amber tungsten, or warm spark on cool ambient",
+      "practicals": "blinds, street lamp, bulb",
+      "finish": "crushed blacks with no milky shadows, natural skin with pores and fine lines",
+      "stays_dark": "most of the frame: shadow sides and the set fall to black, except one bright opening",
+      "do_not_use_when": [
+        "comedy",
+        "upbeat commercial",
+        "beauty that needs open skin",
+        "the whole set must read"
+      ],
+      "low_key": true,
+      "board_url": "https://www.cosmos.so/timmy111/low-key"
+    },
+    {
+      "id": "window",
+      "name": "Window light",
+      "intent": [
+        "introspection",
+        "period",
+        "quiet domestic"
+      ],
+      "setup": "window light",
+      "quality": "soft, gradual falloff",
+      "direction": "side light 60-110 degrees",
+      "color_temp": "daylight 5600-7000K, warm skin",
+      "practicals": "the window itself, sun patch on wall",
+      "finish": "natural skin with pores and fine lines, lived-in set with dust and worn surfaces",
+      "stays_dark": "the room away from the window and the foreground nearest camera",
+      "do_not_use_when": [
+        "the scene is at night with no window source",
+        "a crisp graphic shadow is wanted (use hard sun or split)"
+      ],
+      "low_key": false,
+      "board_url": "https://www.cosmos.so/timmy111/window-light-and-soft-side-light"
+    },
+    {
+      "id": "backlight_rim",
+      "name": "Backlight / rim",
+      "intent": [
+        "mystery",
+        "longing",
+        "separation",
+        "memory"
+      ],
+      "setup": "backlight + rim light",
+      "quality": "hard",
+      "direction": "back light or contre-jour, one side",
+      "color_temp": "warm 2700-3500K or cyan",
+      "practicals": "sun, window, lamp or stage light behind",
+      "finish": "backlit flyaway hairs, peach fuzz catching the rim, soft veiling flare",
+      "stays_dark": "the side of the subject facing the lens; dark backgrounds stay crushed black",
+      "do_not_use_when": [
+        "the face and expression must read clearly",
+        "dialogue close-ups that need both eyes"
+      ],
+      "low_key": false,
+      "board_url": "https://www.cosmos.so/timmy111/backlight-rim-and-hair-light"
+    },
+    {
+      "id": "practicals",
+      "name": "Motivated practicals",
+      "intent": [
+        "real night interiors",
+        "insomnia",
+        "screen life"
+      ],
+      "setup": "practical lighting",
+      "quality": "soft at source, fast falloff",
+      "direction": "from the practical's side",
+      "color_temp": "tungsten 2700-3200K vs cool screen",
+      "practicals": "desk lamp, screen glow, pendant",
+      "finish": "soft lamp halos that shrink with distance, natural skin with pores and fine lines",
+      "stays_dark": "everything away from the practicals: 50-70% of the frame in shadow",
+      "do_not_use_when": [
+        "daytime exteriors",
+        "bright clean commercial looks"
+      ],
+      "low_key": true,
+      "board_url": "https://www.cosmos.so/timmy111/motivated-practicals-lamps-screens-neon-in-frame"
+    },
+    {
+      "id": "golden_hour",
+      "name": "Golden hour",
+      "intent": [
+        "nostalgia",
+        "romance",
+        "endings",
+        "awe"
+      ],
+      "setup": "golden hour sunlight",
+      "quality": "hard sun, soft bounce",
+      "direction": "contre-jour or low side, 0-10 degrees up",
+      "color_temp": "low sun 2500-3500K, cool sky shadows",
+      "practicals": "none (the sun)",
+      "finish": "soft veiling flare, backlit flyaway hairs",
+      "stays_dark": "the shadow side of the subject in silhouette versions; shadows stay deep but not crushed",
+      "do_not_use_when": [
+        "menace or clinical moods",
+        "a scene that must cut with midday or night shots"
+      ],
+      "low_key": false,
+      "board_url": "https://www.cosmos.so/timmy111/golden-hour"
+    },
+    {
+      "id": "blue_hour",
+      "name": "Blue hour",
+      "intent": [
+        "melancholy",
+        "transition",
+        "quiet unease"
+      ],
+      "setup": "blue hour ambient + practical lighting",
+      "quality": "soft skylight, small hard practicals",
+      "direction": "sky behind or window side",
+      "color_temp": "cool sky vs tungsten 2000-3200K",
+      "practicals": "streetlamp, table lamp, lit distant windows",
+      "finish": "navy shadows with detail, soft lamp halos that shrink with distance",
+      "stays_dark": "the ground and buildings in navy shadow; subjects against the sky go to silhouette",
+      "do_not_use_when": [
+        "upbeat daytime energy",
+        "faces must read in detail without a lamp"
+      ],
+      "low_key": true,
+      "board_url": "https://www.cosmos.so/timmy111/blue-hour-and-twilight"
+    },
+    {
+      "id": "night_exterior",
+      "name": "Night exterior mixed colour",
+      "intent": [
+        "urban noir",
+        "alienation",
+        "restless night"
+      ],
+      "setup": "neon lighting + motivated lighting",
+      "quality": "hard coloured spill",
+      "direction": "side or top from street sources",
+      "color_temp": "sodium vapour + fluorescent green",
+      "practicals": "street lamps, neon sign, car headlights",
+      "finish": "uncorrected practical colours, crushed blacks with no milky shadows",
+      "stays_dark": "60-80% of the frame: streets, skyline and the subject's shadow side",
+      "do_not_use_when": [
+        "calm daylight moods",
+        "unmotivated cyberpunk colour with no signs in shot"
+      ],
+      "low_key": true,
+      "board_url": "https://www.cosmos.so/timmy111/night-exteriors-mixed-colour-sodium-neon-led"
+    },
+    {
+      "id": "overcast",
+      "name": "Overcast",
+      "intent": [
+        "grief",
+        "austerity",
+        "folk dread",
+        "realism"
+      ],
+      "setup": "overcast softbox sky",
+      "quality": "soft, low contrast",
+      "direction": "top light (exterior) or window side (interior)",
+      "color_temp": "overcast 6500K",
+      "practicals": "none",
+      "finish": "lived-in set with dust and worn surfaces, natural skin with pores and fine lines",
+      "stays_dark": "nothing large; true black only in dark clothing or deep forest",
+      "do_not_use_when": [
+        "glamour",
+        "heat and summer",
+        "graphic noir shadows"
+      ],
+      "low_key": false,
+      "board_url": "https://www.cosmos.so/timmy111/overcast-and-soft-diffused-daylight"
+    },
+    {
+      "id": "hard_sun_dappled",
+      "name": "Hard sun / dappled",
+      "intent": [
+        "heat",
+        "summer",
+        "watched",
+        "trapped"
+      ],
+      "setup": "gobo pattern",
+      "quality": "hard light",
+      "direction": "high side, 60-90 degrees",
+      "color_temp": "warm sun, cool shade",
+      "practicals": "blinds, leaves, window grid",
+      "finish": "natural skin with pores and fine lines, slight underexposure",
+      "stays_dark": "the shadow bands and the shade; never lift them to see the face",
+      "do_not_use_when": [
+        "soft romance",
+        "beauty that needs even skin",
+        "grief or quiet realism (use overcast)"
+      ],
+      "low_key": false,
+      "board_url": "https://www.cosmos.so/timmy111/hard-sunlight-and-dappled-light"
+    },
+    {
+      "id": "firelight",
+      "name": "Firelight / candlelight",
+      "intent": [
+        "period",
+        "intimacy",
+        "folk horror",
+        "survival"
+      ],
+      "setup": "firelight",
+      "quality": "small source, fast falloff",
+      "direction": "low, from below and side",
+      "color_temp": "candlelight 1900K, cool night outside",
+      "practicals": "candles, lantern, torch, campfire",
+      "finish": "gentle flame flicker, brown-black firelit shadows",
+      "stays_dark": "most of the frame; only the pool around each flame holds midtones",
+      "do_not_use_when": [
+        "modern bright interiors",
+        "daylight scenes",
+        "clean commercial looks"
+      ],
+      "low_key": true,
+      "board_url": "https://www.cosmos.so/timmy111/firelight-and-candlelight"
+    },
+    {
+      "id": "top_light",
+      "name": "Top light",
+      "intent": [
+        "power",
+        "interrogation",
+        "isolation in a pool"
+      ],
+      "setup": "top light",
+      "quality": "hard, fast falloff",
+      "direction": "overhead 60-90 degrees",
+      "color_temp": "tungsten 3200K or fluorescent green",
+      "practicals": "pendant lamp, ceiling fixture",
+      "finish": "crushed blacks with no milky shadows, natural skin with pores and fine lines",
+      "stays_dark": "eye sockets, the room beyond the pool and the background",
+      "do_not_use_when": [
+        "the eyes must read",
+        "warm open moments",
+        "beauty"
+      ],
+      "low_key": true,
+      "board_url": "https://www.cosmos.so/timmy111/top-light-and-overhead-single-source"
+    }
+  ]
+}

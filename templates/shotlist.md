@@ -11,7 +11,8 @@ Other stages read:
   - image_first: yes or no. "yes" means the shot starts as a cheap still (a board) before any video is made.
     A shot also counts as image-first when its prompt card's tier_plan includes "board".
 The other columns are free text the gate ignores: beat, size_angle (shot size and angle, e.g. MCU, low angle),
-move (camera movement, e.g. slow push-in), continuity, graphics (text or graphics to add on this shot in your motion graphics tool),
+move (camera movement, e.g. slow push-in), composition (the composition guide technique, three at most: one
+geometry, one depth, one light, e.g. frame within a frame; deep staging), continuity, graphics (text or graphics to add on this shot in your motion graphics tool),
 source (gen, or a 00_inputs/ file the user supplied, e.g. their own footage or a 3D render).
 Keep the id column first. Do not add a second table with an id or Shot column: it would be read as more shots.
 Pipes (|) inside a cell break the table: write "or" instead.
@@ -21,11 +22,11 @@ Replace every <...> and delete these comments when the list is filled.
 Delivery: <aspect, width x height, fps, total length in seconds> (preset <preset id>). Handles: <seconds> each side.
 Script: 03_script/script.md
 
-| id | beat | duration_s | kind | image_first | purpose | size_angle | move | continuity | graphics | source |
-|---|---|---|---|---|---|---|---|---|---|---|
-| S010 | <hook> | <seconds> | <video or image> | <yes or no> | <what the viewer must get> | <e.g. ECU, top-down> | <e.g. static> | <what must match the shots around it> | <none, or the text> | <gen or 00_inputs/file> |
-| S020 | <setup> | <seconds> | <video or image> | <yes or no> | <what the viewer must get> | <...> | <...> | <...> | <...> | <...> |
-| S030 | <payoff> | <seconds> | <video or image> | <yes or no> | <what the viewer must get> | <...> | <...> | <...> | <...> | <...> |
+| id | beat | duration_s | kind | image_first | purpose | size_angle | move | composition | continuity | graphics | source |
+|---|---|---|---|---|---|---|---|---|---|---|---|
+| S010 | <hook> | <seconds> | <video or image> | <yes or no> | <what the viewer must get> | <e.g. ECU, top-down> | <e.g. static> | <e.g. centre framing; pool of light> | <what must match the shots around it> | <none, or the text> | <gen or 00_inputs/file> |
+| S020 | <setup> | <seconds> | <video or image> | <yes or no> | <what the viewer must get> | <...> | <...> | <...> | <...> | <...> | <...> |
+| S030 | <payoff> | <seconds> | <video or image> | <yes or no> | <what the viewer must get> | <...> | <...> | <...> | <...> | <...> | <...> |
 
 **Total:** <sum of duration_s> s (delivery <length> s).
 
@@ -46,6 +47,14 @@ Script: 03_script/script.md
 ## Continuity
 
 - <A fact that must hold across shots: screen direction, wardrobe, props, light direction, time of day.>
+
+## Scene light plans
+
+<!-- One line per scene: the light sources fixed to the set (key's world source and side, each practical with its
+     colour, the ambient colour). The production designer copies each line word for word into the environment
+     file's Light section; every card in the scene repeats the anchor. A place at two times of day is two scenes. -->
+
+- Scene 1 (<place>): <anchor phrase, e.g. north window on the left wall, one table lamp right of the bed, blue hour outside>
 
 ## Bible needs
 

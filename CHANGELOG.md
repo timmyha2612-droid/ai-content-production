@@ -7,6 +7,67 @@ dates; rule changes that alter what gets generated are listed here too.
 
 ## [Unreleased]
 
+### Added
+
+- Depth planes on prompt cards: `world.background_far`, `world.background_near`, `world.foreground`,
+  `world.parallax` and `subject.placement` compile into one depth sentence (far background; background;
+  midground; foreground; depth motion), like a multiplane cel set-up. `subject.interaction` says how the
+  subject and the place act on each other. The compiler warns when a place has no planes. Image cards skip
+  parallax; start-frame cards keep interaction and parallax only.
+- Natural finish: `light_look.finish`, a `finish` on every preset (`natural` for live action,
+  `true_to_life` for real estate: true colour, slightly uneven motivated light, real-lens character, no wear,
+  no lens softness; `clean` for graphics, icons and products), and a `too_perfect` avoid category with
+  positive rewrites. The taxonomy holds one finish default per value (`defaults`; `clean` has none), and the
+  defaults do not ask for asymmetry. `card new` fills the finish and adds two guards on live-action presets.
+  When a look asks for grain, "noise"/"grain" guards are dropped with a warning. When the composition asks
+  for symmetry, asymmetry wording and the "perfect symmetry" guard are dropped with a warning.
+- Focus-aware "blurry" rewrite: on a shallow-focus shot it becomes "sharp focus on the subject"
+  (`blurry (shallow focus)`), not "tack-sharp focus, crisp fine detail".
+- `sc.py finish texture` (matched film grain, optional mild vignette; keeps the codec family: H.264 CRF 14,
+  ProRes 422 HQ, ProRes 4444 with alpha kept; 8-bit filters; high-quality JPEG and WebP stills) and
+  `sc.py finish roomtone` (a single-bed safety floor under the audio, levelled to `--level` dBFS: generated
+  pink noise or one neutral `--bed`, for a deliverable that still fails the digital-silence check; per-scene
+  beds are laid by the sound stage in the mix). Without `--out`, finish refuses a file inside `09_delivery/`;
+  the documented chain is texture to a work file in `08_assembly/`, then roomtone to the final file in
+  `09_delivery/`.
+- Grain decided at intake (Texture question): `off`, `subtle` or `film`, vignette yes or no, recorded on the
+  job card as `Grain:` and passed to the delivery agent. Off with no vignette skips the texture pass.
+- Delivery check "no digital silence" (nothing under -90 dB for 0.5 s or longer; the preset or project
+  delivery can set `allow_digital_silence`).
+- Delivery check "audio covers picture": FAIL when the audio ends 0.5 s or more before the picture.
+- `09_delivery/delivery-notes.md`, written by the delivery agent, always carries the AI-label line for
+  realistic AI content, whether or not the finish ran (QA item DL-16; new item DL-17 for audio length).
+- Composition vocab from `docs/research/cinematic-composition-guide.md`: new `camera.composition` terms
+  (one-point perspective, nested frames, low/high horizon, tiny figure in a vast frame, pool of light, colour
+  blocking, depth-staged two-shot, eye strip, foreground blocker and more), plus terms for
+  `world.background_far`, `background_near`, `foreground`, `parallax`, `subject.placement`,
+  `subject.interaction` and `light_look.finish`. "Dutch tilt" now says to use it on purpose, never as
+  decoration. "bokeh from string lights" is replaced by "soft out-of-focus string lights at the edge".
+- Lighting vocab from `docs/research/cinematic-lighting-guide.md`: new `light_look` terms for `setup`
+  (Paramount, short-loop, window chiaroscuro, blinds gobo, candlelight, screen glow key, mixed night street
+  light and more), `quality`, `direction`, `color_temp`, `practicals`, `finish` and `palette_grade`. The
+  `direction` help now says to always name a side or position. "neon lighting" now ties each colour to its
+  sign instead of suggesting magenta and cyan.
+- `rules/light_setups.json`: the 16 setups of the lighting chooser, each with intent, the `light_look`
+  fields, a finish default, what stays dark, when not to use it and its study board link.
+- `flat_light` avoid group ("flat lighting", "lifted shadows", "rim light on both sides", "evenly lit",
+  "softbox", "beauty lighting", "HDR") with positive rewrites. The compiler adds its first three at the end of
+  the avoid list when `light_look.setup` or `quality` names a low-key family setup, unless the shot is high
+  key or overcast. Trigger words live in `negatives.json` `applies_when`. An `applies_when` rule can set its
+  own trim `priority`; `flat_light` uses 5, so these guards are trimmed before the card's practicals and
+  texture.
+- Scene light plans: the director writes one per scene under the shot list; the production designer copies
+  it word for word into the environment file's Light section (`Scene light plan (scene <n>):`); the
+  cinematographer copies the anchor from there onto every card (PR-36, BI-C14, SL-15). The shot list also
+  gets a recommended `composition` column.
+
+### Changed
+
+- The `light_look.mood` term "epic" is now "awe at vast scale": "epic" is a banned trigger word.
+- `skills/prompt-craft/references/depth-and-finish.md`, plus updates to the cinematographer,
+  production-designer, character-designer, sound, delivery and assistant-editor agents, the director and
+  intake, the templates and the QA checklists.
+
 ## [0.1.0] - 2026-11-24
 
 First public release.

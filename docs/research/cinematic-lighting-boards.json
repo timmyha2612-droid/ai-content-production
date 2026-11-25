@@ -1,0 +1,162 @@
+[
+  {
+    "name": "Rembrandt lighting",
+    "url": "https://www.cosmos.so/timmy111/rembrandt-lighting",
+    "id": 891747000,
+    "built": 23,
+    "verdict": "ok",
+    "finalCount": 20,
+    "removed": 10,
+    "offBrief": 10
+  },
+  {
+    "name": "Butterfly / Paramount lighting",
+    "url": "https://www.cosmos.so/timmy111/butterfly-slash-paramount-lighting",
+    "id": 1677485812,
+    "built": 25,
+    "verdict": "strong",
+    "finalCount": 21,
+    "removed": 2,
+    "offBrief": 2
+  },
+  {
+    "name": "Split lighting",
+    "url": "https://www.cosmos.so/timmy111/split-lighting",
+    "id": 1564298989,
+    "built": 23,
+    "verdict": "ok",
+    "finalCount": 20,
+    "removed": 9,
+    "offBrief": 9
+  },
+  {
+    "name": "Loop, broad and short lighting",
+    "url": "https://www.cosmos.so/timmy111/loop-broad-and-short-lighting",
+    "id": 1063842783,
+    "built": 25,
+    "verdict": "ok",
+    "finalCount": 20,
+    "removed": 12,
+    "offBrief": 12
+  },
+  {
+    "name": "High key",
+    "url": "https://www.cosmos.so/timmy111/high-key",
+    "id": 961610148,
+    "built": 23,
+    "verdict": "ok",
+    "finalCount": 20,
+    "removed": 3,
+    "offBrief": 3
+  },
+  {
+    "name": "Low key",
+    "url": "https://www.cosmos.so/timmy111/low-key",
+    "id": 1562735837,
+    "built": 24,
+    "verdict": "ok",
+    "finalCount": 21,
+    "removed": 6,
+    "offBrief": 6
+  },
+  {
+    "name": "Window light and soft side light",
+    "url": "https://www.cosmos.so/timmy111/window-light-and-soft-side-light",
+    "id": 1886543174,
+    "built": 24,
+    "verdict": "strong",
+    "finalCount": 20,
+    "removed": 6,
+    "offBrief": 6
+  },
+  {
+    "name": "Backlight, rim and hair light",
+    "url": "https://www.cosmos.so/timmy111/backlight-rim-and-hair-light",
+    "id": 1976716688,
+    "built": 23,
+    "verdict": "strong",
+    "finalCount": 19,
+    "removed": 4,
+    "offBrief": 4
+  },
+  {
+    "name": "Motivated practicals (lamps, screens, neon in frame)",
+    "url": "https://www.cosmos.so/timmy111/motivated-practicals-lamps-screens-neon-in-frame",
+    "id": 1199386500,
+    "built": 23,
+    "verdict": "strong",
+    "finalCount": 20,
+    "removed": 3,
+    "offBrief": 3
+  },
+  {
+    "name": "Golden hour",
+    "url": "https://www.cosmos.so/timmy111/golden-hour",
+    "id": 1922971765,
+    "built": 24,
+    "verdict": "strong",
+    "finalCount": 20,
+    "removed": 4,
+    "offBrief": 4
+  },
+  {
+    "name": "Blue hour and twilight",
+    "url": "https://www.cosmos.so/timmy111/blue-hour-and-twilight",
+    "id": 1614931496,
+    "built": 26,
+    "verdict": "strong",
+    "finalCount": 20,
+    "removed": 6,
+    "offBrief": 6
+  },
+  {
+    "name": "Night exteriors — mixed colour (sodium, neon, LED)",
+    "url": "https://www.cosmos.so/timmy111/night-exteriors-mixed-colour-sodium-neon-led",
+    "id": 1712908355,
+    "built": 26,
+    "verdict": "ok",
+    "finalCount": 21,
+    "removed": 5,
+    "offBrief": 5
+  },
+  {
+    "name": "Overcast and soft diffused daylight",
+    "url": "https://www.cosmos.so/timmy111/overcast-and-soft-diffused-daylight",
+    "id": 444921990,
+    "built": 24,
+    "verdict": "strong",
+    "finalCount": 22,
+    "removed": 2,
+    "offBrief": 2
+  },
+  {
+    "name": "Hard sunlight and dappled light",
+    "url": "https://www.cosmos.so/timmy111/hard-sunlight-and-dappled-light",
+    "id": 960593284,
+    "built": 22,
+    "verdict": "strong",
+    "finalCount": 20,
+    "removed": 5,
+    "offBrief": 5
+  },
+  {
+    "name": "Firelight and candlelight",
+    "url": "https://www.cosmos.so/timmy111/firelight-and-candlelight",
+    "id": 140990477,
+    "built": 22,
+    "verdict": "strong",
+    "finalCount": 20,
+    "removed": 4,
+    "offBrief": 4
+  },
+  {
+    "name": "Top light and overhead single source",
+    "url": "https://www.cosmos.so/timmy111/top-light-and-overhead-single-source",
+    "id": 2097140584,
+    "built": 24,
+    "verdict": "strong",
+    "finalCount": 20,
+    "removed": 5,
+    "offBrief": 5
+  }
+]

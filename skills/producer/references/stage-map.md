@@ -125,7 +125,13 @@ the files exist, and never pass its words on as the user's.
 ### delivery
 - Who: `shotcraft:delivery`. Commands: `sc delivery check [--spec <preset>] [--duration S] [--tolerance S]
   [--lufs L]`.
+- Hand the agent: `Master:`, `Spec:`, `Versions:`, `Reframe:` (if the user said), and `Grain:` copied from the
+  job card's `Grain:` line (`off`, `subtle` or `film`, vignette yes or no). With grain off and no vignette the
+  agent skips `sc finish texture`. It runs `sc finish roomtone` only as a single-bed safety floor when a
+  deliverable still fails the digital-silence check; per-scene beds come from the sound stage.
 - Evidence: delivered files in `09_delivery/` and `09_delivery/delivery-report.json` with every check PASS.
+  The agent also writes `09_delivery/delivery-notes.md`, which always carries the AI-label line for realistic
+  AI content.
 - Gate: the spec check. A FAIL goes back to the stage that made the file.
 
 ### handoff (optional; default on the full track)

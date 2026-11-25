@@ -61,12 +61,26 @@ Work in a scratch file outside any project folder (for example `<your scratch di
    audio), `inputs` only if they gave a file (refine has no project assets, so describe it in the beats and
    the settings table instead and leave `inputs` empty), the six `layers` (prompt-craft), `avoid` (start
    from the universal list plus the categories that apply), and `rationale` (model, resolution, duration).
-3. `sc card validate <file>`. Fix every error it lists.
-4. `sc card compile <file> --model <id> --json`. It returns `prompt`, `negative_prompt` (only for models with
+3. Apply the cross-cutting craft rules yourself, without asking (skip them for clean graphics, icons, logos
+   and products; with a start frame keep only the light and motion parts):
+   - **Depth planes:** fill far background, near background, placement and foreground, each with a value
+     word (dark, lit, bright accent). The foreground names its frame edge. For shots wider than a medium,
+     give the subject's size as a fraction of the frame.
+   - **One named key:** its source, side of frame, height and hard or soft ("soft key from the frame-left
+     window, high"). Fill none or low. Each practical carries its colour.
+   - **What stays dark:** one line, except for high key and overcast looks.
+   - **Natural finish:** `light_look.finish` with real-world imperfection; natural skin texture on any face.
+   - **No trigger words:** drop "8k", "hyperdetailed", "hyperrealistic", "epic", "cinematic lighting",
+     "beautiful lighting", "bokeh background", "flawless", "perfect skin" and "HDR", even when the user wrote
+     them. Say in the settings table what you replaced.
+   The detail is in `${CLAUDE_PLUGIN_ROOT}/docs/research/cinematic-composition-guide.md` and
+   `cinematic-lighting-guide.md` (quick choosers at the top, cross-cutting rules at the end).
+4. `sc card validate <file>`. Fix every error it lists.
+5. `sc card compile <file> --model <id> --json`. It returns `prompt`, `negative_prompt` (only for models with
    a negative field), `params`, `adjustments` (values it corrected for the model, each with a reason),
    `dropped_fields` (what it trimmed to stay under the word cap), `unguarded` (avoid terms with no positive
    wording), `word_count` and `max_prompt_words`. It also writes the Prompt and Avoid sections into the card.
-5. Read the compiled prompt as a director would. If a dropped field mattered, shorten something else in the
+6. Read the compiled prompt as a director would. If a dropped field mattered, shorten something else in the
    layers and compile again. If `unguarded` lists something important, add positive wording to a layer
    (for example "steady locked-off frame" in camera) and compile again.
 

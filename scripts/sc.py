@@ -19,6 +19,7 @@ Groups owned by other modules (delegation convention):
         gen estimate|submit|status|fetch|approve|reject   shotcraft.gen
         refs fetch               shotcraft.refs          sheet build      shotcraft.contact_sheet
         delivery check           shotcraft.delivery      assembly animatic shotcraft.assembly
+        finish texture|roomtone  shotcraft.finish
         scout check|report       shotcraft.scout         handoff build|upload shotcraft.handoff
     If the module is not installed, sc.py prints a clear message and exits 1.
 """
@@ -679,6 +680,22 @@ def build_parser():
     sp = leaf(s, "animatic", delegate("assembly", "animatic", ["assembly"]))
     sp.add_argument("--audio")
     sp.add_argument("--burn-ids", dest="burn_ids", action="store_true", help="burn shot ids into the picture")
+
+    s = group("finish", "natural-finish pass: matched grain, room tone")
+    sp = leaf(s, "texture", delegate("finish", "texture", ["finish"]),
+              help="add matched film grain (and an optional mild vignette) to a clip or still")
+    sp.add_argument("file")
+    sp.add_argument("--grain", choices=["off", "subtle", "film"], default="subtle")
+    sp.add_argument("--vignette", action="store_true")
+    sp.add_argument("--out", help="output file, relative to the current directory (default: <name>-texture "
+                                  "next to the source; required for a source inside 09_delivery/)")
+    sp = leaf(s, "roomtone", delegate("finish", "roomtone", ["finish"]),
+              help="safety floor: lay one room-tone bed under the audio so it never drops to digital silence")
+    sp.add_argument("file")
+    sp.add_argument("--bed", help="a recorded room tone or ambience to loop (preferred over the generated floor)")
+    sp.add_argument("--level", type=float, default=-60.0, help="bed level in dBFS (-80 to -40, default -60)")
+    sp.add_argument("--out", help="output file, relative to the current directory (default: <name>-roomtone "
+                                  "next to the source; required for a source inside 09_delivery/)")
 
     s = group("scout", "model check")
     leaf(s, "check", delegate("scout", "check", ["scout"]))

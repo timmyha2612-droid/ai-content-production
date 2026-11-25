@@ -33,12 +33,14 @@ FENCE = "---"
 
 LAYER_FIELDS = {
     "intent": ["use", "platform", "audience", "brand"],
-    "subject": ["subject", "action", "wardrobe_props", "elements", "consistency"],
-    "world": ["environment", "era", "time_of_day", "weather_season", "atmosphere"],
+    "subject": ["subject", "action", "placement", "interaction", "wardrobe_props", "elements",
+                "consistency"],
+    "world": ["environment", "background_far", "background_near", "foreground", "parallax", "era",
+              "time_of_day", "weather_season", "atmosphere"],
     "camera": ["shot_size", "angle", "lens", "dof", "composition", "movement", "movement_speed",
                "camera_look"],
     "light_look": ["setup", "quality", "direction", "color_temp", "practicals", "palette_grade",
-                   "texture", "style_ref", "mood"],
+                   "texture", "finish", "style_ref", "mood"],
     "time_output": ["beats", "pacing", "loop", "transition_in", "transition_out", "audio",
                     "on_screen_text"],
 }
@@ -333,6 +335,35 @@ def extract_from_text(text, taxonomy):
     return fills, ", ".join(keep)
 
 
+from shotcraft.compiler import MIN_GUARDS  # noqa: E402 - guards the trimmer keeps (no import cycle)
+NATURAL_FINISHES = ("natural", "true_to_life")
+
+
+def _finish_guards(negatives, finish):
+    """Avoid guards for a preset's finish: negatives.json by_finish, else the first two too_perfect ones."""
+    if finish not in NATURAL_FINISHES:
+        return []
+    by_finish = (negatives or {}).get("by_finish") or {}
+    lst = by_finish.get(finish)
+    if not isinstance(lst, list):
+        lst = ((negatives or {}).get("by_category") or {}).get("too_perfect", [])[:2]
+    return [a for a in lst if isinstance(a, str) and a.strip()]
+
+
+def _finish_default(taxonomy, finish):
+    """The light_look.finish default for a finish value (taxonomy 'defaults'), or None. A single legacy
+    'default' string still applies to the natural looks."""
+    if finish not in NATURAL_FINISHES or not taxonomy:
+        return None
+    fdef = (((taxonomy.get("layers") or {}).get("light_look") or {}).get("fields") or {}).get("finish") or {}
+    defaults = fdef.get("defaults")
+    if isinstance(defaults, dict):
+        v = defaults.get(finish)
+        return v if isinstance(v, str) and v.strip() else None
+    v = fdef.get("default")
+    return v if isinstance(v, str) and v.strip() else None
+
+
 def _norm_text(v):
     return re.sub(r"\s+", " ", str(v or "")).strip().lower()
 
@@ -342,6 +373,7 @@ def new_card(shot, kind=None, use_case=None, from_text=None, presets=None, taxon
     """Return a scaffolded card meta dict. Pass rule dicts to fill settings from the preset,
     split from_text into layer fields, and start the avoid list from negatives.json."""
     preset = (_preset_table(presets).get(use_case) if use_case else None) or {}
+    finish = preset.get("finish") if isinstance(preset.get("finish"), str) else None
     if not kind:
         kind = preset.get("kind") if preset.get("kind") in KINDS else "video"
     res = preset.get("resolution") or {}
@@ -390,6 +422,15 @@ def new_card(shot, kind=None, use_case=None, from_text=None, presets=None, taxon
             avoid.extend(cats.get("product", [])[:4])
         if use_case in ("thumbnail", "banner-ad"):
             avoid.extend(cats.get("text", [])[:3])
+        # Live-action looks: guard against the over-perfect "AI" finish. The first finish guard goes inside
+        # the first MIN_GUARDS so the trimmer never drops it before the generic ones.
+        finish_guards = _finish_guards(negatives, finish)
+        if finish_guards:
+            avoid.insert(min(MIN_GUARDS - 1, len(avoid)), finish_guards[0])
+            avoid.extend(finish_guards[1:])
+    default = _finish_default(taxonomy, finish)
+    if default and not layers["light_look"].get("finish"):
+        layers["light_look"]["finish"] = default
     seen = []
     for a in avoid:
         if a not in seen:

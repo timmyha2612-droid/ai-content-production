@@ -45,7 +45,8 @@
         "youtube_shorts": "up to 3 min, 9:16 or square",
         "stories": "60 s per story card"
       },
-      "notes": "Hook in the first 1-2 seconds. Most people watch muted at first, so burn in captions in post. Shots of 1.5-4 s. Generate each shot at the exact length it plays; the cut needs no handles. Keep the action centred so a 4:5 feed crop still works. Ending on a frame that matches the start makes the reel loop cleanly."
+      "notes": "Hook in the first 1-2 seconds. Most people watch muted at first, so burn in captions in post. Shots of 1.5-4 s. Generate each shot at the exact length it plays; the cut needs no handles. Keep the action centred so a 4:5 feed crop still works. Ending on a frame that matches the start makes the reel loop cleanly.",
+      "finish": "natural"
     },
     "social-square": {
       "label": "Square social feed",
@@ -71,7 +72,8 @@
         "mp4 (H.264, AAC)"
       ],
       "need": "video-general",
-      "notes": "Feed placement on Instagram, Facebook and LinkedIn. 4:5 (1080x1350) takes more screen in feeds; ask which the user wants. Watched muted: captions in post."
+      "notes": "Feed placement on Instagram, Facebook and LinkedIn. 4:5 (1080x1350) takes more screen in feeds; ask which the user wants. Watched muted: captions in post.",
+      "finish": "natural"
     },
     "social-landscape": {
       "label": "Landscape social (X, LinkedIn, Facebook)",
@@ -95,7 +97,8 @@
         "mp4 (H.264, AAC)"
       ],
       "need": "video-general",
-      "notes": "Landscape is small on phones: use bold, simple framing and large text."
+      "notes": "Landscape is small on phones: use bold, simple framing and large text.",
+      "finish": "natural"
     },
     "youtube": {
       "label": "YouTube long-form",
@@ -128,7 +131,8 @@
       ],
       "need": "video-cinematic-multishot",
       "loudness": "-14 LUFS integrated",
-      "notes": "Generated shots usually serve as B-roll or sequences inside a longer edit. Match the edit's frame rate (24, 25 or 30). Only upscale to 4K if the timeline is 4K."
+      "notes": "Generated shots usually serve as B-roll or sequences inside a longer edit. Match the edit's frame rate (24, 25 or 30). Only upscale to 4K if the timeline is 4K.",
+      "finish": "natural"
     },
     "youtube-short": {
       "label": "YouTube Shorts",
@@ -160,7 +164,8 @@
         "right_px": 140,
         "note": "Title, channel name and buttons cover the bottom and right."
       },
-      "notes": "Up to 3 minutes. Loops replay automatically: a seamless end helps watch time."
+      "notes": "Up to 3 minutes. Loops replay automatically: a seamless end helps watch time.",
+      "finish": "natural"
     },
     "thumbnail": {
       "label": "Video thumbnail (YouTube and similar)",
@@ -191,7 +196,8 @@
       "safe_zone": {
         "note": "Keep text and faces out of the bottom-right corner, where the duration badge sits. Keep 5 percent margins all round."
       },
-      "notes": "Must read at phone size: one face or object, a strong expression, at most 3 colours and 4 words. Generate the picture without text first, then add the text with a text-capable model (or in post) so you can fix spelling cheaply. Make 2-3 variants for A/B testing (YouTube's Test & Compare). 1280x720 is the baseline; a 3840x2160 version is fine for TV screens. Under 2 MB is the safe file size."
+      "notes": "Must read at phone size: one face or object, a strong expression, at most 3 colours and 4 words. Generate the picture without text first, then add the text with a text-capable model (or in post) so you can fix spelling cheaply. Make 2-3 variants for A/B testing (YouTube's Test & Compare). 1280x720 is the baseline; a 3840x2160 version is fine for TV screens. Under 2 MB is the safe file size.",
+      "finish": "clean"
     },
     "icon-ui": {
       "label": "UI icon or app icon",
@@ -220,7 +226,8 @@
         "stroke_px": 2,
         "note": "Common UI icon grid: 24 px canvas, 2 px padding, 2 px stroke. App icons use a 1024 px square; the platform applies its own mask."
       },
-      "notes": "Ask for SVG first: use a vector model or mode (for example Recraft with model_type vector) or trace the result. Never generate bigger than 1k for icons. Bold simple shapes on a plain background, one symbol, no text. Check it at 16 px and 24 px before approving: if you cannot tell what it is, simplify. Keep a set visually consistent: same stroke, corner radius and grid."
+      "notes": "Ask for SVG first: use a vector model or mode (for example Recraft with model_type vector) or trace the result. Never generate bigger than 1k for icons. Bold simple shapes on a plain background, one symbol, no text. Check it at 16 px and 24 px before approving: if you cannot tell what it is, simplify. Keep a set visually consistent: same stroke, corner radius and grid.",
+      "finish": "clean"
     },
     "logo-animation": {
       "label": "Logo animation (sting)",
@@ -248,7 +255,8 @@
         "mov (ProRes 4444 with alpha) for overlays"
       ],
       "need": "mograph-loop",
-      "notes": "The logo itself must be exact, so AI video is risky here. Build it in your motion graphics tool (After Effects or code) with the real vector logo. Use AI only for backgrounds, particles or textures behind it. End on a clean hold of at least 1 s."
+      "notes": "The logo itself must be exact, so AI video is risky here. Build it in your motion graphics tool (After Effects or code) with the real vector logo. Use AI only for backgrounds, particles or textures behind it. End on a clean hold of at least 1 s.",
+      "finish": "clean"
     },
     "web-hero": {
       "label": "Website hero (banner image or muted loop)",
@@ -278,7 +286,8 @@
         "webp or avif poster frame"
       ],
       "need": "mograph-loop",
-      "notes": "Plays muted on autoplay, often under text: keep a calm, low-contrast area (usually the left third) for the headline. Slow motion that loops seamlessly. Provide a mobile crop (4:5 or 9:16) and a poster frame. Keep the file small for page speed."
+      "notes": "Plays muted on autoplay, often under text: keep a calm, low-contrast area (usually the left third) for the headline. Slow motion that loops seamlessly. Provide a mobile crop (4:5 or 9:16) and a poster frame. Keep the file small for page speed.",
+      "finish": "clean"
     },
     "banner-ad": {
       "label": "Display banner ads",
@@ -338,7 +347,8 @@
         "gif (animated, under 150 KB)"
       ],
       "need": "graphic-with-text",
-      "notes": "Generate the key visual once at 2k with generous empty space, then crop and lay out each size in post; do not generate each size. Text, logo and button are added in layout, not by the model. Animated banners usually loop at most 3 times and stop within 15-30 s."
+      "notes": "Generate the key visual once at 2k with generous empty space, then crop and lay out each size in post; do not generate each size. Text, logo and button are added in layout, not by the model. Animated banners usually loop at most 3 times and stop within 15-30 s.",
+      "finish": "clean"
     },
     "broll-insert": {
       "label": "B-roll insert for an edit",
@@ -366,7 +376,8 @@
         "mp4 (H.264 high bitrate) as a proxy"
       ],
       "need": "video-general",
-      "notes": "Cutaways that sit under dialogue or voice-over. Generate the shot length plus 0.5 s handles at each end (a 3 s insert is generated at 4 s) so the editor can trim and add transitions. One clear move or none; no on-screen text; no generated audio. Match the edit's look: keep the grade neutral (flat for the colourist) and the light direction consistent with the A-roll. Avoid people looking into the lens. Name files by shot ID so they drop into the bin in order."
+      "notes": "Cutaways that sit under dialogue or voice-over. Generate the shot length plus 0.5 s handles at each end (a 3 s insert is generated at 4 s) so the editor can trim and add transitions. One clear move or none; no on-screen text; no generated audio. Match the edit's look: keep the grade neutral (flat for the colourist) and the light direction consistent with the A-roll. Avoid people looking into the lens. Name files by shot ID so they drop into the bin in order.",
+      "finish": "natural"
     },
     "real-estate": {
       "label": "Real estate and property",
@@ -399,7 +410,8 @@
         "jpg stills"
       ],
       "need": "product-environment-still",
-      "notes": "Straight verticals, wide but not distorted (16-24 mm look), bright balanced interiors, slow gimbal glides and drone reveals. Do not invent or change features of a real property: AI here is for staging, sky replacement, twilight looks or concept visuals, and must be labelled where local rules require it."
+      "notes": "Straight verticals, wide but not distorted (16-24 mm look), bright balanced interiors, slow gimbal glides and drone reveals. Do not invent or change features of a real property: AI here is for staging, sky replacement, twilight looks or concept visuals, and must be labelled where local rules require it.",
+      "finish": "true_to_life"
     },
     "product-shot": {
       "label": "Product shot (still or short clip)",
@@ -428,7 +440,8 @@
         "mp4 for motion versions"
       ],
       "need": "product-environment-still",
-      "notes": "Always use the real product photo as a reference; the label and shape must match exactly. Marketplace listings usually need a pure white background with the product filling about 85 percent of the frame. For motion, make a still first, approve it, then animate it as a start frame."
+      "notes": "Always use the real product photo as a reference; the label and shape must match exactly. Marketplace listings usually need a pure white background with the product filling about 85 percent of the frame. For motion, make a still first, approve it, then animate it as a start frame.",
+      "finish": "clean"
     },
     "storyboard-animatic": {
       "label": "Storyboard frames and animatic",
@@ -457,7 +470,8 @@
         "pdf board"
       ],
       "need": "storyboard-frame",
-      "notes": "Cheapest models and lowest resolution: these frames plan the shots and are not the final look. One frame per shot (two for shots with a big move). Keep characters consistent with a simple reference."
+      "notes": "Cheapest models and lowest resolution: these frames plan the shots and are not the final look. One frame per shot (two for shots with a big move). Keep characters consistent with a simple reference.",
+      "finish": "clean"
     },
     "billboard-print": {
       "label": "Billboard and print",
@@ -483,7 +497,8 @@
         "jpg proof"
       ],
       "need": "product-environment-still",
-      "notes": "Generate at 4k then upscale to the print size; check the printer's spec sheet for DPI, bleed and colour profile. Outdoor boards are read in 2-3 seconds: one image, up to 7 words. Leave clear space for copy and the logo."
+      "notes": "Generate at 4k then upscale to the print size; check the printer's spec sheet for DPI, bleed and colour profile. Outdoor boards are read in 2-3 seconds: one image, up to 7 words. Leave clear space for copy and the logo.",
+      "finish": "clean"
     },
     "presentation": {
       "label": "Presentation slides",
@@ -510,7 +525,8 @@
         "mp4 loops for background slides"
       ],
       "need": "product-environment-still",
-      "notes": "Images that sit behind or beside text: leave calm negative space. Keep a consistent style across the deck. Short muted loops (4-8 s) can work as background slides."
+      "notes": "Images that sit behind or beside text: leave calm negative space. Keep a consistent style across the deck. Short muted loops (4-8 s) can work as background slides.",
+      "finish": "clean"
     }
   }
 }

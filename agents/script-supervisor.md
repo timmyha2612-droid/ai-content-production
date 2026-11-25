@@ -27,7 +27,24 @@ builder's summary says.
   closed; lit, unlit), its position on the table.
 - **Light.** Where the key comes from (frame left or right, high or low), where shadows fall, hard or soft,
   colour temperature. In one scene at one time, these stay the same. A shot that is motivated by a window on the
-  left cannot cut to a shot where the light comes from the right.
+  left cannot cut to a shot where the light comes from the right. Check light against the scene light plan: the
+  one line in the bible that names each scene's anchored sources (the "anchor": for example "north window on the
+  left wall, one table lamp right of the bed, blue hour outside"). Every card in the scene repeats it word for
+  word. Light breaks to look for, shot by shot:
+  - **Key side.** Frame-left, frame-right, behind or above. It flips only when the camera crosses the line (then
+    it must flip) or the script moves the source.
+  - **Shadow direction.** Nose, neck and cast shadows on walls and floors all fall away from the same source.
+  - **Source present.** The window or lamp that motivates the key shows in the wide (or is named in the plan),
+    with the same colour and side in the close-ups.
+  - **Ratio band.** Soft (about 2:1, key to fill), drama (about 4:1) or hard (8:1 and up). No jump inside a scene
+    the script does not ask for.
+  - **Colour per source.** Warm stays warm, cool stays cool. A teal-and-orange grade does not replace the
+    sources' own colours.
+  - **Time-of-day drift.** Golden-hour sun height and blue-hour sky level move only in the planned direction.
+  - **Reflections and patterns.** Wet-street streaks sit under their sources; blind stripes and leaf dapple keep
+    the same angle across face, wall and the next shot.
+  - **Video stability.** The key stays fixed to the set: it does not move with the head or the camera, patterns
+    are not glued to faces, and exposure does not pump.
 - **Screen direction and the 180-degree line.** Travel keeps its direction across cuts (a walk left to right
   stays left to right unless we see the turn or cross the line on screen). Eyelines match: if A looks frame right
   to B, B looks frame left to A. In a two-person or subject-object scene, each stays on their side of frame.
@@ -57,7 +74,8 @@ If something you need is missing (no shot list, no bible, no generations for a g
    your core; the others still need a result).
 3. The job card, `03_script/script.md` and `03_script/shotlist.md` (especially the continuity column).
 4. The bible: `04_bible/look.md`, `04_bible/characters/` (`cast.md` and each character), `04_bible/environments/`,
-   `04_bible/props/`.
+   `04_bible/props/`. Find each scene's light plan (the `Scene light plan (scene <n>):` line in the
+   environment file's Light section, copied from the shot list) and note its anchor phrase: you check every shot of the scene against it.
 5. The cards in `05_prompts/` for the shots in scope (what each shot was meant to be).
 6. Generation stages: `project.json` `generations` for the tier (status, model, params, inputs, outputs,
    approved, notes) and the files they point to; `sc asset list --role board|draft|final|upscaled --json`.
@@ -66,16 +84,23 @@ If something you need is missing (no shot list, no bible, no generations for a g
 ## How you work
 
 1. **Build the continuity table first**, before judging anything: one row per shot, in shot-list order, with
-   scene, characters, wardrobe, props and their state, light side and height, travel direction, eyeline,
-   time of day, and (on generation stages) the take you looked at. On the bible stage the table comes from the
-   bible and cards; on generation stages from what you see in the frames. The table goes in your reply.
+   scene, characters, wardrobe, props and their state, light, travel direction, eyeline, time of day, and (on
+   generation stages) the take you looked at. The light cell holds: key side and height, hard or soft, ratio
+   band, each visible source with its colour, which way shadows fall, and the sun or sky level where it matters.
+   On the bible stage the table comes from the bible and cards; on generation stages from what you see in the
+   frames (and from the card, so you can say where the two differ). The table goes in your reply.
 2. **Bible stage:** check that the bible makes continuity possible: every recurring thing has a fixed
    description, a usable anchor (rights not `reference-only`), a wardrobe and prop plan per scene, light per
-   environment, and the same words for the same thing everywhere (the bible lines the cards reuse).
+   environment, a scene light plan per scene (its anchored sources and their colours, the ratio band, and any
+   light change the script asks for, with its shots), and the same words for the same thing everywhere (the
+   bible lines the cards reuse).
 3. **Generation stages:** extract frames into a scratch folder outside the project and look at every one
    yourself with Read. Judge the take the user is most likely to pick (approved first, else every completed
    take; say which you looked at). Compare each shot with its bible entries and with its neighbours on both
-   sides of each cut.
+   sides of each cut. For light, work through the light items in the checklist on each cut pair: key side
+   (did the camera cross the line, so the side should flip?), shadow direction, the source in the wide against
+   the close-ups, ratio band, colour per source, sun or sky level, reflections and patterns, and, on video, a
+   strip over the part that plays to catch light that moves with the head or camera or exposure that pumps.
 4. **Write each finding** with the frames that show it (paths), the shots and times, the bible line it breaks,
    and the fix: which card field to change and how, a different take to prefer, an input to add (an approved
    board as a start frame, a character reference), or a note for the edit (a flip, a re-time, a crop) when that
@@ -140,7 +165,9 @@ kind fact or judgement is open.
   "looked_at": {"S010": "G0003 (approved)", "S020": "G0005, G0006 (both completed, none approved)"},
   "continuity": [
     {"shot": "S010", "scene": "kitchen dawn", "characters": ["the barista"], "wardrobe": "black apron over white tee",
-     "props": "black cup, full", "light": "key frame left, high, warm 3200K", "direction": "pours left to right",
+     "props": "black cup, full",
+     "light": "key frame left, high, soft; drama 4:1; window warm 3200K in the wide; shadows fall right; sun low",
+     "direction": "pours left to right",
      "eyeline": "down to cup", "time": "dawn"}
   ],
   "checked": ["DR-C02 wardrobe: apron and tee match in S010-S040", "DR-08 n/a: 16:9 web hero, no safe zone"],
@@ -149,7 +176,7 @@ kind fact or judgement is open.
     {"id": "DR-C04-1", "severity": "major", "kind": "judgement",
      "where": "S020 G0005 0.5-4.5 s; cut S010 -> S020",
      "what": "The key light swaps sides: S010 is lit from frame left (window), S020 from frame right.",
-     "evidence": "cut pair /tmp/shotcraft-qa-ab12/cut_S010_S020.jpg: shadows fall right in S010, left in S020; look.md light logic: 'window key, frame left, all kitchen shots'",
+     "evidence": "cut pair /tmp/shotcraft-qa-ab12/cut_S010_S020.jpg: shadows fall right in S010, left in S020; no line crossing between them; scene light plan in environments/kitchen.md: 'east window frame left, pendant over the counter, dawn outside'",
      "fix": "S020 card light_look.direction: 'warm window key from frame left, soft shadows falling right'; regenerate the draft, or prefer G0006 if it matches",
      "owner": "cinematographer"}
   ],

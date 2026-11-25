@@ -57,6 +57,7 @@ shotcraft/
       contact_sheet.py  HTML contact sheet for boards/drafts/finals
       delivery.py     ffprobe spec checks against preset/delivery spec
       assembly.py     ffmpeg animatic / string-out from approved shots + timings
+      finish.py       natural-finish pass in post: matched film grain (+ mild vignette), room-tone safety floor
       scout.py        compare live model list vs rules/models.json, write scout report
       handoff.py      Higgsfield hand-off package (upload list + Canvas build sheet)
       lessons.py      lessons inbox (append/list/decide)
@@ -99,7 +100,7 @@ project.json                 manifest (§3) — written only via sc.py (guard bl
 06_generations/ boards/ drafts/ finals/ upscaled/ contact-sheets/
 07_sound/
 08_assembly/
-09_delivery/
+09_delivery/ deliverables, delivery-notes.md (delivery agent), delivery-report.json (sc delivery check)
 10_handoff/  canvas-build-sheet.md, upload-list.json
 .shotcraft/  stages.json (guard-protected), qa/<stage>/round-N.json, lessons.md, rules/ (project rules)
 ```
@@ -167,7 +168,7 @@ Stage table (owner = the role that does the work; gate = what closes it):
 | finals | generation-tech | a completed final (or upscale) per approved shot, all approved | `--user-said` |
 | sound | sound agent | files in 07_sound/ + licence notes | `--user-said` |
 | assembly | assistant-editor agent | 08_assembly/animatic.mp4 or EDL/notes | `--user-said` |
-| delivery | delivery agent | 09_delivery/ files + delivery-report.json with all checks PASS | spec check PASS |
+| delivery | delivery agent | 09_delivery/ files + delivery-notes.md (always with the AI-label line for realistic AI content) + delivery-report.json with all checks PASS | spec check PASS |
 | handoff | producer (handoff skill) | 10_handoff/canvas-build-sheet.md + upload-list.json | evidence only |
 | learn | learner agent → producer | lessons decided (each accepted/rejected with the user's words) | `--user-said` |
 | refine | refine skill | a valid prompt card saved | evidence only |
@@ -204,7 +205,10 @@ sc.py gen approve GEN_ID --user-said "..." | gen reject GEN_ID --user-said "..."
 sc.py asset add PATH --rights R --role ROLE [--source-url U] [--shot S] | asset list | asset mark ID --rights R --user-said "..."
 sc.py refs fetch URL [--note] [--shot]             download into 01_research/refs, tagged reference-only
 sc.py sheet build --tier board|draft|final [--open]
-sc.py delivery check [--spec preset-id]
+sc.py delivery check [--spec preset-id]           incl. "no digital silence" and "audio covers picture"
+sc.py finish texture FILE [--grain off|subtle|film] [--vignette] [--out P]   matched grain, one setting per job
+sc.py finish roomtone FILE [--bed FILE] [--level -60] [--out P]           single-bed safety floor under the audio
+                   (paths relative to the current directory; without --out, finish refuses a FILE in 09_delivery/)
 sc.py assembly animatic [--audio file]
 sc.py scout check [--json] | scout report
 sc.py handoff build | handoff upload [--dry-run]
@@ -227,12 +231,14 @@ A JSON front matter block between `---` lines, followed by a markdown body:
   "inputs": [{"asset": "A003", "as": "start_frame|end_frame|reference|character|style"}],
   "layers": {
     "intent":   {"use": "...", "platform": "...", "audience": "...", "brand": "..."},
-    "subject":  {"subject": "...", "action": "...", "wardrobe_props": "...", "elements": "...", "consistency": "..."},
-    "world":    {"environment": "...", "era": "...", "time_of_day": "...", "weather_season": "...", "atmosphere": "..."},
+    "subject":  {"subject": "...", "action": "...", "placement": "...", "interaction": "...",
+                 "wardrobe_props": "...", "elements": "...", "consistency": "..."},
+    "world":    {"environment": "...", "background_far": "...", "background_near": "...", "foreground": "...",
+                 "parallax": "...", "era": "...", "time_of_day": "...", "weather_season": "...", "atmosphere": "..."},
     "camera":   {"shot_size": "...", "angle": "...", "lens": "...", "dof": "...", "composition": "...",
                  "movement": "...", "movement_speed": "...", "camera_look": "..."},
     "light_look": {"setup": "...", "quality": "...", "direction": "...", "color_temp": "...", "practicals": "...",
-                   "palette_grade": "...", "texture": "...", "style_ref": "...", "mood": "..."},
+                   "palette_grade": "...", "texture": "...", "finish": "...", "style_ref": "...", "mood": "..."},
     "time_output": {"beats": [{"t": "0-2", "what": "..."}], "pacing": "...", "loop": false,
                     "transition_in": "...", "transition_out": "...", "audio": "...", "on_screen_text": "..."}
   },
@@ -255,9 +261,24 @@ A JSON front matter block between `---` lines, followed by a markdown body:
 ```
 
 `card compile` takes the layers and produces the prompt text for a model, following §6:
-- Order: subject+action → world → camera → light & look → time/beats → style.
+- Order: subject+action (+ interaction) → world → depth → camera → light & look → time/beats → style.
+- Depth (the frame built like a multiplane cel set-up): one sentence of `world.background_far`;
+  `world.background_near`; `subject.placement` (the midground); `world.foreground`; `world.parallax`, joined
+  with "; " and labelled ("far background: …") unless the text already names the plane.
+  `subject.interaction` (how the subject and the place act on each other: light, weather, contact, scale)
+  follows the action. Image cards skip parallax. With a start frame only interaction and parallax are kept
+  from these. When `world.environment` is set but no foreground or background plane is, compile warns.
+- `light_look.finish` is the finish for live-action looks; empty for clean ones. The taxonomy field holds one
+  default per preset finish value (`defaults`: `natural`, `true_to_life`; `clean` has none). The defaults do
+  not ask for asymmetry, and a card whose composition is symmetric drops asymmetry wording (the "perfect
+  symmetry" guard and its rewrite). The "blurry" avoid item is focus-aware: on a shallow-focus card it is
+  rewritten through `blurry (shallow focus)` ("sharp focus on the subject") instead of the tack-sharp
+  rewrite, so it does not fight the soft background. When texture or finish asks for grain, "noise"/"grain" avoid items
+  are dropped with a warning (they would fight the look).
 - Stay under the model's `max_prompt_words` (default 120 words, roughly 200 tokens). Drop the
-  lowest-priority fields first: texture, then practicals, then era, then camera_look.
+  lowest-priority fields first: texture, then practicals, then era, then camera_look (the depth fields sit
+  between: finish 47, parallax 49, far background 53, near background 61, foreground 67, interaction 73,
+  placement 75).
 - For image-to-video with a start frame, describe only the motion (camera + subject motion + beats), not the
   frame again.
 - `avoid` goes into the model's negative field if `negative_prompt: true`; otherwise each item is rewritten
@@ -281,8 +302,25 @@ A JSON front matter block between `---` lines, followed by a markdown body:
   graphics styles (flat, isometric, kinetic type, glassmorphism, 3D clay, line art, liquid motion, glitch,
   particles), and audio terms.
 - `negatives.json`: `{ "universal": [...], "by_category": {"people": [...], "text": [...], "product": [...],
-  "motion": [...], "locked_off": [...], "loop": [...], "mograph": [...], "icon": [...]}, "by_model": {"<model>":
-  [...]} }`.
+  "motion": [...], "locked_off": [...], "loop": [...], "mograph": [...], "icon": [...], "too_perfect": [...]},
+  "by_model": {"<model>": [...]} }`. `too_perfect` (strongest first) guards against the over-perfect AI
+  finish; `card new` adds its first two items on presets whose `finish` is `natural`. `flat_light` guards a
+  low-key look against drifting back to flat, even studio light. `applies_when` holds guards the compiler
+  adds on its own: `{"<group>": {"fields": [...], "any": [...], "unless_fields": [...], "unless": [...],
+  "add": n, "priority": p}}`. When a listed field holds an `any` word and no `unless` word appears, the first
+  `add` terms of `by_category.<group>` go at the end of the avoid list (never twice). The optional `priority`
+  is the trim priority of their prompt rewrites (default: the taxonomy's `trim.guard_priority`), and these
+  guards are never among the protected first two; `flat_light` uses 5, so it is trimmed before
+  `light_look.texture` (10) and `light_look.practicals` (20). `flat_light` fires on low-key
+  family setups (low key, split, Rembrandt, "short lighting" named as such, practicals, top light, firelight, night exterior,
+  chiaroscuro) in `light_look.setup` or `quality`, but not on high key or overcast. The trigger words live
+  in the rule file, not in code. `card new` cannot add these: `setup` is filled after the card is made.
+- `light_setups.json`: one entry per lighting setup in the lighting guide's quick chooser
+  (`docs/research/cinematic-lighting-guide.md`), 16 in all. Each has `id`, `name`, `intent` (list), `setup`,
+  `quality`, `direction`, `color_temp`, `practicals`, `finish` (a default), `stays_dark` (what the card must
+  say falls into darkness), `do_not_use_when` (list), `low_key` (true when the setup text triggers the
+  `flat_light` guards) and `board_url` (the Cosmos study board with reference frames). The cinematographer
+  picks the row whose intent fits the shot and copies the fields into `light_look`, adding the side of frame.
 - `positive_rewrites.json`: `{ "<avoid term>": "<positive phrasing>" }`, for example "camera shake" →
   "locked-off tripod shot, perfectly stable frame".
 - `models.json`: `{ "rules_version": "...", "providers": { "higgsfield": { "surface": "cli", "models": { "<id>":
@@ -297,7 +335,11 @@ A JSON front matter block between `---` lines, followed by a markdown body:
   include: icon-logo, graphic-with-text, photoreal-people, product-environment-still, video-general,
   video-motion-physics, video-dialogue-audio, video-cinematic-multishot, mograph-loop, storyboard-frame.
 - `presets.json`: use-case presets, each with `aspect`, `resolution` (draft and final), `fps`,
-  `duration` (typical / min / max), `handles_s`, `delivery_formats`, `need` (a routing key), `notes`.
+  `duration` (typical / min / max), `handles_s`, `delivery_formats`, `need` (a routing key), `notes`,
+  `finish` (`natural` for live action; `true_to_life` for real estate: true colour, slightly uneven motivated
+  light, real-lens character, no wear, no lens softness; `card new` fills `light_look.finish` from the taxonomy
+  field's `defaults` for that value; `clean` for graphics, icons and products, left empty), optional `allow_digital_silence` (skips the delivery
+  check for pure digital silence).
   Includes: social-vertical (reel/story/TikTok), social-square, social-landscape, youtube, youtube-short,
   thumbnail, icon-ui (small sizes, SVG preferred), logo-animation, web-hero, banner-ad sizes, broll-insert
   (16:9 or matching the edit, with handles), real-estate, product-shot, storyboard-animatic, billboard-print,
@@ -391,6 +433,35 @@ qa-supervisor + qa-verifier after every building stage (max 3 rounds).
 - `fake.py` implements the same interface deterministically for tests.
 - REST API (`api.higgsfield.ai`, separate USD billing) is a documented optional mode in README. Not built.
 
+## 9a. Natural finish in post (finish.py)
+
+- `finish texture`: ffmpeg `noise` (temporal + uniform) at one fixed strength per job (`subtle` 6, `film` 12)
+  and an optional mild `vignette`. Video is re-encoded at high quality in its codec family: H.264 CRF 14
+  (VP9 for .webm); in a .mov whose source is ProRes or deeper than 8-bit, ProRes 422 HQ, or 4444 with the
+  alpha kept when the source has alpha. The noise and vignette
+  filters work in 8-bit, so a 10-bit source is filtered at 8-bit precision. Audio is copied when the container can hold it, otherwise re-encoded (with a note). Stills work too;
+  JPEG and WebP are written at high quality. Never overwrites the source. The grain setting comes from the
+  job card's `Grain:` line (decided at intake); with `off` and no vignette, texture is skipped.
+- `finish roomtone`: a single-bed safety floor for a deliverable that still fails the digital-silence check:
+  one bed under the existing audio (`amix`, no normalising, so the mix is untouched), levelled to `--level`
+  dBFS (-80 to -40, default -60) by measuring its mean volume: one neutral `--bed` (looped), else generated
+  pink noise, low-passed. The picture is copied. The result is re-checked for digital silence (exit 2 if any
+  remains). Per-scene room tone and ambience beds are laid by the sound stage in the mix or the assembly.
+- Paths are relative to the current directory. Without `--out`, finish refuses a FILE inside `09_delivery/`
+  (work files left there fail the delivery check). The chain: `texture --out` a work file outside `09_delivery/`
+  (`08_assembly/`, or a scratch folder as the delivery agent uses), then `roomtone` on that file `--out` the
+  final file in `09_delivery/`.
+- Delivery check "no digital silence": `silencedetect` at -90 dB for 0.5 s or longer on every file with
+  audio; FAIL lists the ranges and points to `finish roomtone`. `allow_digital_silence: true` (preset or
+  project `delivery`) skips it with a note.
+- Delivery check "audio covers picture": a file whose audio stream ends 0.5 s or more before its video FAILs (the
+  end would play in dead silence).
+- `09_delivery/delivery-notes.md` is written by the delivery agent (the checker skips .md). It always carries
+  the AI-label line for realistic AI content, whether or not the finish ran.
+- This is a craft fix for a natural look, not a way to hide that work is AI-made or to beat AI detectors. It
+  never crops or covers a watermark. Content Credentials (C2PA) do not survive an edit or an ffmpeg re-encode,
+  so the delivery note says realistic AI content needs the platform's AI label when posted.
+
 ## 10. Extension points (design only)
 
 - Motion graphics are out of scope (removed 2026-11-25): they are built in the user's own motion graphics
@@ -405,8 +476,13 @@ qa-supervisor + qa-verifier after every building stage (max 3 rounds).
 
 ## 11. Testing
 
-`python3 -m unittest discover -s scripts/tests -v` must pass with no network and no `higgsfield`. Cover:
-rules merge, card parse/validate/compile (length trimming, avoid rewriting, start-frame motion-only, param
-correction), routing (duration fitting picks a model whose durations fit; image-first flag), stages (order,
-evidence, skip, reopen, QA rounds, refine track blocks gen), budget threshold, guard decisions (feed hook JSON
-on stdin), the fake provider gen flow end to end, refs rights enforcement, and contact sheet HTML generation.
+`python3 -m unittest discover -s scripts/tests -v` must pass with no network and no `higgsfield`. Cover: rules
+merge, card parse/validate/compile (length trimming, avoid rewriting, start-frame motion-only, param
+correction, the depth sentence, the natural finish and the grain clash), light rules (`light_setups.json`
+keys, `flat_light` guards added on low-key setups and not on high key or overcast and trimmed before the
+practicals, new vocab present and no banned trigger word in it, rule
+files still round-trip with `json.dumps(indent=2, ensure_ascii=False)`), routing (duration fitting picks a
+model whose durations fit; image-first flag), stages (order, evidence, skip, reopen, QA rounds, refine track
+blocks gen), budget threshold, guard decisions (feed hook JSON on stdin), the fake provider gen flow end to
+end, refs rights enforcement, contact sheet HTML generation, and (with ffmpeg) finish texture/roomtone and the
+digital-silence check.

@@ -30,11 +30,36 @@ what to watch for.
 | `by_category.loop` | A seamless loop | visible loop seam, jump at loop point |
 | `by_category.mograph` | Motion graphics plates | busy background, off-brand colours, gradient banding |
 | `by_category.icon` | Icons and UI | fine detail, thin lines, photorealism, text in icon |
+| `by_category.too_perfect` | Live-action looks that must not read as "AI perfect" | cgi look, too perfect, airbrushed skin, perfect symmetry, sterile spotless set, hyper-sharp everywhere, flat even lighting, stock-photo posing |
+| `by_category.flat_light` | Added by the compiler on low-key looks (see below) | flat lighting, lifted shadows, rim light on both sides, evenly lit, softbox, beauty lighting, HDR |
 | `by_model.<id>` | Added automatically for that model | starting guesses from community reports, not confirmed by Higgsfield |
 
-`sc card new` starts the card with a short avoid list. Add the categories that apply. Keep the list short
+`sc card new` starts the card with a short avoid list. For live-action presets (`"finish": "natural"`:
+social, YouTube, B-roll; `"finish": "true_to_life"`: real estate) it also adds the first two `too_perfect`
+items, "cgi look" and "too perfect". When the composition asks for symmetry, the compiler drops "perfect
+symmetry" (its rewrite asks for asymmetry) and warns.
+Add the categories that apply. Keep the list short
 (about 4 to 8 items): every guard costs prompt words, and guards are trimmed before most layers when the
 prompt is over the cap.
+
+## Guards the compiler adds on its own (`applies_when`)
+
+`negatives.json` `applies_when` lists guards the compiler adds without you. Today there is one: `flat_light`.
+It stops a low-key look (dark, with deep shadow) from drifting back to flat, even studio light.
+
+- It fires when `light_look.setup` or `light_look.quality` holds a low-key family word: low key, split,
+  Rembrandt, short lighting, practical, top light, firelight, candlelight, neon, night exterior, chiaroscuro
+  and the like. The full trigger list is `applies_when.flat_light.any` in `negatives.json`.
+- It does not fire on high key or overcast (`unless`), even if a trigger word is also there.
+- It adds the first three `flat_light` terms ("flat lighting", "lifted shadows", "rim light on both sides"),
+  so you will see them in the card's Avoid output, or in `unguarded` when trimmed. Terms already on the card
+  are not added twice.
+- They go at the end of the avoid list, and their rewrites have a low trim priority (5): when the prompt is
+  over the word cap they are dropped first, before the card's own guards, the practicals and the texture.
+- `card new` cannot add them, because `setup` is filled after the card is made. To guard more of the group,
+  add the terms to the card's avoid list yourself.
+
+The rule and its fields are in SPEC.md section 6.
 
 ## How rewriting works (`rules/positive_rewrites.json`)
 
@@ -51,9 +76,22 @@ A flat map from avoid term to positive phrasing:
 
 - A key ending in ` (moving camera)` is used instead of the plain key when the shot has a camera move. That
   stops "camera shake" turning into "locked-off tripod shot" on a dolly shot.
+- A key ending in ` (shallow focus)` is used instead of the plain key on a shallow-focus shot: a live-action
+  finish (natural or true_to_life), or a depth of field or plane that says shallow, bokeh, soft or out of
+  focus. So "blurry" becomes "sharp focus on the subject" (`blurry (shallow focus)`), not "tack-sharp focus,
+  crisp fine detail", which would fight the soft background.
 - Two terms with the same rewrite are written once.
+- Every `too_perfect` term has a rewrite toward a natural look: "sterile spotless set" becomes "lived-in
+  set with small signs of use", "airbrushed skin" becomes "natural skin texture with visible pores and fine
+  lines". Full list: `depth-and-finish.md`.
 - Keys starting with `_` are comments and are ignored.
 - Matching is case-insensitive on the whole term.
+
+## The grain clash
+
+When `light_look.texture` or `light_look.finish` asks for grain or film stock (grain, film stock, 35mm,
+16mm, super 8, halation), the compiler drops the "noise", "grain" and "film grain" avoid items and warns. A
+"noise-free" guard would fight the look you asked for. Do not add them back on a grainy shot.
 
 ## Adding your own
 
@@ -84,6 +122,7 @@ only after the user's yes.
 - Be visual: "five fingers on each hand, natural relaxed hands" is clearer than "correct anatomy".
 - Short: 3 to 8 words. A long rewrite pushes out layer content.
 - Do not contradict the shot: a "perfectly still frame" rewrite on a handheld shot fights the movement field.
+- Do not use `too_perfect` on clean graphics, icons or pristine product shots: there, clean is the point.
 
 ## When a term keeps failing
 

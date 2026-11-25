@@ -172,6 +172,8 @@ def compiler_rules(project=None):
         "taxonomy": load("taxonomy", project),
         "negatives": load("negatives", project),
         "positive_rewrites": load("positive_rewrites", project),
+        # The preset table tells the compiler each card's finish (natural | true_to_life | clean).
+        "presets": load("presets", project),
     }
 
 

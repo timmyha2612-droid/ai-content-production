@@ -66,19 +66,37 @@ On the **single** track there is no shot list stage: see section 6.
 7. Mark shots the user's own material covers (`source: 00_inputs/...`) so nothing is generated twice.
 8. Write continuity notes: who and what recurs, screen direction, light and time of day, the frame this shot
    must match at its start or end.
+9. Note the **depth** of each shot, layer by layer like a multiplane set-up in classic animation: the
+   foreground (between camera and subject: rain on glass, a doorframe), the near and far background, and how
+   the subject and the place act on each other (neon spill on a cheek, wet hair, a hand on misted glass). The
+   cinematographer turns this into the card's `subject.placement`, `subject.interaction`, `world.foreground`,
+   `world.background_near`, `world.background_far` and, for video, `world.parallax` (how each layer moves).
+   Never leave interaction blank when a person or product is in a place: a subject that ignores its
+   surroundings looks pasted in.
+10. Name the **composition** of each shot from the quick chooser in
+    `${CLAUDE_PLUGIN_ROOT}/docs/research/cinematic-composition-guide.md`: start from what the viewer should
+    feel, then pick the technique ("outsider, between two worlds" -> frame within a frame). Combine three at
+    most: one geometry, one depth, one light technique.
+11. Write one **scene light plan** per scene: a line naming the light sources fixed to the set, for example
+    "north window on the left wall, one table lamp right of the bed, blue hour outside". Pick the setup from
+    the chooser in `${CLAUDE_PLUGIN_ROOT}/docs/research/cinematic-lighting-guide.md`. You own this line. The
+    production designer copies it word for word into the environment file's Light section in the bible stage,
+    and the cinematographer copies the anchor phrase from there onto every card in the scene, so the key stays
+    on the same side of frame from shot to shot.
 
 ## 3. Write the shot list
 
 Write `03_script/shotlist.md` in the format in `references/shotlist-format.md` (start from
 `${CLAUDE_PLUGIN_ROOT}/templates/shotlist.md` if it exists). Shot ids are `S010`, `S020` ... (steps of 10, so
 an insert can become `S015`). Required columns: `id`, `duration_s`, `purpose`. Strongly recommended: `kind`,
-`image_first`, `beat`, `shot`, `move`, `continuity`, `graphics`, `source`.
+`image_first`, `beat`, `shot`, `move`, `composition`, `depth`, `continuity`, `graphics`, `source`.
 
 Under the table add:
 - **Total:** the sum of `duration_s` and the delivery length.
 - **Generated length per shot:** from `sc.py route --use-case <use_case> --tier draft --kind video --duration <duration_s>`
   for each video shot (it adds the handles and picks a length the model allows). Note any shot that needs a
   chain of two takes or a different model.
+- **Scene light plans:** one line per scene (step 2.11), as `Scene <n> (<place>): <anchor phrase>`.
 - **Bible needs:** the characters, environments and props that recur.
 - **Graphics list:** everything for the user's motion graphics tool, per shot, with timing.
 
@@ -131,6 +149,8 @@ the **prompts** stage, which must be open (`sc.py stage status prompts`):
    sc.py card new --shot S010 --from-text "<the user's description>"
    ```
    Then set `settings.duration_s`, `layers.time_output.beats` and `rationale.duration` in `05_prompts/S010.md`,
+   note the shot's depth (foreground, background, how the subject meets the place), its composition
+   technique and its light plan (steps 2.10 and 2.11) for the cinematographer,
    and validate: `sc.py card validate 05_prompts/S010.md`.
 4. Hand the card to the cinematographer and generation-tech agents through the producer. The prompts stage gate
    is theirs; do not close it here.

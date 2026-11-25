@@ -5,7 +5,10 @@ ffmpeg's ebur128 filter for loudness) against the delivery spec, and the result 
 The spec comes from, lowest to highest: the preset (rules/presets.json, the project's use case or --spec), then
 project.json "delivery", then command-line overrides. What is checked per file:
   video: resolution, aspect, frame rate, codec, duration (within a tolerance), audio presence (when the preset
-         says audio is required or none), loudness and true peak (when there is audio), file size
+         says audio is required or none), loudness and true peak (when there is audio), no digital silence
+         (when there is audio: nothing under -90 dB for 0.5 s or longer; "allow_digital_silence": true in the
+         preset or project.json "delivery" skips it), audio covers the picture (FAIL when the audio track
+         ends 0.5 s or more before the video), file size
   image: resolution, aspect, format, file size
 The expected duration of a file: --duration, else the planned length of the shot named in the file name
 (S010...), else (when there is a single video) the planned total of the shot list, else the preset's min-max.
@@ -18,6 +21,8 @@ API:
     probe(path) -> dict                                 kind, width, height, fps, vcodec, pix_fmt, acodec, channels,
                                                         sample_rate, duration, size_bytes, format_name, has_audio
     loudness(path) -> {"integrated_lufs", "true_peak_dbtp", "lra"} or None
+    digital_silence(path, noise_db=-90, min_s=0.5) -> [(start_s, end_s)] or None (no ffmpeg)
+    stream_ends(path) -> {"video": s | None, "audio": s | None}   where the first video / audio stream ends
     parse_wh(text) -> (w, h) | None                     the first "1080x1920" in a string
     ratio_of(aspect) -> float | None                    "9:16" -> 0.5625
     aspect_name(w, h) -> str
@@ -40,6 +45,9 @@ DEFAULT_LUFS = -14.0
 LUFS_TOL = 1.0
 MAX_TRUE_PEAK = -1.0
 DEFAULT_DUR_TOL = 0.5
+SILENCE_DB = -90      # below any real recording's noise floor: only a mute or a digital cut gets here
+SILENCE_MIN_S = 0.5
+AUDIO_SHORT_S = 0.5   # audio ending this much (or more) before the picture leaves a dead tail
 KNOWN_ASPECTS = (("9:16", 9 / 16.0), ("4:5", 4 / 5.0), ("2:3", 2 / 3.0), ("3:4", 3 / 4.0), ("1:1", 1.0),
                  ("4:3", 4 / 3.0), ("3:2", 3 / 2.0), ("16:9", 16 / 9.0), ("1.85:1", 1.85), ("2:1", 2.0),
                  ("21:9", 21 / 9.0), ("2.39:1", 2.39))
@@ -125,6 +133,81 @@ def loudness(path):
             return None
         return None if m.group(1) == "-inf" else float(m.group(1))  # None = silent
     return {"integrated_lufs": num(i), "true_peak_dbtp": num(tp), "lra": num(lra)}
+
+
+def digital_silence(path, noise_db=SILENCE_DB, min_s=SILENCE_MIN_S):
+    """Stretches where the audio falls to (near) digital zero, via ffmpeg's silencedetect.
+
+    Returns [(start_s, end_s), ...] (empty when there are none), or None when ffmpeg is missing or the file
+    has no audio it can read. Real recordings always carry a noise floor; only a mute or a hard digital cut
+    gets this low."""
+    if not shutil.which("ffmpeg"):
+        return None
+    r = run(["ffmpeg", "-hide_banner", "-nostats", "-i", path, "-vn", "-af",
+             "silencedetect=noise=%sdB:d=%s" % (noise_db, min_s), "-f", "null", "-"], timeout=600)
+    text = r.stderr or ""
+    if r.returncode != 0 and "silencedetect" not in text:
+        return None
+    out, start = [], None
+    for m in re.finditer(r"silence_(start|end):\s*(-?[\d.]+)", text):
+        val = max(0.0, float(m.group(2)))
+        if m.group(1) == "start":
+            start = val
+        elif start is not None:
+            out.append((round(start, 2), round(val, 2)))
+            start = None
+    if start is not None:  # silent to the end of the file
+        dur = re.search(r"Duration:\s*(\d+):(\d+):([\d.]+)", text)
+        end = (int(dur.group(1)) * 3600 + int(dur.group(2)) * 60 + float(dur.group(3))) if dur else start
+        out.append((round(start, 2), round(end, 2)))
+    return out
+
+
+def _clock(val):
+    m = re.match(r"(\d+):(\d+):([\d.]+)$", str(val or ""))
+    if m:
+        return int(m.group(1)) * 3600 + int(m.group(2)) * 60 + float(m.group(3))
+    return _float(val)
+
+
+def _last_packet_end(path, sel):
+    r = run(["ffprobe", "-v", "error", "-select_streams", sel, "-show_entries", "packet=pts_time,duration_time",
+             "-of", "csv=p=0", path], timeout=300)
+    end = None
+    for line in (r.stdout or "").splitlines():
+        parts = line.strip().split(",")
+        pts = _float(parts[0]) if parts else None
+        dur = _float(parts[1]) if len(parts) > 1 else None
+        if pts is not None:
+            end = max(end or 0.0, pts + (dur or 0.0))
+    return end
+
+
+def stream_ends(path):
+    """Where the first video and the first audio stream end, in seconds (start time + duration).
+
+    Uses the stream duration, else a Matroska/WebM DURATION tag, else the last packet's timestamp."""
+    if not have_tools():
+        return {"video": None, "audio": None}
+    r = run(["ffprobe", "-v", "error", "-show_streams", "-of", "json", path], timeout=60)
+    try:
+        streams = json.loads(r.stdout or "{}").get("streams") or []
+    except ValueError:
+        streams = []
+    out = {}
+    for kind, sel in (("video", "v:0"), ("audio", "a:0")):
+        s = next((x for x in streams if x.get("codec_type") == kind
+                  and not (x.get("disposition") or {}).get("attached_pic")), None)
+        if s is None:
+            out[kind] = None
+            continue
+        dur = _clock(s.get("duration")) or _clock((s.get("tags") or {}).get("DURATION"))
+        if dur:
+            out[kind] = round(dur + (_float(s.get("start_time")) or 0.0), 3)
+        else:
+            end = _last_packet_end(path, sel)
+            out[kind] = round(end, 3) if end is not None else None
+    return out
 
 
 # ---------------------------------------------------------------- spec
@@ -238,6 +321,8 @@ def spec_for(project, preset_id=None, overrides=None):
         "max_file_mb": deliv.get("max_file_mb") or preset.get("max_file_mb")
         or _max_mb(res_text, formats, preset.get("delivery_formats")),
         "formats": list(formats),
+        "allow_digital_silence": bool(deliv.get("allow_digital_silence", preset.get("allow_digital_silence",
+                                                                                     False))),
     }
     for k, v in (overrides or {}).items():
         if v is not None:
@@ -308,7 +393,8 @@ def record(project, report):
         "checks": len(report.get("checks") or []), "files": fingerprints(project),
         "effective": {"preset": spec.get("preset") or spec.get("id"), "duration": spec.get("duration_s"),
                       "duration_tolerance_s": spec.get("duration_tolerance_s"),
-                      "loudness_lufs": spec.get("loudness_lufs")},
+                      "loudness_lufs": spec.get("loudness_lufs"),
+                      "allow_digital_silence": spec.get("allow_digital_silence")},
     }
     manifest.save(project, data)
 
@@ -393,6 +479,33 @@ def _check_file(path, rel, spec, planned, single_video, results, notes, duration
                     ok = tp <= spec["max_true_peak_dbtp"]
                     _item(results, rel, "true peak", ok, "<= %.1f dBTP" % spec["max_true_peak_dbtp"],
                           "%.1f dBTP" % tp)
+            if spec.get("allow_digital_silence"):
+                notes.append("%s: digital silence not checked (allow_digital_silence is set)." % rel)
+            else:
+                gaps = digital_silence(path)
+                p["digital_silence"] = gaps
+                if gaps is None:
+                    notes.append("%s: could not check for digital silence (ffmpeg missing)." % rel)
+                else:
+                    _item(results, rel, "no digital silence", not gaps,
+                          "a noise floor throughout (nothing under %d dB for %.1f s or longer)"
+                          % (SILENCE_DB, SILENCE_MIN_S),
+                          "none" if not gaps else ", ".join("%.2f-%.2f s" % g for g in gaps),
+                          None if not gaps else "Lay room tone / ambience under it (sc.py finish roomtone).")
+        if kind == "video" and p["has_audio"]:
+            ends = stream_ends(path)
+            p["stream_ends"] = ends
+            if ends["video"] is None or ends["audio"] is None:
+                notes.append("%s: could not tell where the audio and picture end; audio length not checked." % rel)
+            else:
+                short = ends["video"] - ends["audio"]
+                ok = short < AUDIO_SHORT_S
+                _item(results, rel, "audio covers picture", ok,
+                      "audio runs to the end of the picture (ends less than %.1f s early)" % AUDIO_SHORT_S,
+                      "audio ends at %.2f s, picture at %.2f s" % (ends["audio"], ends["video"]),
+                      None if ok else "The audio stops %.2f s before the picture. Extend the mix to the full "
+                      "length in the edit, or pad it and lay a floor under the tail (sc.py finish roomtone pads "
+                      "the audio to the picture's length)." % short)
     if spec["max_file_mb"] and p["size_bytes"] is not None:
         mb = p["size_bytes"] / (1024.0 * 1024.0)
         _item(results, rel, "file size", mb <= float(spec["max_file_mb"]), "<= %s MB" % spec["max_file_mb"],

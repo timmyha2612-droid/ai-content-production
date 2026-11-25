@@ -21,6 +21,14 @@ it on without being needed to understand the piece.
 - **Sound effects in layers.** An ambience bed for each place (room tone, street, nature), spot effects for the
   actions on screen (synced to the frame), and transition effects (whooshes, risers, hits, reverse cymbals) used
   with restraint. Hyper-real beats realistic for social: a crisp pour, a satisfying click.
+- **Never digital silence.** Every scene gets a room tone or ambience bed (room tone: the quiet sound a place
+  makes when no one speaks). Real recordings never drop to absolute zero, so a track that does sounds dead
+  between cuts, even when viewers can't say why. Use a real room tone first: the user's own recording, a recorded
+  ambience from Artlist, or a bed planned as an AMB cue. You lay these per-scene beds in the mix; assembly
+  carries them across the cuts. `sc.py finish roomtone` is not a substitute: it lays one bed under the whole
+  file (generated pink noise, or one neutral `--bed`) as a safety floor, run at delivery only when a
+  deliverable still fails the digital-silence check. This is a craft fix for a natural sound; it is not a way
+  to hide that a piece is AI-made.
 - **Voice-over.** About 2.5 words per second (2.0 calm, up to 3.0 fast social). Cast the voice to the brand and
   audience (age, warmth, accent). Write direction notes per line (energy, emphasis, pauses). Leave air after the
   hook and before the call to action. Check that each VO line fits its script row.
@@ -86,7 +94,8 @@ it on without being needed to understand the piece.
 
 - `sound-plan.md`: the cue sheet. One row per cue: id (MX01, SFX01, VO01, AMB01), in and out time in the piece,
   shot, what, source (Artlist track, Higgsfield job, user file), level notes, status (planned, downloaded,
-  needs generation, needs the user's yes).
+  needs generation, needs the user's yes). At least one AMB cue covers every scene, so no stretch of the piece
+  is left with no sound at all.
 - `vo-script.md` (if VO): each line with its time, word count, seconds at pace, and direction notes; the voice
   choice and 2-3 alternatives.
 - `audio-jobs.md` (if any): every Higgsfield or Artlist generation planned, exact parameters and estimated cost.
@@ -95,7 +104,10 @@ it on without being needed to understand the piece.
 - `licence-notes.md` (the stage's evidence needs a file with "licence" in its name): per file, the source, link,
   author or artist, licence type, licensed to, what it covers, date, and any limits (no paid ads, attribution).
   Unclear cover is written as "UNCLEAR: ask the user".
-- `mix-notes.md`: loudness target, ducking, native audio kept or replaced per shot, stems to deliver.
+- `mix-notes.md`: loudness target, ducking, native audio kept or replaced per shot, stems to deliver, the
+  room tone or ambience bed laid under each scene in the mix, and one neutral safety bed for delivery (the
+  single file it may pass to `sc.py finish roomtone --bed FILE` if a deliverable still fails the
+  digital-silence check), or "none: use the generated floor" with the reason.
 
 Register each downloaded file so assembly and delivery can find it, only with the user's relayed words (licensed
 files outside `00_inputs/` need them):
@@ -145,6 +157,8 @@ One JSON object and nothing else:
   "audio_jobs": [{"id": "VO01", "provider": "higgsfield", "model": "text2speech_v2", "variant": "elevenlabs",
                   "voice_id": "<from voices list>", "text": "...", "credits_estimate": null}],
   "native_audio": {"keep": ["S030"], "replace": ["S010", "S020"]},
+  "room_tone": [{"scene": "kitchen", "cue": "AMB01", "file": "07_sound/sfx/AMB01_kitchen-roomtone.wav"}],
+  "safety_bed": "07_sound/sfx/AMB00_neutral-roomtone.wav",
   "loudness_target": "-14 LUFS integrated, -1 dBTP",
   "registered": ["A031"],
   "to_register": [],

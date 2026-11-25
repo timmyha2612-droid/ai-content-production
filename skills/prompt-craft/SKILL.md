@@ -1,6 +1,6 @@
 ---
 name: prompt-craft
-description: "This skill should be used whenever a shotcraft prompt card is written, filled, compiled or judged, or the user asks how to prompt: \"how should I prompt Kling / Seedance / Veo / Hailuo / Wan / Cinema Studio / Soul / Nano Banana / GPT Image / Seedream / Recraft / Flux\", \"what camera move should I use\", \"describe this shot properly\", \"what does dolly zoom mean\", \"why did the model ignore my prompt\", \"negative prompt\", \"avoid list\", \"prompt too long\", \"image to video prompt\". It is the reference for the six-layer taxonomy and its vocabulary (rules/taxonomy.json), the negatives and positive-rewrite system, Higgsfield's prompting rules, per-model notes and the camera-movement cookbook. Loaded by the refine and director skills and by the cinematographer and generation-tech agents."
+description: "This skill should be used whenever a shotcraft prompt card is written, filled, compiled or judged, or the user asks how to prompt: \"how should I prompt Kling / Seedance / Veo / Hailuo / Wan / Cinema Studio / Soul / Nano Banana / GPT Image / Seedream / Recraft / Flux\", \"what camera move should I use\", \"describe this shot properly\", \"what does dolly zoom mean\", \"why did the model ignore my prompt\", \"negative prompt\", \"avoid list\", \"prompt too long\", \"image to video prompt\", \"looks too AI / too perfect\", \"the subject looks pasted in\", \"add depth\", \"how should I frame this\", \"which lighting setup\", \"the lighting looks flat\". It is the reference for the six-layer taxonomy and its vocabulary (rules/taxonomy.json), depth planes and the natural finish, composition and lighting choices, the negatives and positive-rewrite system, Higgsfield's prompting rules, per-model notes and the camera-movement cookbook. Loaded by the refine and director skills and by the cinematographer and generation-tech agents."
 metadata:
   version: "0.1.0"
 ---
@@ -17,8 +17,8 @@ agents load it.
 
 1. **Concrete beats clever.** Concrete nouns, physical present-tense verbs, real materials and light.
    "A woman in her 30s dusts flour off her hands" beats "a baker in a magical moment".
-2. **Order matters.** The compiler writes: subject and action, then world, camera, light and look, time and
-   beats, then style. Models weight the start of the prompt most.
+2. **Order matters.** The compiler writes: subject, action and interaction, then world, depth planes,
+   camera, light and look, time and beats, then style. Models weight the start of the prompt most.
 3. **Short.** Stay under the model's word cap (default 120 words, about 200 tokens). Long prompts distort;
    the compiler trims the lowest-priority fields first (texture, then practicals, era, camera look).
    Subject, action, movement, movement speed and shot size are never dropped.
@@ -35,16 +35,28 @@ agents load it.
    `nsfw` or `ip_detected` and waste a submit.
 10. **Read limits live.** Never trust memory for durations, aspects, resolutions or costs: `rules/models.json`
     (with its `checked_at` date), `higgsfield model get <id>`, `sc gen estimate`.
+11. **Build depth, then let the place touch the subject.** Give the frame a foreground and a background
+    (near or far), place the subject in the midground, and say how the place acts on them (neon spill,
+    wet hair, a hand on misted glass). A subject that ignores its surroundings looks pasted in.
+12. **Natural, not perfect.** For live-action looks, fill `light_look.finish` with a little real-world
+    imperfection; leave it empty for clean graphics, icons and products. It is a craft fix, not a way
+    past AI detectors or a way to hide a watermark, and realistic AI content keeps its platform AI label.
+    Both: `references/depth-and-finish.md`.
+13. **Frame and light from intent.** Pick the composition and the light setup from what the viewer should
+    feel, then write one key light with its source, side and hardness, the colour of every source, and what
+    stays dark. Describe the cause (where the light is), not the pattern. Never use trigger words like "8k",
+    "epic", "flawless", "HDR", "cinematic lighting" or "bokeh background". Choosers, depth patterns, rules and a
+    checklist: `references/composition-and-lighting.md`.
 
 ## The six layers (the card's `layers`)
 
 | Layer | Fields | In the prompt? |
 |---|---|---|
 | intent | use, platform, audience, brand | No. Planning only: why the shot exists |
-| subject | subject, action, wardrobe_props, elements, consistency | Yes, first |
-| world | environment, era, time_of_day, weather_season, atmosphere | Yes |
+| subject | subject, action, interaction, placement, wardrobe_props, elements, consistency | Yes, first (placement prints in the depth sentence) |
+| world | environment, era, time_of_day, weather_season, atmosphere, background_far, background_near, foreground, parallax | Yes (the four plane fields print as the depth sentence) |
 | camera | shot_size, angle, lens, dof, composition, movement, movement_speed, camera_look | Yes |
-| light_look | setup, quality, direction, color_temp, practicals, palette_grade, texture, style_ref, mood | Yes |
+| light_look | setup, quality, direction, color_temp, practicals, palette_grade, texture, finish, style_ref, mood | Yes |
 | time_output | beats, pacing, loop, transition_in, transition_out, audio, on_screen_text | Yes (video: beats and pacing) |
 
 Every field has a label, help text, a priority and a professional vocabulary (terms with a short meaning) in
@@ -58,13 +70,19 @@ they are the words models were trained on.
 2. Subject and action: who or what, doing one clear thing. Fixed wardrobe and props. For a recurring
    character, `consistency` names the reference (a bible image or Soul ID) and the card's `inputs` carry it.
 3. World: place, time of day, atmosphere. Era and weather only when they matter.
-4. Camera: shot size, angle, lens, then ONE move and its speed (`references/camera-movement-cookbook.md`).
+   Depth: far and near background, the subject's placement (midground), a foreground, and for video how
+   the planes move (parallax). Then one or two interactions between the place and the subject.
+4. Camera: shot size, angle (where the camera is and what it shows), lens, then ONE move and its speed
+   (`references/camera-movement-cookbook.md`). Wider than a medium: give the subject's size as a fraction of
+   the frame.
    Locked-off when the subject moves a lot; a move when the subject is still.
-5. Light and look: the setup and direction, colour temperature, grade, one style reference, mood.
+5. Light and look: the setup chosen from intent (its fields come from `rules/light_setups.json`), one named
+   key with its side, each source with its colour, what stays dark, grade, one style reference, mood. For a
+   live-action look, a natural finish (natural presets fill it for you), with skin texture on any face.
 6. Time and output (video): beats as time ranges that add up to the duration, pacing, loop, transitions,
    native audio, exact on-screen text (or none: text is safer added in motion graphics).
 7. Avoid: start from `negatives.json` universal plus the categories that apply (people, text, product,
-   motion, locked_off, loop, mograph, icon). Keep it short; every item costs prompt words when rewritten.
+   motion, locked_off, loop, mograph, icon, too_perfect). Keep it short; every item costs prompt words when rewritten.
 8. `sc card validate <card>`, then `sc route --use-case <preset> --tier draft|final [--kind video|image]
    [--duration <s>] [--needs audio,refs,end_frame]` to pick the model, then
    `sc card compile <card> --model <id>` and read the result: `adjustments` (values corrected for the
@@ -86,6 +104,8 @@ images; some Cinema Studio versions default the prompt language to Chinese). Rea
 - Is every word doing work? Cut adjectives that do not change the picture ("beautiful", "amazing").
 - With a start frame: is there anything that re-describes the frame? Cut it.
 - Is anything phrased as a negative? Rewrite it positively.
+- Is there something in front of the subject and something behind? Does the place touch the subject?
+- Can you point to the source of every bright area? Is something left dark?
 - Would a model mistake a word for a brand or a real person? Change it.
 
 ## References
@@ -94,7 +114,14 @@ images; some Cinema Studio versions default the prompt language to Chinese). Rea
   vocabulary lookups, adding terms in personal rules.
 - `references/negatives-system.md`: the avoid list, `negatives.json`, `positive_rewrites.json`, how the
   compiler guards against each term, and how to add your own.
+- `references/depth-and-finish.md`: depth planes (multiplane set-up, parallax, subject-environment
+  interaction, a worked example) and the natural finish (the finish field, too_perfect guards, the grain
+  clash, `sc finish texture` / `sc finish roomtone`, the digital-silence check).
 - `references/model-prompting.md`: per-model notes for the Higgsfield models (Seedance, Kling, Veo, Hailuo,
   Wan, Cinema Studio, Soul, Nano Banana, GPT Image, Seedream, Recraft, Flux): prompt style, strengths, traps.
 - `references/camera-movement-cookbook.md`: every move with what it says emotionally, when to use it, the
   wording that renders, speeds, and the moves models get wrong.
+- `references/composition-and-lighting.md`: composition and light choosers (intent to technique or setup to
+  key phrase), the four depth patterns, the rules for every shot (one key, cause not pattern, name the dark,
+  colour pairing, scene light plan, size ratio, vertical and two-person framing), banned trigger words and a
+  checklist. It links to the two full guides in `docs/research/`.

@@ -1,10 +1,11 @@
 {
   "version": "0.1.0",
   "checked_at": "2026-11-24",
-  "about": "The 6 prompt layers. Each field has a label, help text, a trimming priority and a vocabulary. When a prompt is too long, fields are dropped lowest priority first. Fields at or above protect_at_or_above are never dropped.",
+  "about": "The 6 prompt layers. The frame is built like a multiplane cel set-up: far background, near background, the subject in the midground, then the foreground (world and subject layers), compiled as one 'depth' sentence. Each field has a label, help text, a trimming priority and a vocabulary. When a prompt is too long, fields are dropped lowest priority first. Fields at or above protect_at_or_above are never dropped.",
   "prompt_order": [
     "subject",
     "world",
+    "depth",
     "camera",
     "light_look",
     "time_output",
@@ -358,6 +359,160 @@
             }
           ]
         },
+        "placement": {
+          "label": "Placement (midground)",
+          "help": "Where the subject stands in the space: which plane, which part of the frame, what is around them. Compiled into the depth sentence as the midground.",
+          "priority": 75,
+          "vocab": [
+            {
+              "term": "centre of the midground",
+              "means": "subject sits in the middle plane, framed by layers in front and behind"
+            },
+            {
+              "term": "midground on the left third",
+              "means": "subject in the middle plane, on the left third line"
+            },
+            {
+              "term": "framed in a doorway",
+              "means": "subject inside a frame within the frame, in the midground"
+            },
+            {
+              "term": "small in the middle distance",
+              "means": "subject reads small against the space: scale and isolation"
+            },
+            {
+              "term": "filling the midground",
+              "means": "subject dominates the middle plane; the background is a sliver"
+            },
+            {
+              "term": "half-hidden behind the foreground",
+              "means": "foreground partly covers the subject: voyeur, discovery"
+            },
+            {
+              "term": "walking from background to midground",
+              "means": "subject travels through the planes toward camera"
+            },
+            {
+              "term": "against the far wall",
+              "means": "subject close to the background plane, shallow staging"
+            },
+            {
+              "term": "between two foreground pillars",
+              "means": "foreground elements bracket the subject"
+            },
+            {
+              "term": "on the horizon line",
+              "means": "subject placed where land meets sky in a wide shot"
+            },
+            {
+              "term": "exactly at the vanishing point",
+              "means": "the subject sits where the lines meet"
+            },
+            {
+              "term": "on the edge of the light pool",
+              "means": "half in the light, half in the dark"
+            },
+            {
+              "term": "bottom third against the left edge (vertical)",
+              "means": "9:16 frame; subject low and to one side, space above"
+            },
+            {
+              "term": "cornered lower right under a heavy foreground mass",
+              "means": "small and pressed into a corner; trapped"
+            },
+            {
+              "term": "on the brightest patch of sky with a clear outline",
+              "means": "the subject's shape reads against the light"
+            }
+          ]
+        },
+        "interaction": {
+          "label": "Subject and environment",
+          "help": "How the place and the subject act on each other, as physical cause and effect: light from the place on the subject, weather on them, their contact with the world, scale. Models get this wrong most often; a subject that ignores its surroundings looks pasted in.",
+          "priority": 73,
+          "vocab": [
+            {
+              "term": "neon spill on the face",
+              "means": "coloured light from a sign in the scene falls on the subject"
+            },
+            {
+              "term": "window light falling across the face",
+              "means": "the room's main light source shapes the subject"
+            },
+            {
+              "term": "reflection in the wet pavement",
+              "means": "the subject is mirrored by the ground plane"
+            },
+            {
+              "term": "rain beading on the jacket",
+              "means": "the weather visibly touches the subject"
+            },
+            {
+              "term": "hair and clothes moving in the wind",
+              "means": "the air in the scene moves the subject"
+            },
+            {
+              "term": "breath fogging in the cold",
+              "means": "the temperature of the place shows on the subject"
+            },
+            {
+              "term": "footsteps splashing in puddles",
+              "means": "the subject's action changes the environment"
+            },
+            {
+              "term": "hand leaves a print on the misted glass",
+              "means": "contact mark: the subject touches the world"
+            },
+            {
+              "term": "casts a long shadow across the floor",
+              "means": "the subject blocks the place's light"
+            },
+            {
+              "term": "dust kicked up by each step",
+              "means": "the ground reacts to the subject's movement"
+            },
+            {
+              "term": "leans on the counter with weight on one arm",
+              "means": "real weight and contact with props"
+            },
+            {
+              "term": "dwarfed by the architecture",
+              "means": "scale relationship: the place towers over the subject"
+            },
+            {
+              "term": "steam from the cup curling past the face",
+              "means": "a prop's effect drifts across the subject"
+            },
+            {
+              "term": "crowd parts around them",
+              "means": "the scene's people react to the subject"
+            },
+            {
+              "term": "seen through the foreground",
+              "means": "watched through a gap in something close to the lens; the subject is partly covered"
+            },
+            {
+              "term": "facing into the open space of the frame",
+              "means": "gaze or travel points into the empty side"
+            },
+            {
+              "term": "walking away into the haze",
+              "means": "the subject leaves and fades with distance"
+            },
+            {
+              "term": "shadow larger than the actor on the wall",
+              "means": "a hard low light throws a big shadow"
+            },
+            {
+              "term": "blind bars bending across the face",
+              "means": "venetian-blind stripes wrap over the face"
+            },
+            {
+              "term": "costume colour echoed by one prop in the set",
+              "means": "one object repeats the wardrobe colour"
+            }
+          ]
+        },
         "wardrobe_props": {
           "label": "Wardrobe and props",
           "help": "Clothes, hair, make-up and the objects the subject uses.",
@@ -487,7 +642,7 @@
     },
     "world": {
       "label": "World",
-      "help": "Where and when: the place, period, time of day, weather and air.",
+      "help": "Where and when: the place, its planes of depth (far background, near background, foreground), period, time of day, weather and air.",
       "in_prompt": true,
       "fields": {
         "environment": {
@@ -578,6 +733,242 @@
             {
               "term": "luxury hotel lobby",
               "means": "polished stone, warm practicals, scale"
+            }
+          ]
+        },
+        "background_far": {
+          "label": "Far background",
+          "help": "The most distant plane: sky, skyline, hills, the far end of a street. Often soft, hazy and slow.",
+          "priority": 53,
+          "vocab": [
+            {
+              "term": "city skyline in haze",
+              "means": "distant buildings softened by atmosphere"
+            },
+            {
+              "term": "mountain ridge at the horizon",
+              "means": "landscape layer far behind the action"
+            },
+            {
+              "term": "overcast sky",
+              "means": "flat, soft far layer; good for mood"
+            },
+            {
+              "term": "blurred city lights",
+              "means": "out-of-focus points of light in the distance"
+            },
+            {
+              "term": "sunset sky band",
+              "means": "graded sky colour behind everything"
+            },
+            {
+              "term": "tree line at the edge of the field",
+              "means": "natural far wall"
+            },
+            {
+              "term": "sea horizon",
+              "means": "a single clean line of water and sky"
+            },
+            {
+              "term": "far end of the corridor",
+              "means": "the vanishing point of an interior"
+            },
+            {
+              "term": "pale far wall of haze",
+              "means": "the farthest plane dissolves into pale haze"
+            },
+            {
+              "term": "glowing doorway at the end of the corridor",
+              "means": "a bright opening pulls the eye to the far end"
+            },
+            {
+              "term": "bright window behind the subject",
+              "means": "the far plane is the brightest thing in frame; silhouette or rim"
+            },
+            {
+              "term": "giant sun disc low on the horizon",
+              "means": "a long lens makes the low sun huge behind the subject"
+            },
+            {
+              "term": "vanishing point of the road at the horizon",
+              "means": "the receding lines end far away, in the middle of frame"
+            },
+            {
+              "term": "black void",
+              "means": "nothing visible behind; the background falls to black"
+            }
+          ]
+        },
+        "background_near": {
+          "label": "Near background",
+          "help": "The plane just behind the subject: the shopfront, the back wall, the bar shelves. Gives the place its identity. Can hold several layers itself (wall, then shelves, then a doorway).",
+          "priority": 61,
+          "vocab": [
+            {
+              "term": "café window with chalkboard menu",
+              "means": "readable set behind the subject"
+            },
+            {
+              "term": "brick wall with posters",
+              "means": "textured back plane"
+            },
+            {
+              "term": "bookshelves out of focus",
+              "means": "soft, warm interior back plane"
+            },
+            {
+              "term": "street with passing traffic",
+              "means": "a living background with movement"
+            },
+            {
+              "term": "kitchen counter and hanging pans",
+              "means": "lived-in domestic back plane"
+            },
+            {
+              "term": "blurred people at tables",
+              "means": "background extras for life and scale"
+            },
+            {
+              "term": "rain-streaked shop signs",
+              "means": "weather and light on the back plane"
+            },
+            {
+              "term": "doorway to a lit room beyond",
+              "means": "a frame within the background, adds another layer"
+            },
+            {
+              "term": "second room in a different colour temperature",
+              "means": "a room beyond the subject lit warmer or cooler; adds depth"
+            },
+            {
+              "term": "repeated doors receding at a steady rhythm",
+              "means": "a row of doors or columns that shrinks into depth"
+            },
+            {
+              "term": "secondary figure waiting in the near distance",
+              "means": "a smaller second person behind the subject"
+            },
+            {
+              "term": "wall catching venetian-blind bars",
+              "means": "hard stripes of light on the wall behind"
+            },
+            {
+              "term": "dark cut-out skyline on the horizon",
+              "means": "buildings or hills as a flat dark shape against the sky"
+            }
+          ]
+        },
+        "foreground": {
+          "label": "Foreground",
+          "help": "What sits between the camera and the subject: rain on the glass, a cup edge, leaves, a doorframe. Usually out of focus. It is what makes a frame feel shot rather than generated.",
+          "priority": 67,
+          "vocab": [
+            {
+              "term": "raindrops on the window glass",
+              "means": "shooting through wet glass; soft streaks in front"
+            },
+            {
+              "term": "out-of-focus cup rim",
+              "means": "a prop close to lens, framing the subject"
+            },
+            {
+              "term": "leaves brushing the frame edge",
+              "means": "natural foreground framing"
+            },
+            {
+              "term": "doorframe edge",
+              "means": "shooting past architecture; voyeur feel"
+            },
+            {
+              "term": "steam drifting across frame",
+              "means": "moving foreground atmosphere"
+            },
+            {
+              "term": "chain-link fence",
+              "means": "a textured layer between camera and subject"
+            },
+            {
+              "term": "soft out-of-focus string lights at the edge",
+              "means": "small warm points of light near the lens, at one frame edge"
+            },
+            {
+              "term": "shoulder of a passer-by",
+              "means": "a person crossing the foreground: life and depth"
+            },
+            {
+              "term": "bar taps and glasses",
+              "means": "set dressing in front of the subject"
+            },
+            {
+              "term": "silhouetted head and shoulder cropped at the frame edge",
+              "means": "a dark over-the-shoulder shape in front"
+            },
+            {
+              "term": "dark door jambs filling both sides",
+              "means": "a doorway frames the subject from the near side"
+            },
+            {
+              "term": "soft tree trunk filling the right third",
+              "means": "a large out-of-focus vertical shape at one edge"
+            },
+            {
+              "term": "row of seated heads along the bottom edge",
+              "means": "an audience or crowd as dark shapes in front"
+            },
+            {
+              "term": "out-of-focus railing at the frame edge",
+              "means": "a soft line near the lens at one edge"
+            },
+            {
+              "term": "solid black ground band",
+              "means": "the near ground falls to black along the bottom"
+            },
+            {
+              "term": "table props marking the gap between two people",
+              "means": "cups or objects on the table between the two"
+            }
+          ]
+        },
+        "parallax": {
+          "label": "Depth motion (parallax)",
+          "help": "How each plane moves and how fast, for video. Near planes move faster than far ones when the camera moves; things can move inside a plane too.",
+          "priority": 49,
+          "vocab": [
+            {
+              "term": "foreground slides past faster than the background",
+              "means": "classic parallax on a truck or dolly"
+            },
+            {
+              "term": "far skyline stays still while traffic streaks",
+              "means": "deep layers at different speeds"
+            },
+            {
+              "term": "rain falls in the foreground while the street behind is calm",
+              "means": "motion only in one plane"
+            },
+            {
+              "term": "background drifts slowly behind the subject",
+              "means": "gentle parallax on a slow move"
+            },
+            {
+              "term": "planes separate as the camera pushes in",
+              "means": "depth opening up on a push"
+            },
+            {
+              "term": "foreground wipes across the frame",
+              "means": "a near object passes the lens and reveals the shot"
+            },
+            {
+              "term": "figure walks the corridor centre line while the camera holds still",
+              "means": "depth shown by the subject moving, not the camera"
+            },
+            {
+              "term": "fog drifts through the beam while the room stays still",
+              "means": "only the haze moves; the set is locked"
+            },
+            {
+              "term": "threat grows from background toward the lens",
+              "means": "something moves from far to near, growing in frame"
             }
           ]
         },
@@ -1199,7 +1590,7 @@
             },
             {
               "term": "Dutch tilt",
-              "means": "tilted horizon for tension"
+              "means": "tilted horizon; breaks calm geometry for tension. Use it on purpose, never as decoration"
             },
             {
               "term": "silhouette against sky",
@@ -1220,6 +1611,58 @@
             {
               "term": "centre-safe for crops",
               "means": "key action kept central so 9:16 and 1:1 crops still work"
+            },
+            {
+              "term": "one-point perspective",
+              "means": "lines meet at one vanishing point, usually centre"
+            },
+            {
+              "term": "vanishing point on subject",
+              "means": "the subject stands where the receding lines meet"
+            },
+            {
+              "term": "nested frames",
+              "means": "doorway inside doorway, each smaller and brighter"
+            },
+            {
+              "term": "low horizon",
+              "means": "horizon on the lower third or lower; sky is the story"
+            },
+            {
+              "term": "high horizon",
+              "means": "horizon on the upper third or out of frame; ground is the story"
+            },
+            {
+              "term": "tiny figure in a vast frame",
+              "means": "subject under about 5% of frame height"
+            },
+            {
+              "term": "pool of light",
+              "means": "one lit island in a mostly black frame"
+            },
+            {
+              "term": "colour blocking",
+              "means": "two or three flat colour fields; subject set apart by hue"
+            },
+            {
+              "term": "depth-staged two-shot",
+              "means": "one person large in front, the other small behind"
+            },
+            {
+              "term": "diagonal line of action",
+              "means": "movement along a diagonal or the lens axis"
+            },
+            {
+              "term": "eye strip",
+              "means": "extreme close-up cropped through forehead and nose"
+            },
+            {
+              "term": "low-placed subject with tall headroom",
+              "means": "vertical frame, subject in the bottom third, designed space above"
+            },
+            {
+              "term": "foreground blocker",
+              "means": "a large soft shape covering a third of one side; subject seen through the gap"
             }
           ]
         },
@@ -1618,7 +2061,7 @@
             },
             {
               "term": "neon lighting",
-              "means": "coloured light from neon signs, often magenta and cyan"
+              "means": "coloured light from a visible neon or LED sign; keep each colour tied to its sign"
             },
             {
               "term": "golden hour sunlight",
@@ -1675,6 +2118,70 @@
             {
               "term": "edge-lit glass",
               "means": "light behind glass or liquid that outlines it"
+            },
+            {
+              "term": "short-loop lighting",
+              "means": "key on the far side of a three-quarter face, small nose shadow; moody"
+            },
+            {
+              "term": "Paramount lighting",
+              "means": "hard key on the lens axis, high; crisp butterfly shadow, hollow cheeks"
+            },
+            {
+              "term": "top light pendant pool",
+              "means": "shaded lamp over a table; faces lit from above, room black"
+            },
+            {
+              "term": "spotlight pool",
+              "means": "hard circle of light on the floor around a small figure"
+            },
+            {
+              "term": "window chiaroscuro",
+              "means": "one window, subject close to it, room in deep shadow"
+            },
+            {
+              "term": "contre-jour sun",
+              "means": "low sun behind the subject; rim, halo or silhouette"
+            },
+            {
+              "term": "afterglow",
+              "means": "sun below the horizon; the whole sky as a soft back source"
+            },
+            {
+              "term": "blinds gobo",
+              "means": "hard sun through venetian blinds; stripes on face and wall"
+            },
+            {
+              "term": "dappled sunlight",
+              "means": "hard sun through leaves; organic shadows and round sun spots"
+            },
+            {
+              "term": "candlelight",
+              "means": "candle flames as the only light; low, warm, fast falloff"
+            },
+            {
+              "term": "lantern light",
+              "means": "handheld flame as a warm side key against a cool night"
+            },
+            {
+              "term": "torchlight",
+              "means": "high, hard, flickering flame light, often in haze"
+            },
+            {
+              "term": "screen glow key",
+              "means": "face lit only by a phone or laptop; cool, close, from below-front"
+            },
+            {
+              "term": "dashboard glow",
+              "means": "low cool underlight in a car at night"
+            },
+            {
+              "term": "streetlamp backlight",
+              "means": "street lamp behind the subject; silhouettes, long shadows toward camera"
+            },
+            {
+              "term": "mixed night street light",
+              "means": "sodium, neon and fluorescent pools, each keeping its colour"
             }
           ]
         },
@@ -1714,12 +2221,44 @@
             {
               "term": "fast falloff",
               "means": "light drops off quickly into darkness"
+            },
+            {
+              "term": "crisp-edged shadows",
+              "means": "hard source, sharp terminator (the line where light turns to shadow)"
+            },
+            {
+              "term": "gradual roll-off",
+              "means": "big soft source, wide gradient across the face"
+            },
+            {
+              "term": "shadows go to black",
+              "means": "no fill; the dark side is truly dark"
+            },
+            {
+              "term": "shadows hold detail",
+              "means": "the dark side is dim but readable"
+            },
+            {
+              "term": "veiling flare",
+              "means": "sun in or near the lens lifting the blacks"
+            },
+            {
+              "term": "visible beam in haze",
+              "means": "the light's path shows in smoke or mist"
+            },
+            {
+              "term": "pool of light",
+              "means": "one lit area with darkness around it"
+            },
+            {
+              "term": "flickering",
+              "means": "the light level moves, like a flame or a faulty tube"
             }
           ]
         },
         "direction": {
           "label": "Light direction",
-          "help": "Where the main light comes from.",
+          "help": "Where the main light comes from. Always name a side or a position (left, right, behind, above, below), never only 'cinematic'.",
           "priority": 54,
           "vocab": [
             {
@@ -1761,6 +2300,42 @@
             {
               "term": "camera-right key",
               "means": "main light on the right of frame"
+            },
+            {
+              "term": "high side key",
+              "means": "main light from one side and above"
+            },
+            {
+              "term": "on-axis high",
+              "means": "main light above the lens, pointing down (butterfly)"
+            },
+            {
+              "term": "eye-height side",
+              "means": "main light at 90 degrees, level with the eyes (split)"
+            },
+            {
+              "term": "rim from behind left",
+              "means": "back light from behind, frame-left; outlines one edge"
+            },
+            {
+              "term": "rim from behind right",
+              "means": "back light from behind, frame-right; outlines one edge"
+            },
+            {
+              "term": "from below (flame)",
+              "means": "low warm light from a fire or candle below the face"
+            },
+            {
+              "term": "sky from above and behind",
+              "means": "the open sky as a soft source over and behind the subject"
+            },
+            {
+              "term": "key on far side (short)",
+              "means": "the key lights the side of the face turned away from camera"
+            },
+            {
+              "term": "key on near side (broad)",
+              "means": "the key lights the side of the face turned toward camera"
             }
           ]
         },
@@ -1820,6 +2395,34 @@
             {
               "term": "fluorescent green",
               "means": "greenish office or industrial light"
+            },
+            {
+              "term": "low sun 2500-3500K",
+              "means": "warm orange sun near the horizon"
+            },
+            {
+              "term": "oil lamp 1800K",
+              "means": "deep amber flame light"
+            },
+            {
+              "term": "blue hour sky",
+              "means": "deep cool blue ambient after sunset"
+            },
+            {
+              "term": "phone screen cyan",
+              "means": "cool blue-cyan light from a screen"
+            },
+            {
+              "term": "LED magenta and cyan",
+              "means": "coloured LED or sign light; keep each colour tied to its source"
+            },
+            {
+              "term": "warm key with cool shadows",
+              "means": "warm main light, blue-ish shadow side"
+            },
+            {
+              "term": "warm pool in a cool surround",
+              "means": "a warm lit area inside cool darkness"
             }
           ]
         },
@@ -1867,6 +2470,66 @@
             {
               "term": "pendant lights",
               "means": "hanging lamps over tables or counters"
+            },
+            {
+              "term": "oil lamp",
+              "means": "a small warm flame in a glass chimney"
+            },
+            {
+              "term": "bare bulb",
+              "means": "a naked bulb; hard, warm, glaring"
+            },
+            {
+              "term": "lantern",
+              "means": "a handheld or hung flame light"
+            },
+            {
+              "term": "torch",
+              "means": "a burning torch; high, hard, flickering"
+            },
+            {
+              "term": "candelabra",
+              "means": "several candles together; a warm cluster"
+            },
+            {
+              "term": "chandelier",
+              "means": "a hanging multi-bulb fixture; warm, sparkly"
+            },
+            {
+              "term": "wall sconce",
+              "means": "a small lamp on the wall; a pool on the wall"
+            },
+            {
+              "term": "open fridge",
+              "means": "cool light spilling from a fridge door"
+            },
+            {
+              "term": "dashboard",
+              "means": "low cool glow from a car's instruments"
+            },
+            {
+              "term": "vanity mirror bulbs",
+              "means": "a row of bulbs around a mirror; soft frontal"
+            },
+            {
+              "term": "fluorescent tubes",
+              "means": "long overhead tubes; flat, slightly green"
+            },
+            {
+              "term": "shop window",
+              "means": "a bright lit window spilling onto the street"
+            },
+            {
+              "term": "lit distant windows",
+              "means": "small warm windows far away; depth at night"
+            },
+            {
+              "term": "lighter flame",
+              "means": "a tiny flame close to the face"
+            },
+            {
+              "term": "venetian blinds (as source shape)",
+              "means": "a window through blinds; striped light"
             }
           ]
         },
@@ -1881,7 +2544,7 @@
             },
             {
               "term": "teal and orange",
-              "means": "cool shadows, warm skin; blockbuster look"
+              "means": "cool shadows, warm skin; blockbuster look. Only as a deliberate grade: never let it replace the colour of motivated sources"
             },
             {
               "term": "bleach bypass",
@@ -1962,6 +2625,18 @@
             {
               "term": "flat grade for colourist",
               "means": "low-contrast output that leaves room to grade later"
+            },
+            {
+              "term": "uncorrected practical colours",
+              "means": "each lamp keeps its own colour; no grade evens them out"
+            },
+            {
+              "term": "navy shadows with detail",
+              "means": "dark blue shadows that stay readable"
+            },
+            {
+              "term": "brown-black firelit shadows",
+              "means": "warm deep shadows from flame light"
             }
           ]
         },
@@ -2041,6 +2716,101 @@
             {
               "term": "gate weave",
               "means": "slight frame wobble of projected film"
+            }
+          ]
+        },
+        "finish": {
+          "label": "Natural finish",
+          "help": "Real-world imperfection that stops an image looking too perfect: lived-in wear, real-lens behaviour, slight handheld life. card new fills it from 'defaults' for the preset's finish value (natural, true_to_life); 'clean' presets (graphics, icons, products that should look pristine) leave it empty. Ranked below the depth fields: a user-written plane outranks the generic finish.",
+          "priority": 47,
+          "defaults": {
+            "natural": "subtle real-world imperfection: lived-in detail, real-lens character",
+            "true_to_life": "true-to-life colour, slightly uneven motivated light, real-lens character"
+          },
+          "vocab": [
+            {
+              "term": "lived-in wear and small imperfections",
+              "means": "scuffs, smudges, creases: the place has been used"
+            },
+            {
+              "term": "natural asymmetry",
+              "means": "faces and layouts are not mirror-perfect"
+            },
+            {
+              "term": "real-lens character",
+              "means": "slight vignetting, gentle edge softness, natural flare"
+            },
+            {
+              "term": "subtle focus breathing",
+              "means": "focus shifts slightly the way a real lens does"
+            },
+            {
+              "term": "highlights bloom gently",
+              "means": "bright areas glow a little instead of clipping hard"
+            },
+            {
+              "term": "true-to-life colour",
+              "means": "colours are not pushed or overly saturated"
+            },
+            {
+              "term": "slightly uneven motivated light",
+              "means": "light falls off and varies like real practicals"
+            },
+            {
+              "term": "natural skin with pores and fine lines",
+              "means": "real skin texture, not airbrushed"
+            },
+            {
+              "term": "candid unposed moment",
+              "means": "people caught mid-action, not posing"
+            },
+            {
+              "term": "subtle handheld micro-movement",
+              "means": "a little human life in the frame (only on handheld shots)"
+            },
+            {
+              "term": "crushed blacks with no milky shadows",
+              "means": "shadows go truly dark, not grey"
+            },
+            {
+              "term": "uneven drifting haze that thickens with distance",
+              "means": "atmosphere thickens with depth, never a flat veil"
+            },
+            {
+              "term": "lived-in set with dust and worn surfaces",
+              "means": "small signs of use on the set"
+            },
+            {
+              "term": "one asymmetric detail in a symmetrical frame",
+              "means": "keeps a symmetric frame from looking computed"
+            },
+            {
+              "term": "soft lamp halos that shrink with distance",
+              "means": "practical lamps glow, smaller as they recede"
+            },
+            {
+              "term": "faint shadow-side bounce but no fill",
+              "means": "the dark side keeps a hint of light, no added fill"
+            },
+            {
+              "term": "backlit flyaway hairs",
+              "means": "loose hairs catch the back light"
+            },
+            {
+              "term": "peach fuzz catching the rim",
+              "means": "fine facial hair lit by the rim light"
+            },
+            {
+              "term": "soft veiling flare",
+              "means": "a light source near the lens lifts the blacks a little"
+            },
+            {
+              "term": "gentle flame flicker",
+              "means": "firelight moves slightly, never strobes"
+            },
+            {
+              "term": "slight underexposure",
+              "means": "a touch darker than normal; keeps the mood"
             }
           ]
         },
@@ -2349,8 +3119,8 @@
               "means": "warm, safe, homely"
             },
             {
-              "term": "epic",
-              "means": "huge scale, awe"
+              "term": "awe at vast scale",
+              "means": "huge scale, awe (never write \"epic\": it is a trigger word)"
             },
             {
               "term": "clinical",

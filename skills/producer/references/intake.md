@@ -135,6 +135,8 @@ not read them out as a list.
 - **Time of day.** Golden hour, blue hour, midday, night. [Golden hour for warmth; overcast for products.]
 - **Weather and season.** Only when it matters.
 - **Atmosphere.** Haze, rain, dust, steam, smoke. [Light haze helps light read on camera.]
+- **Depth.** "What sits in front of the subject and behind them?" (rain on glass, a doorframe; a shopfront,
+  a skyline). [One foreground layer and one background layer make a frame feel shot rather than generated.]
 
 ### Layer 4: camera
 
@@ -151,7 +153,17 @@ not read them out as a list.
 - **Lighting.** Natural daylight; soft studio; high-key bright; low-key moody; neon or practicals.
 - **Colour and grade.** Warm, cool, teal and orange, pastel, monochrome, brand colours. [Brand colours
   when there is a brand.]
-- **Texture.** Clean digital (Recommended for products); film grain; vintage 16 mm; VHS.
+- **Texture.** Clean digital (Recommended for products); film grain; vintage 16 mm; VHS. Then the grain
+  added in post: off (Recommended for clean presets); subtle (Recommended for live action); film; and a mild
+  vignette, yes or no. [Record it on the job card as `Grain: <off|subtle|film>, vignette <yes|no>`. The
+  producer passes it to the delivery agent. One setting for every shot of the job. With grain off and no
+  vignette, the texture pass is skipped.]
+- **Finish.** Natural (Recommended for live action and people); true to life (Recommended for real estate);
+  clean (Recommended for products, graphics, icons). [Natural means small real-world flaws: lived-in wear,
+  motivated light, real-lens character (gentle focus falloff, slight vignetting), so it does not look too
+  perfect. True to life means true colour, slightly uneven motivated light and real-lens character, with no
+  wear and no lens softness. The preset's `finish` sets the default. It is a craft choice for the look only: it does not hide that the work is AI-made, is not a way
+  past AI detectors, and realistic AI content still gets the platform's AI label.]
 - **Style reference.** Photoreal; cinematic; editorial; animation styles; 3D clay; flat graphic.
 - **Mood.** Three words.
 

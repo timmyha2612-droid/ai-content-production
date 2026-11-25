@@ -93,7 +93,84 @@
       "multiple objects",
       "text in icon",
       "gradients"
+    ],
+    "too_perfect": [
+      "cgi look",
+      "too perfect",
+      "airbrushed skin",
+      "perfect symmetry",
+      "sterile spotless set",
+      "hyper-sharp everywhere",
+      "flat even lighting",
+      "stock-photo posing"
+    ],
+    "flat_light": [
+      "flat lighting",
+      "lifted shadows",
+      "rim light on both sides",
+      "evenly lit",
+      "softbox",
+      "beauty lighting",
+      "HDR"
     ]
+  },
+  "by_finish": {
+    "_note": "Guards card new adds for a preset's finish value (presets.json 'finish'). The first one is kept inside the guards the trimmer never drops. 'clean' adds none.",
+    "natural": [
+      "cgi look",
+      "too perfect"
+    ],
+    "true_to_life": [
+      "cgi look",
+      "flat even lighting"
+    ]
+  },
+  "applies_when": {
+    "_note": "Guards the compiler adds on its own when a card's fields match. For each by_category group: if any of 'fields' contains one of 'any' (case-insensitive), and none of 'unless_fields' contains one of 'unless', the first 'add' terms of the group are appended to the avoid list (skipped if already there). An optional 'priority' is the trim priority of their prompt rewrites (default: taxonomy trim.guard_priority); flat_light uses 5, below light_look.texture (10) and light_look.practicals (20), so these generic guards are trimmed before the card's real practicals and texture. flat_light: low-key setups must not drift back to flat, even studio light.",
+    "flat_light": {
+      "fields": [
+        "light_look.setup",
+        "light_look.quality"
+      ],
+      "any": [
+        "low key",
+        "low-key",
+        "split",
+        "rembrandt",
+        "short lighting",
+        "short-loop",
+        "practical",
+        "top light",
+        "pendant pool",
+        "spotlight pool",
+        "firelight",
+        "candlelight",
+        "lantern light",
+        "torchlight",
+        "night exterior",
+        "neon",
+        "sodium",
+        "chiaroscuro",
+        "screen glow",
+        "dashboard glow",
+        "streetlamp",
+        "mixed night street"
+      ],
+      "unless_fields": [
+        "light_look.setup",
+        "light_look.quality",
+        "light_look.color_temp",
+        "world.time_of_day",
+        "world.weather_season"
+      ],
+      "unless": [
+        "high key",
+        "high-key",
+        "overcast"
+      ],
+      "add": 3,
+      "priority": 5
+    }
   },
   "by_model": {
     "nano_banana_2": [
