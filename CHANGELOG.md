@@ -7,6 +7,31 @@ dates; rule changes that alter what gets generated are listed here too.
 
 ## [Unreleased]
 
+## [0.4.0] - 2026-11-27
+
+### Added
+
+- **Storyboard app** (`sc.py board init|check|inputs|serve`, `skills/storyboard`): the project as a local web
+  app on 127.0.0.1, read from `board/board.json` and the cards. Timeline, director's look book, shot panels
+  with each shot's models, settings and compiled prompt, references on every attribute (upload, drop or
+  paste), and an Assets tab. Standard library only.
+- Board references are project assets in `00_inputs/board/`, reference-only until the user marks them owned,
+  licensed or generated. `sc.py board inputs` proposes the matching `card set-input` commands (start frame,
+  character, reference, style) for sendable references only.
+- **Labels and @ mentions:** every reference has a unique label; cards can mention it as `@Label`, and the
+  board resolves mentions into the model's pointers (`@Image1` ... on Seedance) in slot order, with warnings
+  for mentions that aren't sent and sent references never mentioned.
+- **Shot by shot** (`sc.py shots status|start|pause|lock|unlock`): after the whole board is approved, put any
+  batch in progress (shots, ranges, scenes or all). In-progress shots make drafts and finals and keep their
+  cards editable while the drafts and finals stages stay closed; a lock needs an approved final and blocks
+  generation and card changes until unlocked. The board shows each shot's state and takes, and can start a
+  batch, approve, redo, pause, lock and unlock with the words the user types.
+
+### Changed
+
+- `gen` asks `shots.gen_allowed` for the stage gate, and cards of an in-progress shot can be approved or
+  edited with the prompts stage closed. Nothing changes for projects that don't start shots.
+
 ## [0.3.0] - 2026-11-26
 
 ### Added

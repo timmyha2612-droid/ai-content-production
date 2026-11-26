@@ -465,13 +465,22 @@ def path_writable(project, relpath):
     if rel == "project.json":
         return False, "project.json changes only through sc.py."
     if rel == ".shotcraft" or rel == ".shotcraft/stages.json" or rel.startswith(".shotcraft/qa/") \
-            or rel == ".shotcraft/qa":
-        return False, "Stage and QA records change only through sc.py (sc.py stage / sc.py qa)."
+            or rel == ".shotcraft/qa" or rel == ".shotcraft/shots.json":
+        return False, "Stage, QA and shot records change only through sc.py (sc.py stage / qa / shots)."
     if rel.startswith("00_inputs/") or rel == ".shotcraft/lessons.md":
         return True, "always allowed"
     stage = stage_for_path(project, rel)
     if stage is None:
         return True, "not a stage folder"
+    m = re.match(r"^05_prompts/(S\d{3}[A-Z]?)\.md$", rel)
+    if m:  # shot by shot: an in-progress shot's own card stays editable; a locked shot's card does not
+        from . import shots as _shots
+        rec = _shots._load(project)["shots"].get(m.group(1), {})
+        if rec.get("locked"):
+            return False, ("%s is locked. Unlock it first: sc.py shots unlock %s --user-said \"<their words>\""
+                           % (m.group(1), m.group(1)))
+        if rec.get("in_progress"):
+            return True, "%s is in progress" % m.group(1)
     st = load_state(project)["stages"][stage]["status"]
     if st == "open":
         return True, "stage %s is open" % stage

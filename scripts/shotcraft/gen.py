@@ -385,7 +385,8 @@ def gates(project, pl, skip_draft_said=None, quick_priced=False):
     skip_draft_said: the user's words for a final with no approved draft (or an upscale with no approved final).
     It is a separate yes from the budget one (--user-said), so one answer never waives both."""
     problems = []
-    ok, why = stages.gen_allowed(project, pl["tier"])
+    from . import shots as _shots  # per-shot progress may open draft/final for a shot, and a lock closes it
+    ok, why = _shots.gen_allowed(project, pl["tier"], pl.get("shot"))
     if not ok:
         problems.append(why)
     data = manifest.load(project)

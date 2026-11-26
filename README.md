@@ -27,6 +27,7 @@ What you get depends on what you ask for:
 - [Your own material (hybrid inputs)](#your-own-material-hybrid-inputs)
 - [Configuration and rule layers](#configuration-and-rule-layers)
 - [How model updates work](#how-model-updates-work)
+- [The storyboard app](#the-storyboard-app)
 - [The Higgsfield hand-off and the Canvas limitation](#the-higgsfield-hand-off-and-the-canvas-limitation)
 - [The Higgsfield REST API (optional, not built)](#the-higgsfield-rest-api-optional-not-built)
 - [Works alongside Higgsfield's official plugin](#works-alongside-higgsfields-official-plugin)
@@ -90,6 +91,7 @@ qa-supervisor + qa-verifier after every building stage (max 3 rounds).
 | handoff | Uploads approved assets to Higgsfield and writes the Canvas build sheet. |
 | learn | End-of-job learning: turns your corrections into rule proposals, and changes rules only after your yes. |
 | model-scout | Reviews new or changed Higgsfield models and proposes routing changes. |
+| storyboard | Opens the project as a local web app: timeline, look book, shot panels, references with @labels, an assets tab and each shot's Higgsfield prompt. |
 | prompt-craft | Reference: the six-layer prompt structure, the vocabulary, the negatives system, per-model notes. |
 
 **Agents** (the producer spawns these): researcher, screenwriter, production-designer, character-designer,
@@ -296,6 +298,28 @@ Model limits and costs are never trusted from memory:
 - **You decide.** "Run model-scout" reviews the changes and proposes new routing and model entries. Approved
   changes go into your personal rules straight away, and can be sent upstream as a pull request.
 
+## The storyboard app
+
+`sc.py board serve` opens the project as a storyboard on `http://127.0.0.1` (Python standard library, nothing
+to install). Claude writes `board/board.json` from the script, shot list and look book; the app adds:
+
+- **A timeline** with every shot sized by its cut length, and the director's look book above the shots.
+- **References on every attribute.** Click + Ref, drop images, or paste. Each one is saved in `00_inputs/board/`
+  and recorded as a project asset. New references are reference-only (they guide the prompt and are never
+  sent); tap the tag to mark one owned, licensed or generated.
+- **Labels and @ mentions.** Name a reference (`@Baker`) and mention it in a card. On Seedance the board turns
+  `@Baker` into `@Image1`, `@Image2` and so on, in the order the images are sent, and shows the map.
+- **The Higgsfield side of each shot:** models per tier, settings, the compiled prompt with a Copy button,
+  and anything the compiler had to leave out.
+- **An Assets tab** with every material, what it maps to (start frame, character, reference, style, or not
+  sent) and the `card set-input` commands the producer will run with your yes.
+
+- **Shot by shot.** Once the whole board is approved, put any batch in progress (`S010-S030`, `scene 2` or
+  all). Each shot then moves draft, final, locked on its own, and the board shows its takes as they come back
+  from Higgsfield, with approve, redo, pause, lock and unlock. Every action records the words you type.
+
+The server binds to 127.0.0.1 only and every request needs the one-time token in the link it prints.
+
 ## The Higgsfield hand-off and the Canvas limitation
 
 A full production ends with a hand-off package in `10_handoff/`:
@@ -342,6 +366,10 @@ $sc route --use-case social-vertical --tier draft --kind video --duration 4
 $sc gen estimate 05_prompts/S010.md --tier draft
 $sc budget status
 $sc sheet build --tier draft --open
+$sc board check
+$sc board serve
+$sc shots start S010-S030 --user-said "scene one first"
+$sc shots lock S010 --user-said "lock it"
 $sc finish texture 08_assembly/reel.mp4 --grain subtle --out 08_assembly/reel_tex.mp4
 $sc finish roomtone 08_assembly/reel_tex.mp4 --out 09_delivery/bakery-reel_social-vertical_1080x1920_v1.mp4
 ```

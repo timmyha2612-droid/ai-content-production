@@ -492,4 +492,51 @@ files still round-trip with `json.dumps(indent=2, ensure_ascii=False)`), routing
 model whose durations fit; image-first flag), stages (order, evidence, skip, reopen, QA rounds, refine track
 blocks gen), budget threshold, guard decisions (feed hook JSON on stdin), the fake provider gen flow end to
 end, refs rights enforcement, contact sheet HTML generation, and (with ffmpeg) finish texture/roomtone and the
-digital-silence check.
+digital-silence check. Storyboard: board.json validation, reference rights and labels, the inputs plan, @ mention
+resolution, and the local server's token, host and upload checks. Shot by shot: selections, the board
+gate, draft to final to lock with stages closed, locks blocking generation and card edits, and the board's
+progress, takes and actions.
+
+## 12. Storyboard (board.py, board_server.py, scripts/board/app.html)
+
+A local web app over a project, for reading the script shot by shot and collecting references. It is a view:
+it never writes a card, opens a stage or generates.
+
+- **Text:** `<project>/board/board.json` (title, facts, worlds, look book, shots, notes). Claude writes it
+  from the script, shot list and bible; `sc.py board check` validates it.
+- **Higgsfield side:** read live from each shot's card in `05_prompts/` (models per tier, settings, the prompt
+  compiled for the final model as a dry run).
+- **References:** uploaded images go to `00_inputs/board/` and into `project.json` as assets with a `board`
+  key `{shot, attr, name, label}` (shot 0 is the look book). A new reference is `reference-only`; a frame
+  still is `generated`. Rights change only by the user's tap on the board, recorded through
+  `manifest.mark_asset`. A reference a card or a generation uses can't be removed.
+- **Attribute to card input:** Frame → `start_frame`; Character → `character`; Wardrobe, Props,
+  Environment → `reference`; Lighting, Mood, Camera and the look book's Visual worlds, Palette, Light and
+  texture, Moodboard → `style`; anything else is not sent. `sc.py board inputs` lists the matching
+  `card set-input` commands for sendable references only; the producer runs them with the user's words.
+- **@ mentions:** each reference has a unique label. A card field may mention one as `@Label`; the board
+  resolves mentions against the shot's sendable references in slot order (character, reference, style) into
+  the model's pointer (`MENTION_STYLE`, `@Image{n}` for Seedance) or plain words, and warns about mentions
+  of references that aren't sent and sent references never mentioned. The card keeps `@Label`.
+- **Server:** stdlib `http.server` on 127.0.0.1 only. Every request needs the per-run token (header or `?t=`)
+  and a localhost `Host`, so other web pages can't read or post to it. Uploads are images only (no SVG),
+  20 MB at most, with sanitised file names.
+
+## 13. Shot by shot (shots.py)
+
+After the boards stage is done (or prompts, on a track with no boards), the user may put any batch of shots
+in progress: shot ids, ranges (`S010-S040`), scenes (a `scene` column in the shot list, or `scene` in
+board.json) or all. State lives in `.shotcraft/shots.json` (sc.py only; the guard blocks it).
+
+- An in-progress shot may make draft, final and upscale takes while the drafts and finals stages are closed
+  (`gen.gates` asks `shots.gen_allowed`), and its own card stays editable and approvable. Board takes still
+  follow the boards stage.
+- `lock` needs an approved final (or upscale) of the shot and the user's words; it records the take. A locked
+  shot makes nothing and its card can't change, even with a stage open, until `unlock` with the user's words.
+- States derive from the generations: ready, in progress, draft running, draft to review, draft approved,
+  final running, final to review, final approved, locked (plus paused and waiting).
+- The storyboard shows each shot's state and takes (`/gen/<id>/<n>` serves outputs) and can start a batch,
+  approve or reject a take, pause, lock and unlock. Every action carries the words the user typed on the
+  board; an empty field is refused. Generation itself never starts from the board.
+- The drafts and finals stages still close the usual way, with their evidence, once every shot is locked.
+

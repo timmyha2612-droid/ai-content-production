@@ -150,6 +150,22 @@ After prompts is done, `05_prompts/` is locked; changing a card means `sc stage 
 "..."`, which sets every later stage back to pending (generations and approvals already made are kept). Say
 that before you do it.
 
+## Shot by shot (after the whole board is approved)
+
+Once the boards stage is done, the user may move shots through draft, final and lock in batches instead of
+waiting for every shot's draft. Ask which batch with AskUserQuestion (recommended first): the next scene,
+a few shots, a range, or all of them. Then, with their words:
+
+- `sc shots start S010-S030 --user-said "..."` (also `S010,S050`, `--scene 2`, `--all`). In-progress shots
+  make drafts and finals while the drafts and finals stages stay closed, and their own cards stay editable.
+- Work one shot at a time: draft, review, final, review. When a final is approved,
+  `sc shots lock S010 --user-said "..."`. A locked shot makes nothing and its card can't change until
+  `sc shots unlock S010 --user-said "..."`. `sc shots pause` takes a shot out of progress.
+- `sc shots status` (or the storyboard app) shows every shot's state. The user can also approve, ask for a
+  redo, start a batch and lock straight from the board; each of those records the words they type there.
+- When every shot is locked, start and close drafts and then finals with the user's words, and carry on with
+  sound and assembly. If the user would rather work in one batch, run drafts and finals as stages as before.
+
 ## Generation, budget and approvals
 
 - Generation only ever runs through `sc gen` (done by `shotcraft:generation-tech`). The raw `higgsfield
@@ -162,7 +178,7 @@ that before you do it.
   N [--user-said "..."]` checks a batch total before you start it (exit 2 means the user's yes is needed).
 - A final needs an approved draft of that shot, or the user's words. An upscale only when the delivery
   needs more pixels than the final has.
-- Takes are approved or rejected only in the review skill, with the user's words:
+- Takes are approved or rejected only with the user's words, in the review skill or on the storyboard:
   `sc gen approve G0007 --user-said "..."`, `sc gen reject G0008 --user-said "..." --note "<what to change>"`.
 - Downloaded references are `reference-only` and are never sent to a model. If the user owns or licensed
   one: `sc asset mark A004 --rights owned --user-said "<their words>"`.
