@@ -742,6 +742,16 @@ def build_parser():
     leaf(s, "report", delegate("scout", "report", ["scout"]))
     leaf(s, "ack", delegate("scout", "ack", ["scout"]), help="the user has decided every proposal")
 
+    s = group("board", "storyboard app: script, look book, references and the Higgsfield mapping")
+    sp = leaf(s, "init", delegate("board", "init", ["board"]), help="write a sample board/board.json")
+    sp.add_argument("--force", action="store_true", help="replace an existing board.json")
+    leaf(s, "check", delegate("board", "check", ["board"]), help="validate the board and show each shot's cards")
+    leaf(s, "inputs", delegate("board", "inputs", ["board"]),
+         help="card inputs the board's sendable references call for (proposals only)")
+    sp = leaf(s, "serve", delegate("board", "serve", ["board"]), help="open the storyboard on 127.0.0.1")
+    sp.add_argument("--port", type=int, default=8765)
+    sp.add_argument("--no-open", dest="no_open", action="store_true", help="print the link, don't open a browser")
+
     s = group("handoff", "Higgsfield hand-off")
     leaf(s, "build", delegate("handoff", "build", ["handoff"]))
     sp = leaf(s, "upload", delegate("handoff", "upload", ["handoff"]))

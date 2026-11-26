@@ -6,7 +6,7 @@ Shared names every module may import:
     Refused(ShotcraftError)      a gate said no: sc.py prints the reason and exits 2
 """
 
-VERSION = "0.3.0"
+VERSION = "0.4.0"
 
 
 class ShotcraftError(Exception):
