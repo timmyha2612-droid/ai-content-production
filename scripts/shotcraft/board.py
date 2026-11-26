@@ -22,7 +22,8 @@ API:
     remove_ref(project, asset_id)            refuses when a card or a generation uses the asset
     shot_hf(project, card_id) -> dict|None   models per tier, length, compiled prompt (dry run, no writes)
     inputs_plan(project, data=None) -> [{"shot", "card", "asset", "as", "attr", "command"}]
-    view(project) -> dict                    everything the app shows: board, hf per shot, refs, plan
+    takes(project) -> {shot id: [generation summaries, newest first]}
+    view(project) -> dict                    everything the app shows: board, hf per shot, refs, plan, progress, takes
     cli_board_check / cli_board_inputs / cli_board_serve / cli_board_init
 
 Stdlib only.
@@ -389,7 +390,27 @@ def resolve_mentions(project, card_id, prompt, model_id, plan=None):
     return {"prompt": out, "slots": slots, "warnings": warnings}
 
 
+def takes(project):
+    out = {}
+    for g in manifest.load(project).get("generations", []):
+        if not g.get("shot") or g.get("status") == "estimated" and not g.get("job_id"):
+            continue
+        files = []
+        for i, o in enumerate(g.get("outputs") or []):
+            kind = manifest.guess_kind(o)
+            if kind in ("image", "video"):
+                files.append({"url": "/gen/%s/%d" % (g["id"], i), "kind": kind})
+        out.setdefault(g["shot"], []).append({
+            "id": g["id"], "tier": g.get("tier"), "status": g.get("status"), "approved": g.get("approved"),
+            "said": g.get("approval_said"), "model": g.get("model"), "variant": g.get("variant"),
+            "error": g.get("error"), "files": files, "at": g.get("updated") or g.get("created")})
+    for v in out.values():
+        v.sort(key=lambda t: t["id"], reverse=True)
+    return out
+
+
 def view(project):
+    from . import shots as _shots
     data = load_board(project)
     errs = validate(data)
     hf = {}
@@ -404,8 +425,12 @@ def view(project):
                          "label": b.get("label"),
                          "rights": a.get("rights"), "input": role,
                          "send": bool(role) and a.get("rights") in SENDABLE, "url": "/files/" + a["id"]})
+    try:
+        prog = _shots.progress(project)
+    except ShotcraftError:
+        prog = {}
     return {"board": data, "errors": errs, "hf": hf, "refs": out_refs,
-            "plan": inputs_plan(project, data) if not errs else []}
+            "plan": inputs_plan(project, data) if not errs else [], "progress": prog, "takes": takes(project)}
 
 
 # ---------------------------------------------------------------- CLI

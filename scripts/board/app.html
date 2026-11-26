@@ -33,7 +33,7 @@ h1{font-size:clamp(34px,5vw,52px);line-height:1.05;letter-spacing:-.02em;font-we
 .seg{flex:var(--d) 1 0;display:flex;flex-direction:column;justify-content:space-between;padding:8px 6px;text-decoration:none;border-right:1px solid var(--bg);background:var(--w);color:var(--ink)}
 .seg b{font-size:18px;font-weight:800;line-height:1}
 .seg em{font-style:normal;font-size:12px;line-height:1.2;overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical}
-.seg small{font-size:12px;white-space:nowrap}
+.seg small{font-size:12px;line-height:1.2}
 .bar{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin:22px 0 0}
 button{font:600 15px Archivo,sans-serif;min-height:44px;padding:0 16px;border-radius:8px;border:1px solid var(--line);background:var(--panel);color:var(--ink);cursor:pointer}
 button:focus-visible,a:focus-visible,dd:focus-visible{outline:2px solid var(--red);outline-offset:2px}
@@ -83,6 +83,22 @@ mark{background:color-mix(in srgb,var(--red) 18%,transparent);color:inherit;font
 .tiers b{display:block;font-size:12px;color:var(--soft);font-weight:600}
 .hf details p{background:var(--panel);border-radius:6px;padding:10px;margin:6px 0 8px}
 .warn{color:var(--red);font-weight:600}
+.st{display:inline-block;font-size:12px;font-weight:700;padding:2px 8px;border-radius:10px;background:var(--panel);color:var(--soft)}
+.st.locked{background:var(--ink);color:var(--bg)}.st.final_approved,.st.draft_approved{background:#1f7a4d;color:#fff}.st.draft_review,.st.final_review{background:var(--red);color:#fff}.st.draft_running,.st.final_running{background:#d9a400;color:#1a1200}
+.seg i{font-style:normal;font-size:11px;font-weight:700}
+.prog{margin-top:12px;border:1px solid var(--line);border-radius:10px;padding:12px 14px;font-size:14px}
+.prog h4{margin:0 0 8px;font-size:13px;display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap;align-items:center}
+.takes{display:grid;grid-template-columns:repeat(auto-fill,minmax(120px,1fr));gap:8px;margin:8px 0}
+.take{border:1px solid var(--line);border-radius:8px;overflow:hidden;font-size:12px}
+.take.ok{border-color:#1f7a4d;border-width:2px}.take.no{opacity:.55}
+.take .m{aspect-ratio:9/16;background:var(--panel);display:grid;place-items:center;color:var(--soft)}
+.take img,.take video{width:100%;height:100%;object-fit:cover;display:block}
+.take div.t{padding:5px 7px;display:grid;gap:2px}
+.acts{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin-top:6px}
+.acts button{min-height:36px;font-size:13px;padding:0 10px}
+.said{flex:1 1 220px;min-height:36px;font:15px Archivo,sans-serif;padding:0 10px;border:1px solid var(--line);border-radius:8px;background:var(--bg);color:var(--ink)}
+.batch{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-top:14px;padding:12px;border:1px solid var(--line);border-radius:10px}
+.batch b{font-size:14px}
 .hide-layers .shot .layers{display:none}
 .hide-layers .shot{grid-template-columns:170px minmax(0,1fr)}
 .agrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(170px,1fr));gap:16px;margin-top:16px}
@@ -111,6 +127,7 @@ code{font-size:13px;overflow-wrap:anywhere}
   <nav class="tabs"><a href="#storyboard" id="t-board" aria-current="page">Storyboard</a><a href="#assets" id="t-assets">Assets <span class="ct" id="acount">0</span></a></nav>
   <div id="v-top">
     <nav class="strip" id="strip" aria-label="Timeline"></nav>
+    <div class="batch" id="batch"><b>Start shots</b><input class="said" id="bsel" placeholder="S010-S030, scene 2, or all" style="flex:0 1 220px" aria-label="Shots to start"><input class="said" id="bsaid" placeholder="Your words (recorded as the go-ahead)" aria-label="Your words"><button id="bgo" type="button">Put in progress</button></div>
     <div class="bar"><button id="tgl" aria-pressed="true">Hide prompt layers</button><button id="copy">Copy the voice-over</button><span class="msg" id="msg" role="status">Loading the board…</span></div>
     <section class="mood"><h2 style="font-size:17px;margin:0 0 8px">Director’s look book</h2><dl class="layers" id="look"></dl></section>
     <p class="howto">Each reference has a label, like <b>@Editor</b>. Click it to rename. Prompts that mention <b>@Editor</b> point at that image: on Seedance it becomes <b>@Image1</b>, <b>@Image2</b> and so on, in the order the images are sent. Add references with <b>+ Ref</b>, by dropping images on an attribute, or by clicking its text and pasting. New references are <b>Ref</b> (reference only: they guide the prompt and are never sent). Tap the tag to mark one Owned, Licensed or Generated so it can become a Higgsfield input.</p>
@@ -161,11 +178,11 @@ function hfBlock(n,h){if(!h)return `<div class="hf"><h4>Higgsfield <span>Edit on
 const mark=t=>esc(t).replace(/@[A-Za-z][A-Za-z0-9_-]{0,23}/g,m=>`<mark>${m}</mark>`);
 function renderStatic(){const B=V.board;document.title=B.title;$("title").textContent=B.title;$("summary").textContent=B.summary||"";
   $("facts").innerHTML=(B.facts||[]).map(f=>`<div><b>${esc(f.value)}</b><span>${esc(f.label)}</span></div>`).join("");
-  $("strip").innerHTML=(B.shots||[]).map(s=>`<a class="seg" href="#shot-${esc(s.n)}" style="--d:${Number(s.dur)||1};--w:${tint(B,s.world)}"><b>${esc(s.n)}</b><em>${esc(s.name)}</em><small>${esc(s.dur)} s</small></a>`).join("");
+  $("strip").innerHTML=(B.shots||[]).map(s=>`<a class="seg" href="#shot-${esc(s.n)}" style="--d:${Number(s.dur)||1};--w:${tint(B,s.world)}"><b>${esc(s.n)}</b><em>${esc(s.name)}</em><small>${esc(s.dur)} s <i data-chip="${esc(s.card||"")}"></i></small></a>`).join("");
   $("look").innerHTML=(B.look||[]).map(r=>row(0,r.attr,r.text)).join("");
   $("shots").innerHTML=(B.shots||[]).map(s=>{const h=V.hf[String(s.n)];const L=Object.entries(s.layers||{}).map(([k,v])=>row(s.n,k,v)).join("");
     return `<article class="shot" id="shot-${esc(s.n)}"><div class="frame" data-shot="${esc(s.n)}" data-attr="Frame" style="--w:${tint(B,s.world)}"><span class="n">${esc(s.n)}</span><span class="ss">${esc(s.size||"")}</span>${s.card?`<label><span>Add still</span><input type="file" accept="image/*"></label>`:""}</div>
-    <div><span class="tc">${esc(s.time)} s</span><h3>${esc(s.name)}</h3><p>${esc(s.picture)}</p><div class="snd">${s.vo?`<p><span class="k">VO</span>${esc(s.vo)}</p>`:""}${s.text?`<p><span class="k">Text</span><span class="card">${esc(s.text)}</span></p>`:""}${s.sound?`<p><span class="k">Sound</span>${esc(s.sound)}</p>`:""}</div>${hfBlock(s.n,h)}</div>
+    <div><span class="tc">${esc(s.time)} s</span><h3>${esc(s.name)}</h3><p>${esc(s.picture)}</p><div class="snd">${s.vo?`<p><span class="k">VO</span>${esc(s.vo)}</p>`:""}${s.text?`<p><span class="k">Text</span><span class="card">${esc(s.text)}</span></p>`:""}${s.sound?`<p><span class="k">Sound</span>${esc(s.sound)}</p>`:""}</div>${hfBlock(s.n,h)}${s.card?`<div class="prog" data-card="${esc(s.card)}"></div>`:""}</div>
     <dl class="layers">${L}${s.risk?`<dd class="risk"><b>Risk.</b> ${esc(s.risk)}</dd>`:""}</dl></article>`}).join("");
   $("notes").innerHTML=(B.notes||[]).map(n=>`<div><h2>${esc(n.title)}</h2><ul>${(n.items||[]).map(i=>`<li>${esc(i)}</li>`).join("")}</ul></div>`).join("");
   if(V.errors.length)say("Board problems: "+V.errors.join(" "))}
@@ -173,14 +190,37 @@ function refEl(r){const el=document.createElement("div");el.className="ref";cons
   const rt=document.createElement("button");rt.type="button";rt.className="rt"+(r.send?" send":"");rt.textContent=RL[r.rights]||r.rights;rt.dataset.id=r.id;rt.dataset.r=r.rights;
   const x=document.createElement("button");x.type="button";x.className="x";x.textContent="×";x.dataset.id=r.id;x.setAttribute("aria-label","Remove");el.append(a,rt,lbEl(r),x);return el}
 function lbEl(r){const b=document.createElement("button");b.type="button";b.className="lb";b.textContent="@"+(r.label||r.id);b.dataset.id=r.id;b.title="Rename. Mention it in a prompt as @"+(r.label||"");return b}
-function renderRefs(){document.querySelectorAll(".refs .ref,.frame img").forEach(e=>e.remove());
+function renderRefs(){document.querySelectorAll(".refs .ref,.frame img,.frame video").forEach(e=>e.remove());
   for(const r of V.refs){if(r.attr==="Frame"){const f=document.querySelector(`.frame[data-shot="${CSS.escape(String(r.shot))}"]`);if(f){const im=document.createElement("img");im.src=r.url+"?t="+encodeURIComponent(TOKEN);im.alt="Still";f.prepend(im)}continue}
     const box=[...document.querySelectorAll(".refs")].find(b=>b.dataset.shot===String(r.shot)&&b.dataset.attr===r.attr);if(box)box.insertBefore(refEl(r),box.lastElementChild)}
   for(const [n,h] of Object.entries(V.hf)){const el=$("ins"+n);if(!el||!h)continue;const mine=V.plan.filter(p=>String(p.shot)===n);const c={};mine.forEach(p=>c[p.as]=(c[p.as]||0)+1);
     const guide=V.refs.filter(r=>(String(r.shot)===n||r.shot===0)&&r.input&&!r.send).length;
     el.textContent=(Object.keys(c).length?"Inputs: "+Object.entries(c).map(([k,v])=>v+" "+k).join(", "):"Inputs: none yet")+(guide?" · "+guide+" guide-only":"")}
-  $("acount").textContent=V.refs.length;renderAssets();
+  renderProgress();$("acount").textContent=V.refs.length;renderAssets();
   if(!active&&!V.errors.length)say(V.refs.length+" reference(s), "+V.refs.filter(r=>r.send).length+" set to go to Higgsfield.")}
+const SHORT={waiting:"",ready:"ready",paused:"paused",in_progress:"started",draft_running:"drafting",draft_review:"review",draft_approved:"draft ok",final_running:"final",final_review:"review",final_approved:"approved",locked:"locked"};
+function renderProgress(){const P=V.progress||{},T=V.takes||{};
+  document.querySelectorAll("[data-chip]").forEach(c=>{const p=P[c.dataset.chip];c.textContent=p&&SHORT[p.state]?"· "+SHORT[p.state]:""});
+  document.querySelectorAll(".prog").forEach(box=>{const card=box.dataset.card,p=P[card]||{state:"waiting",label:"Waiting for the board"},tk=T[card]||[];
+    const said=box.querySelector(".said");const keep=said?said.value:"";box.textContent="";
+    const h=document.createElement("h4");const t=document.createElement("span");t.textContent="Progress";const st=document.createElement("span");st.className="st "+p.state;st.textContent=p.label;h.append(t,st);box.appendChild(h);
+    if(tk.length){const g=document.createElement("div");g.className="takes";for(const k of tk){const el=document.createElement("div");el.className="take"+(k.approved===true?" ok":k.approved===false?" no":"");
+      const m=document.createElement("div");m.className="m";const f=(k.files||[])[0];
+      if(f){const src=f.url+"?t="+encodeURIComponent(TOKEN);const me=f.kind==="video"?Object.assign(document.createElement("video"),{src,muted:true,loop:true,playsInline:true,controls:true,preload:"metadata"}):Object.assign(document.createElement("img"),{src,alt:k.id});m.appendChild(me)}else m.textContent=k.status;
+      const d=document.createElement("div");d.className="t";const a=document.createElement("b");a.textContent=k.tier+" · "+k.id+(k.id===p.locked_gen?" · locked":"");const b=document.createElement("span");b.textContent=k.approved===true?"Approved":k.approved===false?"Redo":k.status==="completed"?"To review":k.status+(k.error?": "+k.error:"");d.append(a,b);
+      if(k.status==="completed"&&k.approved==null&&!p.locked){const ac=document.createElement("div");ac.className="acts";const y=document.createElement("button");y.type="button";y.textContent="Approve";y.dataset.gen=k.id;y.dataset.ok="1";const n=document.createElement("button");n.type="button";n.textContent="Redo";n.dataset.gen=k.id;n.dataset.ok="0";ac.append(y,n);d.appendChild(ac)}
+      el.append(m,d);g.appendChild(el)}box.appendChild(g)}
+    else{const e=document.createElement("p");e.className="howto";e.style.margin="0";e.textContent=p.state==="waiting"?"Takes appear here once the board is approved and this shot is started.":"No takes yet. Ask Claude to push this shot to Higgsfield.";box.appendChild(e)}
+    const ac=document.createElement("div");ac.className="acts";const w=document.createElement("input");w.className="said";w.placeholder="Your words (recorded with approve, redo, start or lock)";w.value=keep;w.setAttribute("aria-label","Your words for "+card);ac.appendChild(w);
+    const btn=(label,act)=>{const x=document.createElement("button");x.type="button";x.textContent=label;x.dataset.act=act;x.dataset.card=card;ac.appendChild(x)};
+    if(p.state==="ready"||p.state==="paused")btn("Put in progress","start");
+    if(p.state==="final_approved")btn("Lock shot","lock");
+    if(p.state==="locked")btn("Unlock","unlock");
+    if(p.in_progress&&!p.locked)btn("Pause","pause");
+    box.appendChild(ac);
+    if(p.locked&&p.locked_gen){const lk=tk.find(k=>k.id===p.locked_gen);const f=lk&&lk.files[0];const fr=document.querySelector(`.frame[data-shot]`)&&[...document.querySelectorAll(".frame")].find(x=>x.closest(".shot").querySelector(`.prog[data-card="${CSS.escape(card)}"]`));
+      if(f&&fr){const src=f.url+"?t="+encodeURIComponent(TOKEN);const el=f.kind==="video"?Object.assign(document.createElement("video"),{src,muted:true,loop:true,autoplay:true,playsInline:true}):Object.assign(document.createElement("img"),{src,alt:"Locked final"});el.style.cssText="position:absolute;inset:0;width:100%;height:100%;object-fit:cover";fr.prepend(el)}}})}
+function wordsFor(el){const box=el.closest(".prog");const w=box&&box.querySelector(".said");const v=w?w.value.trim():"";if(!v){say("Type your words first: they are recorded with the decision.");if(w)w.focus()}return v}
 function renderAssets(){const R=V.refs;$("asum").innerHTML=[[R.length,"Materials"],[R.filter(r=>r.send).length,"Go to Higgsfield"],[R.filter(r=>!r.send).length,"Guide only or notes"],[V.plan.length,"Proposed card inputs"]].map(([n,l])=>`<div><b>${n}</b><span>${l}</span></div>`).join("");
   const g=$("agrid");g.textContent="";const list=R.filter(r=>filt==="all"||(filt==="send")===r.send);
   if(!list.length){g.innerHTML=`<p class="empty">${R.length?"Nothing matches this filter.":"No materials yet. Add references from the Storyboard tab."}</p>`}
@@ -196,6 +236,10 @@ document.addEventListener("click",async e=>{const t=e.target;
   const cp=t.closest(".cp");if(cp){const h=V.hf[cp.dataset.n];try{await navigator.clipboard.writeText(h.prompt_ready||h.prompt);say("Prompt copied.")}catch{say("Copy was blocked. Select the text instead.")}return}
   const fb=t.closest(".filters button");if(fb){filt=fb.dataset.f;document.querySelectorAll(".filters button").forEach(b=>b.setAttribute("aria-pressed",String(b===fb)));renderAssets();return}
   const add=t.closest(".add");if(add){const b=add.closest(".refs");pickKey=[b.dataset.shot,b.dataset.attr];picker.value="";picker.click();return}
+  const gb=t.closest("button[data-gen]");if(gb){const said=wordsFor(gb);if(!said)return;try{await api(`/api/gen/${gb.dataset.gen}/decision`,{method:"POST",body:JSON.stringify({approve:gb.dataset.ok==="1",said})});await load();say(gb.dataset.gen+(gb.dataset.ok==="1"?" approved.":" marked for a redo. Tell Claude what to change."))}catch(err){say(err.message)}return}
+  const ab=t.closest("button[data-act]");if(ab){const said=wordsFor(ab);if(!said)return;const c=ab.dataset.card;try{if(ab.dataset.act==="start")await api("/api/shots/start",{method:"POST",body:JSON.stringify({shots:c,said})});else await api(`/api/shots/${c}/${ab.dataset.act}`,{method:"POST",body:JSON.stringify({said})});await load();say(c+": "+(V.progress[c]||{}).label+".")}catch(err){say(err.message)}return}
+  if(t.id==="bgo"){const sel=$("bsel").value.trim(),said=$("bsaid").value.trim();if(!sel||!said)return say("Say which shots and type your words.");const all=/^all$/i.test(sel);const scenes=[...sel.matchAll(/scene\s*([A-Za-z0-9]+)/gi)].map(m=>m[1]);const shots=sel.replace(/scene\s*[A-Za-z0-9]+/gi,"").replace(/\ball\b/i,"").replace(/^[\s,]+|[\s,]+$/g,"");
+    try{const r=await api("/api/shots/start",{method:"POST",body:JSON.stringify({all,scenes,shots:shots||undefined,said})});await load();say("In progress: "+(r.started.join(", ")||"none new")+(r.locked.length?". Locked, left alone: "+r.locked.join(", "):""));$("bsaid").value=""}catch(err){say(err.message)}return}
   const lb=t.closest(".lb");if(lb){const inp=document.createElement("input");inp.className="lbi";inp.value=lb.textContent.replace(/^@/,"");inp.maxLength=24;inp.setAttribute("aria-label","Reference label");lb.replaceWith(inp);inp.focus();inp.select();
     let done=false;const finish=async save=>{if(done)return;done=true;if(save&&inp.value.trim()&&"@"+inp.value.trim()!==lb.textContent){try{await api(`/api/refs/${lb.dataset.id}/label`,{method:"POST",body:JSON.stringify({label:inp.value.trim()})});await load();say("Renamed to @"+inp.value.trim()+". Mention it in a prompt as @"+inp.value.trim()+".");return}catch(err){say(err.message)}}inp.replaceWith(lb)};
     inp.addEventListener("keydown",ev=>{if(ev.key==="Enter")finish(true);if(ev.key==="Escape")finish(false)});inp.addEventListener("blur",()=>finish(true));return}

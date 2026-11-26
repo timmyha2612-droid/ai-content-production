@@ -993,14 +993,23 @@ def _card_in_project(project, path):
     return str(proj), "05_prompts/" + real.name
 
 
-def _card_edit_open(project):
+def _card_edit_open(project, shot=None):
     from shotcraft import Refused, stages as _st
     st = _st.load_state(project)
     if st.get("track") == "refine":
         return
+    if shot:  # shot by shot: an in-progress shot may change its own card; a locked one may not
+        from shotcraft import shots as _shots
+        rec = _shots._load(project)["shots"].get(shot, {})
+        if rec.get("locked"):
+            raise Refused("%s is locked. Unlock it first: sc.py shots unlock %s --user-said \"<their words>\""
+                          % (shot, shot))
+        if rec.get("in_progress"):
+            return
     open_now = [s for s in CARD_EDIT_STAGES if st["stages"].get(s, {}).get("status") == "open"]
     if not open_now:
-        raise Refused("Cards are approved or changed only while prompts, boards, drafts or finals is open.")
+        raise Refused("Cards are approved or changed only while prompts, boards, drafts or finals is open, or "
+                      "while the shot is in progress (sc.py shots start).")
 
 
 def approve(project, path, user_said):
@@ -1010,7 +1019,7 @@ def approve(project, path, user_said):
     if not (user_said or "").strip():
         raise Refused("Approving a card needs the user's own words (--user-said).")
     proj, rel = _card_in_project(project, path)
-    _card_edit_open(proj)
+    _card_edit_open(proj, Path(rel).stem)
     meta, body = read(path)
     if str(meta.get("id") or "") != Path(rel).stem:
         raise Refused("The card's id ({}) does not match its file name ({}).".format(meta.get("id"), rel))
@@ -1039,7 +1048,7 @@ def set_input(project, path, asset_id, role, user_said):
     if role not in INPUT_ROLES:
         raise Refused("--as must be one of: {}.".format(", ".join(INPUT_ROLES)))
     proj, rel = _card_in_project(project, path)
-    _card_edit_open(proj)
+    _card_edit_open(proj, Path(rel).stem)
     data = manifest.load(proj)
     asset = manifest.find_asset(data, asset_id)
     if asset is None:

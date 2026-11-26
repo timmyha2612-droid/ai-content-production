@@ -21,6 +21,16 @@ dates; rule changes that alter what gets generated are listed here too.
 - **Labels and @ mentions:** every reference has a unique label; cards can mention it as `@Label`, and the
   board resolves mentions into the model's pointers (`@Image1` ... on Seedance) in slot order, with warnings
   for mentions that aren't sent and sent references never mentioned.
+- **Shot by shot** (`sc.py shots status|start|pause|lock|unlock`): after the whole board is approved, put any
+  batch in progress (shots, ranges, scenes or all). In-progress shots make drafts and finals and keep their
+  cards editable while the drafts and finals stages stay closed; a lock needs an approved final and blocks
+  generation and card changes until unlocked. The board shows each shot's state and takes, and can start a
+  batch, approve, redo, pause, lock and unlock with the words the user types.
+
+### Changed
+
+- `gen` asks `shots.gen_allowed` for the stage gate, and cards of an in-progress shot can be approved or
+  edited with the prompts stage closed. Nothing changes for projects that don't start shots.
 
 ## [0.3.0] - 2026-11-26
 

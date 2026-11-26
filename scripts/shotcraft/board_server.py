@@ -11,6 +11,12 @@ Routes:
     POST   /api/refs/<id>/label   body: {"label": "Editor"} -> the reference
     DELETE /api/refs/<id>
     GET    /files/<asset id>      a board reference image (token as ?t=)
+    GET    /gen/<gen id>/<n>      a generation's output, image or video (token as ?t=)
+    POST   /api/gen/<gen id>/decision  {"approve": true|false, "said": "<the user's words>"}
+    POST   /api/shots/start       {"shots": "S010-S030, S050", "scenes": ["2"], "all": false, "said": "..."}
+    POST   /api/shots/<id>/lock   {"said": "..."}    (and /unlock, /pause)
+
+Approvals, locks and starts carry the words the user typed into the board; empty words are refused.
 """
 import hmac
 import json
@@ -111,6 +117,19 @@ def make_handler(project, token):
                         return self._send(404, {"ok": False, "error": "Not found."})
                     with open(full, "rb") as fh:
                         return self._send(200, fh.read(), ctype)
+                m = re.match(r"^/gen/(G\d{4,})/(\d{1,2})$", u.path)
+                if m:
+                    g = manifest.find_generation(project, m.group(1))
+                    outs = (g or {}).get("outputs") or []
+                    i = int(m.group(2))
+                    if i < len(outs):
+                        full = os.path.join(project, outs[i])
+                        ctype = mimetypes.guess_type(full)[0] or ""
+                        if paths.rel_to(project, full) and os.path.isfile(full) and \
+                                ctype.split("/")[0] in ("image", "video") and ctype != "image/svg+xml":
+                            with open(full, "rb") as fh:
+                                return self._send(200, fh.read(), ctype)
+                    return self._send(404, {"ok": False, "error": "Not found."})
                 return self._send(404, {"ok": False, "error": "Not found."})
             except (ShotcraftError, OSError) as exc:
                 return self._fail(exc)
@@ -132,6 +151,8 @@ def make_handler(project, token):
                     a = board.add_ref(project, body, (q.get("name") or [""])[0], (q.get("shot") or [""])[0],
                                       (q.get("attr") or [""])[0])
                     return self._send(200, {"ok": True, "id": a["id"], "rights": a["rights"]})
+                if u.path.startswith("/api/gen/") or u.path.startswith("/api/shots/"):
+                    return self._send(200, _action(project, u.path, body))
                 m = re.match(r"^/api/refs/([A-Za-z0-9]+)/(rights|label)$", u.path)
                 if m and _ID.match(m.group(1)):
                     try:
@@ -162,6 +183,42 @@ def make_handler(project, token):
                 return self._fail(exc)
 
     return Handler
+
+
+def _json(body):
+    try:
+        v = json.loads(body.decode("utf-8") or "{}")
+    except (ValueError, UnicodeDecodeError):
+        raise Refused("Send a JSON object.")
+    if not isinstance(v, dict):
+        raise Refused("Send a JSON object.")
+    return v
+
+
+def _action(project, path, body):
+    from . import gen, shots
+    v = _json(body)
+    said = str(v.get("said") or "").strip()
+    if not said:
+        raise Refused("Type your words first: they are recorded as your approval.")
+    m = re.match(r"^/api/gen/(G\d{4,})/decision$", path)
+    if m:
+        fn = gen.approve if v.get("approve") is True else gen.reject if v.get("approve") is False else None
+        if fn is None:
+            raise Refused("Say approve true or false.")
+        g = fn(project, m.group(1), said)
+        return {"ok": True, "id": g["id"], "approved": g["approved"]}
+    if path == "/api/shots/start":
+        ids = shots.select(project, [str(v.get("shots") or "")] if v.get("shots") else (), bool(v.get("all")),
+                           [str(x) for x in (v.get("scenes") or [])])
+        return {"ok": True, **shots.start(project, ids, said)}
+    m = re.match(r"^/api/shots/(S\d{3}[A-Z]?)/(lock|unlock|pause)$", path)
+    if m:
+        if m.group(2) == "pause":
+            return {"ok": True, "paused": shots.pause(project, [m.group(1)], said)}
+        r = (shots.lock if m.group(2) == "lock" else shots.unlock)(project, m.group(1), said)
+        return {"ok": True, "shot": r["shot"], "locked": r["locked"]}
+    raise ShotcraftError("No board reference: unknown action.")
 
 
 def make_server(project, port=0, token=None):

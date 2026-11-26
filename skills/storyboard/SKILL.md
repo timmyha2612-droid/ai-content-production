@@ -65,3 +65,13 @@ click the @label to rename. The server stops with Ctrl+C. It binds to 127.0.0.1 
 `reference`, `style`), as `sc card set-input` commands. They are proposals. Run them only while boards,
 drafts or finals is open, each with the user's own words for that input, then `sc card compile` again.
 Never mark a reference's rights yourself: the user does that on the board.
+
+## 5. Takes and locks on the board
+
+After the whole board is approved, each shot panel shows its state (ready, in progress, draft to review,
+final approved, locked) and its takes as they come back from Higgsfield. The user can start a batch
+(`S010-S030`, `scene 2`, `all`), approve a take, ask for a redo, pause, lock and unlock from the board. Each
+action needs the words they type next to it; those words are what gets recorded. Pushing a shot to
+Higgsfield still happens here in the chat, through `sc gen submit` with the live price and their yes. When
+they ask for a redo on the board, ask what to change, fix the card, and push again.
+

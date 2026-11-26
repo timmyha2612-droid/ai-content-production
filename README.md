@@ -314,6 +314,10 @@ to install). Claude writes `board/board.json` from the script, shot list and loo
 - **An Assets tab** with every material, what it maps to (start frame, character, reference, style, or not
   sent) and the `card set-input` commands the producer will run with your yes.
 
+- **Shot by shot.** Once the whole board is approved, put any batch in progress (`S010-S030`, `scene 2` or
+  all). Each shot then moves draft, final, locked on its own, and the board shows its takes as they come back
+  from Higgsfield, with approve, redo, pause, lock and unlock. Every action records the words you type.
+
 The server binds to 127.0.0.1 only and every request needs the one-time token in the link it prints.
 
 ## The Higgsfield hand-off and the Canvas limitation
@@ -364,6 +368,8 @@ $sc budget status
 $sc sheet build --tier draft --open
 $sc board check
 $sc board serve
+$sc shots start S010-S030 --user-said "scene one first"
+$sc shots lock S010 --user-said "lock it"
 $sc finish texture 08_assembly/reel.mp4 --grain subtle --out 08_assembly/reel_tex.mp4
 $sc finish roomtone 08_assembly/reel_tex.mp4 --out 09_delivery/bakery-reel_social-vertical_1080x1920_v1.mp4
 ```

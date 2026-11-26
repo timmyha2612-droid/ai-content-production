@@ -742,6 +742,20 @@ def build_parser():
     leaf(s, "report", delegate("scout", "report", ["scout"]))
     leaf(s, "ack", delegate("scout", "ack", ["scout"]), help="the user has decided every proposal")
 
+    s = group("shots", "per-shot progress: start a batch, lock approved shots")
+    leaf(s, "status", delegate("shots", "status", ["shots"]))
+    for name, helptext in (("start", "put shots in progress (after the whole board is approved)"),
+                           ("pause", "take shots out of progress")):
+        sp = leaf(s, name, delegate("shots", name, ["shots"]), help=helptext)
+        sp.add_argument("shots", nargs="*", help="S010, S010-S040 or a comma list")
+        sp.add_argument("--all", action="store_true")
+        sp.add_argument("--scene", action="append", help="every shot in this scene (repeat for more)")
+        sp.add_argument("--user-said", dest="user_said", required=True)
+    for name in ("lock", "unlock"):
+        sp = leaf(s, name, delegate("shots", name, ["shots"]))
+        sp.add_argument("shot")
+        sp.add_argument("--user-said", dest="user_said", required=True)
+
     s = group("board", "storyboard app: script, look book, references and the Higgsfield mapping")
     sp = leaf(s, "init", delegate("board", "init", ["board"]), help="write a sample board/board.json")
     sp.add_argument("--force", action="store_true", help="replace an existing board.json")
