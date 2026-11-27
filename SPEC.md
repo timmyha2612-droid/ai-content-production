@@ -515,7 +515,9 @@ it never writes a card, opens a stage or generates.
   texture, Moodboard → `style`; anything else is not sent. `sc.py board inputs` lists the matching
   `card set-input` commands for sendable references only; the producer runs them with the user's words.
 - **Shot layers:** `board.SHOT_LAYERS` (Character, Wardrobe, Performance, Emotion, Environment, Camera,
-  Lighting, Mood, Start frame, End frame). Start frame and End frame map to `start_frame` and `end_frame`.
+  Lighting, Start frame, End frame, Mood), tiered in `board.LAYER_TIERS` (required, conditional, optional;
+  `layer_warnings` lists generated shots missing a required layer). The compiler's priorities in
+  `rules/taxonomy.json` follow the same order. Start frame and End frame map to `start_frame` and `end_frame`.
 - **@ mentions:** each reference has a unique label. A card field may mention one as `@Label`; the board
   resolves mentions against the shot's sendable references in slot order (character, reference, style) into
   the model's pointer (`MENTION_STYLE`, `@Image{n}` for Seedance) or plain words, and warns about mentions

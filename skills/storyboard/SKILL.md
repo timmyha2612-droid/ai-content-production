@@ -38,18 +38,26 @@ sample to start from. Keep the user's exact words from the script for picture, v
 
 ### The shot layers
 
-Use these, in this order (`board.SHOT_LAYERS`). Leave out a layer that doesn't apply (no Wardrobe or Emotion
-for a brush or a machine).
+Use these, in this order (`board.SHOT_LAYERS`). Each has a tier (`board.LAYER_TIERS`): fill every
+**required** layer on a generated shot (`sc board check` warns when one is missing), a **conditional** one when
+the shot calls for it, and an **optional** one only when it earns its words (the app folds those away).
 
-| Layer | Write | Goes into the card |
-|---|---|---|
-| Character | Who or what it is: age, build, face, the look that stays the same in every shot (`@Label` for its reference) | `subject.subject`, `subject.consistency` |
-| Wardrobe | What they wear, in concrete materials | `subject.wardrobe_props` |
-| Performance | What they do in this shot: the main action, small behaviours, where they look | `subject.action`, `subject.interaction` |
-| Emotion | What they feel, shown through the body ("shoulders drop"), not named ("calm") | folded into `subject.action` |
-| Environment | The place as a scene: what and when, one telling detail, what moves in the air, the props in it, how it touches the subject. A short last line for depth | `world.environment`, `world.atmosphere`, the plane fields |
-| Camera, Lighting, Mood | As before | `camera.*`, `light_look.*` |
-| Start frame, End frame | How the shot opens and how it lands | the first and last beats (`0-1`: "opens on ...", `<d-1>-<d>`: "ends on ...") |
+| Layer | Tier | Write | Goes into the card |
+|---|---|---|---|
+| Character | required | Who or what it is: age, build, face, the look that stays the same in every shot (`@Label` for its reference) | `subject.subject`, `subject.consistency` |
+| Wardrobe | conditional: a person on screen, above all across several shots | What they wear, in concrete materials | `subject.wardrobe_props` |
+| Performance | required, objects too (the brush drags, the blade drops) | What they do in this shot: the main action, small behaviours, where they look | `subject.action`, `subject.interaction` |
+| Emotion | conditional: a readable face | What they feel, shown through the body ("shoulders drop"), not named ("calm") | folded into `subject.action` |
+| Environment | required, short | The place as a scene: what and when, one telling detail, what moves in the air, the props in it, how it touches the subject. A short last line for depth | `world.environment`, `world.atmosphere`, the plane fields |
+| Camera | required | Shot size, angle, lens, one move with its speed, and where and how big the subject sits in the 9:16 frame | `camera.*`, `subject.placement` |
+| Lighting | required | Where the light comes from, its colour, what stays dark | `light_look.*` |
+| Start frame | required | How the shot opens | the first beat (`0-1`: "opens on ...") |
+| End frame | conditional: a change, a reveal, a match into the next shot, a turn to camera | How the shot lands | the last beat (`<d-1>-<d>`: "ends on ...") |
+| Mood | optional | One or two words at most; the feeling really comes from light, framing and performance | `light_look.mood`, cut first |
+
+When a prompt runs long the compiler cuts in tier order: mood, texture, extra place detail, wardrobe detail,
+then light colour; the subject, its action, any `@Label`, the shot size, the camera move and the light's
+direction stay.
 
 A still on Start frame or End frame becomes the card's `start_frame` or `end_frame` input once it is sendable;
 continuity runs through them (one shot's End frame is often the next shot's Start frame). Transitions belong

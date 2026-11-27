@@ -63,8 +63,16 @@ FRAME_ATTRS = ("frame", "start frame", "end frame")
 # The shot layers a board uses, in order. Character, Wardrobe, Performance and Emotion describe the person (who
 # they are, what they wear, what they do, what they feel, shown through the body); Environment is the place
 # with its props; Start frame and End frame are how the shot opens and how it ends. Cutting belongs to the edit.
-SHOT_LAYERS = ("Character", "Wardrobe", "Performance", "Emotion", "Environment", "Camera", "Lighting", "Mood",
-               "Start frame", "End frame")
+SHOT_LAYERS = ("Character", "Wardrobe", "Performance", "Emotion", "Environment", "Camera", "Lighting",
+               "Start frame", "End frame", "Mood")
+# How much each layer matters to what the model renders. Required: every generated shot. Conditional: when the
+# shot calls for it (Wardrobe and Emotion when a person is on screen, End frame when the shot must land
+# somewhere). Optional: extras, cut first when a prompt runs long; the app folds them away.
+LAYER_TIERS = {
+    "required": ("Character", "Performance", "Environment", "Camera", "Lighting", "Start frame"),
+    "conditional": ("Wardrobe", "Emotion", "End frame"),
+    "optional": ("Mood", "Sound", "Speed", "Keep out"),
+}
 # Board attribute -> project.json asset role.
 _ROLE = {
     "frame": "board", "start frame": "board", "end frame": "board",
@@ -96,9 +104,9 @@ BOARD_TEMPLATE = {
                                    "flour drifting in the first light, the street still dark outside.",
                     "Camera": "MS, eye level, locked-off.",
                     "Lighting": "Cool window key from frame left; the oven light adds warm fill.",
-                    "Mood": "Quiet, the calm before the day.",
                     "Start frame": "Her hands mid-dust over the counter, the oven still dark.",
-                    "End frame": "Oven light on, she looks toward the door."}},
+                    "End frame": "Oven light on, she looks toward the door.",
+                    "Mood": "Quiet, the calm before the day."}},
     ],
     "notes": [{"title": "Before generating", "items": ["Make each shot as a still first."]}],
 }
@@ -175,6 +183,27 @@ def validate(data):
         if not isinstance(row, dict) or not row.get("attr"):
             errs.append("look[%d] needs attr and text." % i)
     return errs
+
+
+def layer_tier(attr):
+    k = _key(attr)
+    for tier, names in LAYER_TIERS.items():
+        if k in {_key(n) for n in names}:
+            return tier
+    return "optional"
+
+
+def layer_warnings(data):
+    """Generated shots missing a required layer (notes, not errors: the board still opens)."""
+    out = []
+    for s in data.get("shots") or []:
+        if not isinstance(s, dict) or not s.get("card"):
+            continue
+        have = {_key(k) for k, v in (s.get("layers") or {}).items() if str(v or "").strip()}
+        miss = [n for n in LAYER_TIERS["required"] if _key(n) not in have]
+        if miss:
+            out.append("Shot %s has no %s." % (s.get("n"), ", ".join(miss)))
+    return out
 
 
 def refs(project):
@@ -463,7 +492,8 @@ def view(project):
         prog = _shots.progress(project)
     except ShotcraftError:
         prog = {}
-    return {"board": data, "errors": errs, "hf": hf, "refs": out_refs,
+    return {"board": data, "errors": errs, "warnings": layer_warnings(data), "tiers": LAYER_TIERS,
+            "hf": hf, "refs": out_refs,
             "plan": inputs_plan(project, data) if not errs else [], "progress": prog, "takes": takes(project)}
 
 
@@ -508,6 +538,8 @@ def cli_board_check(args):
     lines = []
     if v["errors"]:
         lines += ["Board problems:"] + ["- " + e for e in v["errors"]]
+    if v["warnings"]:
+        lines += ["Missing required layers:"] + ["- " + w for w in v["warnings"]]
     for n, h in sorted(v["hf"].items(), key=lambda kv: int(kv[0])):
         if not h:
             continue
