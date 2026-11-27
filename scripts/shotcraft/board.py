@@ -53,15 +53,30 @@ _SLOT_ORDER = {"character": 0, "reference": 1, "style": 2}
 
 # Board attribute -> card input role ("as" in sc.py card set-input). None: never sent, a note for the edit.
 _INPUT = {
-    "frame": "start_frame",
+    "frame": "start_frame", "start frame": "start_frame", "end frame": "end_frame",
     "character": "character",
     "wardrobe": "reference", "props": "reference", "environment": "reference",
     "lighting": "style", "mood": "style", "camera": "style",
     "palette": "style", "visual worlds": "style", "light and texture": "style", "moodboard": "style",
 }
+FRAME_ATTRS = ("frame", "start frame", "end frame")
+# The shot layers a board uses, in order. Character, Wardrobe, Performance and Emotion describe the person (who
+# they are, what they wear, what they do, what they feel, shown through the body); Environment is the place
+# with its props; Start frame and End frame are how the shot opens and how it ends. Cutting belongs to the edit.
+SHOT_LAYERS = ("Character", "Wardrobe", "Performance", "Emotion", "Environment", "Camera", "Lighting",
+               "Start frame", "End frame", "Mood")
+# How much each layer matters to what the model renders. Required: every generated shot. Conditional: when the
+# shot calls for it (Wardrobe and Emotion when a person is on screen, End frame when the shot must land
+# somewhere). Optional: extras, cut first when a prompt runs long; the app folds them away.
+LAYER_TIERS = {
+    "required": ("Character", "Performance", "Environment", "Camera", "Lighting", "Start frame"),
+    "conditional": ("Wardrobe", "Emotion", "End frame"),
+    "optional": ("Mood", "Sound", "Speed", "Keep out"),
+}
 # Board attribute -> project.json asset role.
 _ROLE = {
-    "frame": "board", "character": "character", "wardrobe": "prop", "props": "prop",
+    "frame": "board", "start frame": "board", "end frame": "board",
+    "character": "character", "wardrobe": "prop", "props": "prop",
     "environment": "environment",
 }
 
@@ -81,9 +96,17 @@ BOARD_TEMPLATE = {
         {"n": 1, "card": "S010", "time": "0.0-3.0", "dur": 3.0, "world": "dawn", "name": "First light",
          "size": "MS", "picture": "A baker dusts flour off her hands as the oven light comes on.",
          "vo": "", "text": "Open at 6", "sound": "Oven hum.",
-         "layers": {"Character": "A baker in her 40s.", "Wardrobe": "Linen apron.",
-                    "Environment": "Small bakery counter.", "Camera": "MS, eye level, locked-off.",
-                    "Lighting": "Cool window key from frame left.", "Mood": "Calm."}},
+         "layers": {"Character": "A baker in her 40s, flour on her forearms.",
+                    "Wardrobe": "Faded linen apron over a grey tee.",
+                    "Performance": "Dusts her hands, flicks on the oven light, glances at the door.",
+                    "Emotion": "Settled and unhurried; a small breath out as the light comes on.",
+                    "Environment": "A small bakery before opening: proving trays stacked by the window, "
+                                   "flour drifting in the first light, the street still dark outside.",
+                    "Camera": "MS, eye level, locked-off.",
+                    "Lighting": "Cool window key from frame left; the oven light adds warm fill.",
+                    "Start frame": "Her hands mid-dust over the counter, the oven still dark.",
+                    "End frame": "Oven light on, she looks toward the door.",
+                    "Mood": "Quiet, the calm before the day."}},
     ],
     "notes": [{"title": "Before generating", "items": ["Make each shot as a still first."]}],
 }
@@ -162,6 +185,27 @@ def validate(data):
     return errs
 
 
+def layer_tier(attr):
+    k = _key(attr)
+    for tier, names in LAYER_TIERS.items():
+        if k in {_key(n) for n in names}:
+            return tier
+    return "optional"
+
+
+def layer_warnings(data):
+    """Generated shots missing a required layer (notes, not errors: the board still opens)."""
+    out = []
+    for s in data.get("shots") or []:
+        if not isinstance(s, dict) or not s.get("card"):
+            continue
+        have = {_key(k) for k, v in (s.get("layers") or {}).items() if str(v or "").strip()}
+        miss = [n for n in LAYER_TIERS["required"] if _key(n) not in have]
+        if miss:
+            out.append("Shot %s has no %s." % (s.get("n"), ", ".join(miss)))
+    return out
+
+
 def refs(project):
     return [a for a in manifest.load(project).get("assets", []) if isinstance(a.get("board"), dict)]
 
@@ -203,7 +247,7 @@ def add_ref(project, data, filename, shot, attr):
     dest = os.path.join(folder, "%s-%s%s" % (uuid.uuid4().hex[:8], base or "image", ext))
     with open(dest, "wb") as fh:
         fh.write(data)
-    rights = "generated" if _key(attr) == "frame" else "reference-only"
+    rights = "generated" if _key(attr) in FRAME_ATTRS else "reference-only"
     asset = manifest.add_asset(project, dest, rights, asset_role(attr), kind="image",
                                note="Added on the storyboard (%s)" % attr, shot=_shot_card(project, shot))
     m = manifest.load(project)
@@ -356,7 +400,7 @@ def inputs_plan(project, data=None):
             continue
         targets = list(cards_by_shot.items()) if b.get("shot") == 0 else [(b.get("shot"), cards_by_shot.get(b.get("shot")))]
         for n, card in targets:
-            if not card or (role == "start_frame" and b.get("shot") == 0):
+            if not card or (role in ("start_frame", "end_frame") and b.get("shot") == 0):
                 continue
             plan.append({"shot": n, "card": card, "asset": a["id"], "as": role, "attr": b.get("attr"),
                          "label": b.get("label"),
@@ -448,7 +492,8 @@ def view(project):
         prog = _shots.progress(project)
     except ShotcraftError:
         prog = {}
-    return {"board": data, "errors": errs, "hf": hf, "refs": out_refs,
+    return {"board": data, "errors": errs, "warnings": layer_warnings(data), "tiers": LAYER_TIERS,
+            "hf": hf, "refs": out_refs,
             "plan": inputs_plan(project, data) if not errs else [], "progress": prog, "takes": takes(project)}
 
 
@@ -493,6 +538,8 @@ def cli_board_check(args):
     lines = []
     if v["errors"]:
         lines += ["Board problems:"] + ["- " + e for e in v["errors"]]
+    if v["warnings"]:
+        lines += ["Missing required layers:"] + ["- " + w for w in v["warnings"]]
     for n, h in sorted(v["hf"].items(), key=lambda kv: int(kv[0])):
         if not h:
             continue

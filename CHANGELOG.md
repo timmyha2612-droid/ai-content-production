@@ -7,6 +7,29 @@ dates; rule changes that alter what gets generated are listed here too.
 
 ## [Unreleased]
 
+## [0.6.0] - 2026-11-27
+
+### Changed
+
+- **Shot layers** (`board.SHOT_LAYERS`): Character, Wardrobe, Performance, Emotion, Environment, Camera,
+  Lighting, Mood, Start frame, End frame. Performance and Emotion keep people from rendering stiff; the
+  Environment is written as a place, with its props in it; Transition is gone (cutting belongs to the edit).
+  The sample board, the storyboard skill and the cinematographer's notes follow them.
+- Start frame and End frame references map to the card's `start_frame` and `end_frame` inputs (frames start as
+  generated); on the card they become the opening and closing beats ("opens on ...", "ends on ...").
+
+- **Layer tiers** (`board.LAYER_TIERS`): required (Character, Performance, Environment, Camera, Lighting, Start
+  frame), conditional (Wardrobe, Emotion, End frame) and optional (Mood, Sound, Speed, Keep out). `sc.py board
+  check` and the app warn when a generated shot misses a required layer; the app folds optional layers away.
+- **Cut order follows the tiers** (`rules/taxonomy.json` 0.2.0): mood and texture are trimmed first, then the
+  extra place detail, then wardrobe and light colour; the light's direction now stays with the subject, its
+  action and the camera move. The generic film-finish line still goes before the shot's own depth details.
+
+### Fixed
+
+- The compiler never trims a field that holds an `@Label` mention, so a long prompt can't silently drop the
+  link to a reference image.
+
 ## [0.5.0] - 2026-11-27
 
 ### Added

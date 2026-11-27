@@ -1,6 +1,6 @@
 {
-  "version": "0.1.0",
-  "checked_at": "2026-11-24",
+  "version": "0.2.0",
+  "checked_at": "2026-11-27",
   "about": "The 6 prompt layers. The frame is built like a multiplane cel set-up: far background, near background, the subject in the midground, then the foreground (world and subject layers), compiled as one 'depth' sentence. Each field has a label, help text, a trimming priority and a vocabulary. When a prompt is too long, fields are dropped lowest priority first. Fields at or above protect_at_or_above are never dropped.",
   "prompt_order": [
     "subject",
@@ -516,7 +516,7 @@
         "wardrobe_props": {
           "label": "Wardrobe and props",
           "help": "Clothes, hair, make-up and the objects the subject uses.",
-          "priority": 46,
+          "priority": 55,
           "vocab": [
             {
               "term": "neutral wardrobe",
@@ -739,7 +739,7 @@
         "background_far": {
           "label": "Far background",
           "help": "The most distant plane: sky, skyline, hills, the far end of a street. Often soft, hazy and slow.",
-          "priority": 53,
+          "priority": 38,
           "vocab": [
             {
               "term": "city skyline in haze",
@@ -802,7 +802,7 @@
         "background_near": {
           "label": "Near background",
           "help": "The plane just behind the subject: the shopfront, the back wall, the bar shelves. Gives the place its identity. Can hold several layers itself (wall, then shelves, then a doorway).",
-          "priority": 61,
+          "priority": 42,
           "vocab": [
             {
               "term": "café window with chalkboard menu",
@@ -861,7 +861,7 @@
         "foreground": {
           "label": "Foreground",
           "help": "What sits between the camera and the subject: rain on the glass, a cup edge, leaves, a doorframe. Usually out of focus. It is what makes a frame feel shot rather than generated.",
-          "priority": 67,
+          "priority": 40,
           "vocab": [
             {
               "term": "raindrops on the window glass",
@@ -932,7 +932,7 @@
         "parallax": {
           "label": "Depth motion (parallax)",
           "help": "How each plane moves and how fast, for video. Near planes move faster than far ones when the camera moves; things can move inside a plane too.",
-          "priority": 49,
+          "priority": 30,
           "vocab": [
             {
               "term": "foreground slides past faster than the background",
@@ -1089,7 +1089,7 @@
         "weather_season": {
           "label": "Weather and season",
           "help": "Sky, weather and season. Weather changes light and texture.",
-          "priority": 50,
+          "priority": 32,
           "vocab": [
             {
               "term": "clear sky",
@@ -1156,7 +1156,7 @@
         "atmosphere": {
           "label": "Atmosphere",
           "help": "What is in the air. Adds depth and catches light.",
-          "priority": 62,
+          "priority": 36,
           "vocab": [
             {
               "term": "haze",
@@ -2188,7 +2188,7 @@
         "quality": {
           "label": "Light quality",
           "help": "Hard or soft, and how it falls off.",
-          "priority": 52,
+          "priority": 58,
           "vocab": [
             {
               "term": "soft light",
@@ -2259,7 +2259,7 @@
         "direction": {
           "label": "Light direction",
           "help": "Where the main light comes from. Always name a side or a position (left, right, behind, above, below), never only 'cinematic'.",
-          "priority": 54,
+          "priority": 81,
           "vocab": [
             {
               "term": "front light",
@@ -2342,7 +2342,7 @@
         "color_temp": {
           "label": "Colour temperature",
           "help": "Warm or cool light, in plain words or kelvin.",
-          "priority": 56,
+          "priority": 62,
           "vocab": [
             {
               "term": "candlelight 1900K",
@@ -2536,7 +2536,7 @@
         "palette_grade": {
           "label": "Palette and grade",
           "help": "Colour palette and colour grade.",
-          "priority": 60,
+          "priority": 44,
           "vocab": [
             {
               "term": "natural grade",
@@ -2643,7 +2643,7 @@
         "texture": {
           "label": "Texture",
           "help": "Grain, halation and other surface finish. First to drop when trimming.",
-          "priority": 10,
+          "priority": 12,
           "vocab": [
             {
               "term": "fine film grain",
@@ -2722,7 +2722,7 @@
         "finish": {
           "label": "Natural finish",
           "help": "Real-world imperfection that stops an image looking too perfect: lived-in wear, real-lens behaviour, slight handheld life. card new fills it from 'defaults' for the preset's finish value (natural, true_to_life); 'clean' presets (graphics, icons, products that should look pristine) leave it empty. Ranked below the depth fields: a user-written plane outranks the generic finish.",
-          "priority": 47,
+          "priority": 28,
           "defaults": {
             "natural": "subtle real-world imperfection: lived-in detail, real-lens character",
             "true_to_life": "true-to-life colour, slightly uneven motivated light, real-lens character"
@@ -2817,7 +2817,7 @@
         "style_ref": {
           "label": "Style",
           "help": "Genre, medium or art style. Also motion-graphics styles. Name a look, never a living artist.",
-          "priority": 70,
+          "priority": 35,
           "vocab": [
             {
               "term": "cinematic",
@@ -3044,7 +3044,7 @@
         "mood": {
           "label": "Mood",
           "help": "The feeling the shot should leave.",
-          "priority": 76,
+          "priority": 10,
           "vocab": [
             {
               "term": "calm",
@@ -3235,7 +3235,7 @@
         "transition_in": {
           "label": "Transition in",
           "help": "How the shot starts, so it joins the shot before it.",
-          "priority": 44,
+          "priority": 9,
           "vocab": [
             {
               "term": "hard cut",
@@ -3302,7 +3302,7 @@
         "transition_out": {
           "label": "Transition out",
           "help": "How the shot ends, so it joins the next shot.",
-          "priority": 42,
+          "priority": 8,
           "vocab": [
             {
               "term": "hard cut",

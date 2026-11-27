@@ -30,6 +30,7 @@ import re
 
 DEFAULT_MAX_WORDS = 120
 DEFAULT_PROTECT = 90
+MENTION_RE = re.compile(r"@[A-Za-z][A-Za-z0-9_-]{0,23}")  # a reference label, see board.py
 MIN_GUARDS = 2
 DEFAULT_GUARD_PRIORITY = 45
 
@@ -57,21 +58,19 @@ DEPTH_FIELDS = ("world.background_far", "world.background_near", "world.foregrou
 
 # Fallback priorities (higher = more important). texture, practicals, era, camera_look go first.
 DEFAULT_PRIORITY = {
-    "subject.subject": 100, "subject.action": 98, "camera.movement": 94,
-    "camera.movement_speed": 92, "camera.shot_size": 90, "world.environment": 88,
-    "time_output.on_screen_text": 85, "time_output.beats": 84, "world.time_of_day": 82,
-    "light_look.setup": 80, "camera.angle": 78, "light_look.mood": 76, "subject.placement": 75,
-    "camera.lens": 74, "subject.interaction": 73,
-    "camera.composition": 72, "light_look.style_ref": 70, "time_output.loop": 70,
-    "time_output.audio": 68, "world.foreground": 67, "subject.elements": 66, "time_output.pacing": 64,
-    "world.atmosphere": 62, "world.background_near": 61, "light_look.palette_grade": 60, "camera.dof": 58,
-    "light_look.color_temp": 56, "light_look.direction": 54,
-    "world.background_far": 53, "light_look.quality": 52,
-    "world.weather_season": 50, "world.parallax": 49, "subject.consistency": 48, "light_look.finish": 47,
-    "subject.wardrobe_props": 46,
-    "time_output.transition_in": 44, "time_output.transition_out": 42,
-    "camera.camera_look": 40, "world.era": 30, "light_look.practicals": 20,
-    "light_look.texture": 10,
+    # Cut order matches the shot-layer tiers (board.LAYER_TIERS): mood and texture go first, then the extra
+    # place detail, then wardrobe; the subject, its action, the camera move and the light's direction stay.
+    "subject.subject": 100, "subject.action": 98, "camera.movement": 94, "camera.movement_speed": 92,
+    "camera.shot_size": 90, "world.environment": 88, "time_output.on_screen_text": 85, "time_output.beats": 84,
+    "world.time_of_day": 82, "light_look.direction": 81, "light_look.setup": 80, "camera.angle": 78,
+    "subject.placement": 75, "camera.lens": 74, "subject.interaction": 73, "camera.composition": 72,
+    "time_output.loop": 70, "time_output.audio": 68, "subject.elements": 66, "time_output.pacing": 64,
+    "light_look.color_temp": 62, "camera.dof": 58, "light_look.quality": 58, "subject.wardrobe_props": 55,
+    "subject.consistency": 48, "light_look.palette_grade": 44, "world.background_near": 42,
+    "world.foreground": 40, "camera.camera_look": 40, "world.background_far": 38, "world.atmosphere": 36,
+    "light_look.style_ref": 35, "world.weather_season": 32, "world.parallax": 30, "world.era": 30,
+    "light_look.finish": 28, "light_look.practicals": 20, "light_look.texture": 12, "light_look.mood": 10,
+    "time_output.transition_in": 9, "time_output.transition_out": 8,
 }
 
 IMAGE_SKIP = {"camera.movement", "camera.movement_speed", "time_output.beats", "time_output.pacing",
@@ -604,6 +603,9 @@ def compile(card, model_profile=None, rules=None):  # noqa: A001 - name fixed by
                 # what changes is the point of an edit: light and look are trimmed last
                 if pri < protect:  # trimmed last, but still trimmable; already-protected fields stay protected
                     pri = min(protect - 1, max(pri, 80 + pri // 5))
+            if MENTION_RE.search(text):
+                # a field naming a reference image (@Label) carries the link to an input: never trim it away
+                pri = max(pri, protect)
             items.append({"key": key, "group": group, "text": text,
                           "priority": pri, "idx": idx})
             idx += 1

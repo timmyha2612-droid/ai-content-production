@@ -71,6 +71,11 @@ class TestBoardData(Base):
 
     def test_attribute_mapping(self):
         self.assertEqual(board.input_role("Frame"), "start_frame")
+        self.assertEqual(board.input_role("Start frame"), "start_frame")
+        self.assertEqual(board.input_role("end frame"), "end_frame")
+        self.assertIsNone(board.input_role("Performance"))
+        self.assertIsNone(board.input_role("Emotion"))
+        self.assertEqual(board.asset_role("End frame"), "board")
         self.assertEqual(board.input_role("character"), "character")
         self.assertEqual(board.input_role("Light and texture"), "style")
         self.assertIsNone(board.input_role("Transition"))
@@ -91,7 +96,33 @@ class TestRefs(Base):
         self.assertEqual(a["board"], {"shot": 1, "attr": "Character", "name": "my photo.png", "label": "Character1"})
 
     def test_frame_still_is_generated(self):
-        self.assertEqual(board.add_ref(self.proj, PNG, "still.png", 1, "Frame")["rights"], "generated")
+        for attr in ("Frame", "Start frame", "End frame"):
+            self.assertEqual(board.add_ref(self.proj, PNG, "still.png", 1, attr)["rights"], "generated")
+
+    def test_template_uses_the_shot_layers(self):
+        self.assertEqual(tuple(board.BOARD_TEMPLATE["shots"][0]["layers"]), board.SHOT_LAYERS)
+
+    def test_tiers_and_missing_required_layers(self):
+        self.assertEqual(board.layer_tier("performance"), "required")
+        self.assertEqual(board.layer_tier("End frame"), "conditional")
+        self.assertEqual(board.layer_tier("Mood"), "optional")
+        self.assertEqual(board.layer_tier("Anything new"), "optional")
+        tiers = [t for names in board.LAYER_TIERS.values() for t in names]
+        self.assertEqual(len(tiers), len(set(tiers)))
+        data = json.loads(json.dumps(board.BOARD_TEMPLATE))
+        self.assertEqual(board.layer_warnings(data), [])
+        del data["shots"][0]["layers"]["Performance"]
+        data["shots"][0]["layers"]["Lighting"] = " "
+        self.assertEqual(board.layer_warnings(data), ["Shot 1 has no Performance, Lighting."])
+        data["shots"][0]["card"] = None  # edit-only shots need none
+        self.assertEqual(board.layer_warnings(data), [])
+
+    def test_cut_order_follows_the_tiers(self):
+        from shotcraft import compiler
+        P = compiler.DEFAULT_PRIORITY
+        order = ["light_look.mood", "light_look.texture", "world.atmosphere", "subject.wardrobe_props",
+                 "light_look.color_temp", "light_look.direction", "camera.shot_size", "subject.action"]
+        self.assertEqual(sorted(order, key=lambda k: P[k]), order)
 
     def test_refuses_non_images_and_bad_input(self):
         for args in ((PNG, "x.svg", 1, "Mood"), (PNG, "x.exe", 1, "Mood"), (b"", "x.png", 1, "Mood"),
@@ -240,6 +271,26 @@ class TestLabelsAndMentions(Base):
     def test_start_frame_takes_no_image_slot(self):
         self.owned("f.png", "Frame")
         self.assertEqual(board.resolve_mentions(self.proj, "S010", "x", "seedance_2_5")["slots"], [])
+
+    def test_end_frame_is_proposed_for_its_shot_only(self):
+        board.add_ref(self.proj, PNG, "e.png", 1, "End frame")
+        board.add_ref(self.proj, PNG, "e0.png", 0, "End frame")
+        self.assertEqual([(p["card"], p["as"]) for p in board.inputs_plan(self.proj)], [("S010", "end_frame")])
+
+    def test_a_field_with_a_mention_is_never_trimmed(self):
+        from shotcraft import compiler, rules
+        filler = "with a long winding description of everything in the room " * 3
+        meta = {"id": "S010", "kind": "video", "use_case": "social-vertical", "status": "draft",
+                "settings": {"aspect": "9:16", "resolution": "1080p", "duration_s": 5},
+                "layers": {"subject": {"subject": "a baker", "action": "kneads dough " + filler,
+                                       "consistency": "same face as @Baker"},
+                           "world": {"environment": "a bakery " + filler, "atmosphere": "flour dust " + filler},
+                           "light_look": {"texture": "grainy " + filler, "palette_grade": "warm " + filler}}}
+        prof, _ = rules.model_profile("seedance_2_5")
+        res = compiler.compile(meta, prof, rules.compiler_rules())
+        self.assertTrue(res["dropped_fields"])  # the prompt was over the cap
+        self.assertIn("@Baker", res["prompt"])
+        self.assertNotIn("subject.consistency", [d["field"] for d in res["dropped_fields"]])
 
 
 class TestServer(Base):

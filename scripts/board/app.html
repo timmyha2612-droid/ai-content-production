@@ -45,6 +45,7 @@ button[aria-pressed=true]{background:var(--ink);color:var(--bg)}
 .layers dd{margin:-2px -4px;padding:2px 4px;border-radius:8px}
 .layers dd.on{outline:1.5px dashed var(--red)}
 .layers dd.drag,.frame.drag{background:color-mix(in srgb,var(--red) 16%,transparent)}
+dt.more{display:none}dd.more{grid-column:1/-1;margin:2px 0 0}dd.more summary{cursor:pointer;font-size:13px;font-weight:700;color:var(--soft);min-height:32px;display:flex;align-items:center}dd.more .layers{margin-top:6px}
 .risk{grid-column:1/-1;border-left:3px solid var(--red);padding:4px 0 4px 10px!important;font-size:14px}
 .sw{display:inline-block;width:.9em;height:.9em;border-radius:3px;vertical-align:-.1em;margin-right:4px;border:1px solid var(--line)}
 .refs{display:flex;flex-wrap:wrap;gap:6px;margin-top:6px}
@@ -144,11 +145,12 @@ code{font-size:13px;overflow-wrap:anywhere}
     <div id="plan"></div>
     <h2 style="font-size:20px;margin:36px 0 4px">How references map to Higgsfield</h2>
     <div style="overflow-x:auto"><table><thead><tr><th>Where you add it</th><th>Card input</th><th>What it does</th></tr></thead><tbody>
-      <tr><td>Add still (frame)</td><td>start_frame</td><td>Image to video. The prompt becomes motion only.</td></tr>
+      <tr><td>Add still (frame) or Start frame</td><td>start_frame</td><td>Image to video. The prompt becomes motion only.</td></tr>
+      <tr><td>End frame</td><td>end_frame</td><td>Where the shot must land, on models that take an end frame.</td></tr>
       <tr><td>Character</td><td>character</td><td>Keeps the same face across shots.</td></tr>
-      <tr><td>Wardrobe, Props, Environment</td><td>reference</td><td>Matches clothing, objects and set.</td></tr>
+      <tr><td>Wardrobe, Environment (with its props)</td><td>reference</td><td>Matches clothing, the place and the objects in it.</td></tr>
       <tr><td>Lighting, Mood, Camera, Visual worlds, Palette, Light and texture, Moodboard</td><td>style</td><td>Matches light, colour and grade. Look book references apply to every shot.</td></tr>
-      <tr><td>Anything else (Transition, Keep out…)</td><td>not sent</td><td>Notes for the writing and the edit.</td></tr>
+      <tr><td>Performance, Emotion, Keep out and other notes</td><td>not sent</td><td>Written into the prompt; a phone clip of the performance can become a motion reference later.</td></tr>
     </tbody></table></div>
   </section>
 </div></main>
@@ -180,12 +182,14 @@ function renderStatic(){const B=V.board;document.title=B.title;$("title").textCo
   $("facts").innerHTML=(B.facts||[]).map(f=>`<div><b>${esc(f.value)}</b><span>${esc(f.label)}</span></div>`).join("");
   $("strip").innerHTML=(B.shots||[]).map(s=>`<a class="seg" href="#shot-${esc(s.n)}" style="--d:${Number(s.dur)||1};--w:${tint(B,s.world)}"><b>${esc(s.n)}</b><em>${esc(s.name)}</em><small>${esc(s.dur)} s <i data-chip="${esc(s.card||"")}"></i></small></a>`).join("");
   $("look").innerHTML=(B.look||[]).map(r=>row(0,r.attr,r.text)).join("");
-  $("shots").innerHTML=(B.shots||[]).map(s=>{const h=V.hf[String(s.n)];const L=Object.entries(s.layers||{}).map(([k,v])=>row(s.n,k,v)).join("");
+  const tierOf=k=>{const T=V.tiers||{};for(const t of ["required","conditional","optional"])if((T[t]||[]).some(n=>n.toLowerCase()===String(k).toLowerCase()))return t;return "optional"};
+  $("shots").innerHTML=(B.shots||[]).map(s=>{const h=V.hf[String(s.n)];const E=Object.entries(s.layers||{});const main=E.filter(([k])=>tierOf(k)!=="optional"),extra=E.filter(([k])=>tierOf(k)==="optional");
+    const L=main.map(([k,v])=>row(s.n,k,v)).join("")+(extra.length?`<dt class="more"></dt><dd class="more"><details><summary>More (${extra.map(([k])=>esc(k)).join(", ")})</summary><dl class="layers">${extra.map(([k,v])=>row(s.n,k,v)).join("")}</dl></details></dd>`:"");
     return `<article class="shot" id="shot-${esc(s.n)}"><div class="frame" data-shot="${esc(s.n)}" data-attr="Frame" style="--w:${tint(B,s.world)}"><span class="n">${esc(s.n)}</span><span class="ss">${esc(s.size||"")}</span>${s.card?`<label><span>Add still</span><input type="file" accept="image/*"></label>`:""}</div>
     <div><span class="tc">${esc(s.time)} s</span><h3>${esc(s.name)}</h3><p>${esc(s.picture)}</p><div class="snd">${s.vo?`<p><span class="k">VO</span>${esc(s.vo)}</p>`:""}${s.text?`<p><span class="k">Text</span><span class="card">${esc(s.text)}</span></p>`:""}${s.sound?`<p><span class="k">Sound</span>${esc(s.sound)}</p>`:""}</div>${hfBlock(s.n,h)}${s.card?`<div class="prog" data-card="${esc(s.card)}"></div>`:""}</div>
     <dl class="layers">${L}${s.risk?`<dd class="risk"><b>Risk.</b> ${esc(s.risk)}</dd>`:""}</dl></article>`}).join("");
   $("notes").innerHTML=(B.notes||[]).map(n=>`<div><h2>${esc(n.title)}</h2><ul>${(n.items||[]).map(i=>`<li>${esc(i)}</li>`).join("")}</ul></div>`).join("");
-  if(V.errors.length)say("Board problems: "+V.errors.join(" "))}
+  if(V.errors.length)say("Board problems: "+V.errors.join(" "));else if((V.warnings||[]).length)say("Missing required layers: "+V.warnings.join(" "))}
 function refEl(r){const el=document.createElement("div");el.className="ref";const a=document.createElement("a");a.href=r.url+"?t="+encodeURIComponent(TOKEN);a.target="_blank";const im=document.createElement("img");im.src=a.href;im.alt=r.name||"reference";a.appendChild(im);
   const rt=document.createElement("button");rt.type="button";rt.className="rt"+(r.send?" send":"");rt.textContent=RL[r.rights]||r.rights;rt.dataset.id=r.id;rt.dataset.r=r.rights;
   const x=document.createElement("button");x.type="button";x.className="x";x.textContent="×";x.dataset.id=r.id;x.setAttribute("aria-label","Remove");el.append(a,rt,lbEl(r),x);return el}
