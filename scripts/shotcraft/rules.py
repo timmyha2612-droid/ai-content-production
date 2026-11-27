@@ -27,7 +27,7 @@ except Exception:  # pragma: no cover - depends on the rest of the package
 
 
 RULE_NAMES = ("taxonomy", "negatives", "positive_rewrites", "models", "routing",
-              "presets", "tracks", "stages")
+              "presets", "tracks", "stages", "element_recipes")
 
 
 class RulesError(Exception):

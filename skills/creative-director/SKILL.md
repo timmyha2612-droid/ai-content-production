@@ -109,7 +109,7 @@ Write `02_concept/chosen.md`:
 **The user said:** "<their exact words, copied, not paraphrased>"
 **Changes the user asked for:** <list, or "none">
 **Locked from here on:** <tone, structure, look, hero moment, production method>
-**Open questions for the script and bible:** <list>
+**Open questions for the script and elements:** <list>
 ```
 
 Then close the stage with the user's own words. Never invent, shorten or tidy up their words; if they picked an

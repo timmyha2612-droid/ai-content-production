@@ -33,7 +33,7 @@ RIGHTS = ("reference-only", "owned", "licensed", "generated")
 ROLES = ("reference", "character", "environment", "prop", "moodboard", "input", "board", "draft", "final",
          "upscaled")
 KINDS = ("image", "video", "audio", "3d", "doc")
-TIERS = ("board", "draft", "final", "upscale")
+TIERS = ("element", "board", "draft", "final", "upscale")
 GEN_STATUSES = ("estimated", "submitted", "queued", "in_progress", "completed", "failed", "nsfw", "canceled",
                 "ip_detected")
 

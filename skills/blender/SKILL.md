@@ -17,7 +17,7 @@ must match the shot's card, or Higgsfield gets two different instructions.
 
 - The user connects Blender to Claude themselves. Check that Blender tools are in this session (their names
   usually contain `blender`). If none are, don't try to install anything: write the plan (step 2) into the
-  shot's environment file in `04_bible/environments/` and tell the user it's ready to build once Blender is
+  shot's environment file in `04_elements/environments/` and tell the user it's ready to build once Blender is
   connected.
 - Blender runs on the user's own computer. Work only inside the project folder, in `00_inputs/blender/`.
 - The connection can run any Python in Blender. Save a copy before each big step
@@ -27,7 +27,7 @@ must match the shot's card, or Higgsfield gets two different instructions.
 
 ## 1. Read the shot first
 
-Read the card (`05_prompts/<shot>.md`), the look book in `board/board.json` (or `04_bible/look.md`) and the
+Read the card (`05_prompts/<shot>.md`), the look book in `board/board.json` (or `04_elements/style/look.md`) and the
 environment file. Pull out: aspect and size, lens, shot size and angle, the camera move and its speed, the
 duration, the depth planes (far, near, subject, foreground), the key light's source, side and colour, what
 stays dark, and the palette.

@@ -1,10 +1,10 @@
 # How to read and run the QA checklists
 
 These checklists are for the reviewers: `shotcraft:qa-supervisor` (every building stage) and
-`shotcraft:script-supervisor` (continuity on the bible, boards, drafts and finals). The verifier
+`shotcraft:script-supervisor` (continuity on the element sheets, boards, drafts and finals). The verifier
 (`shotcraft:qa-verifier`) reads them too, to judge whether a finding breaks a written rule.
 
-One file per stage: `research.md`, `script.md`, `shotlist.md`, `bible.md`, `prompts.md`, `drafts.md` (also used
+One file per stage: `research.md`, `script.md`, `shotlist.md`, `elements.md`, `prompts.md`, `drafts.md` (also used
 for boards), `finals.md`, `delivery.md`.
 
 `sc` = `python3 "${CLAUDE_PLUGIN_ROOT}/scripts/sc.py"`.

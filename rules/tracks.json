@@ -4,7 +4,7 @@
   "tracks": {
     "full": {
       "label": "Full production",
-      "when": "A full piece of content: research to hand-off, ending in the Higgsfield hand-off (assets uploaded + Canvas build sheet).",
+      "when": "A full piece of content: research, scenes and shots, elements built and locked one by one, then shots generated from them. Ends at approved finals; the DaVinci hand-off runs only when the user asks.",
       "generation_allowed": true,
       "stages": [
         "intake",
@@ -12,14 +12,10 @@
         "concept",
         "script",
         "shotlist",
-        "bible",
+        "elements",
         "prompts",
-        "boards",
         "drafts",
         "finals",
-        "sound",
-        "assembly",
-        "delivery",
         "handoff",
         "learn"
       ]
@@ -33,7 +29,6 @@
         "prompts",
         "drafts",
         "finals",
-        "delivery",
         "handoff",
         "learn"
       ]
@@ -57,19 +52,21 @@
     }
   },
   "optional": [
-    "research",
     "concept",
-    "sound",
-    "assembly",
-    "boards",
+    "drafts",
     "handoff"
   ],
   "parallel": [],
   "qa_max_rounds": 3,
   "gen_tier_stage": {
+    "element": "elements",
     "board": "boards",
     "draft": "drafts",
     "final": "finals",
     "upscale": "finals"
-  }
+  },
+  "on_request": [
+    "handoff"
+  ],
+  "about_on_request": "Stages on this list start skipped on a new project and run only when the user asks for them (sc.py stage include <stage> --user-said \"...\")."
 }

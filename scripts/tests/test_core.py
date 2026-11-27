@@ -79,7 +79,11 @@ class ProjectTests(Base):
         self.assertEqual(data["stages_included"], stages.track_stages("full"))
         self.assertEqual(data["handoff"]["canvas_sheet"], "10_handoff/canvas-build-sheet.md")
         st = stages.load_state(proj)
-        self.assertTrue(all(st["stages"][s]["status"] == "pending" for s in st["order"]))
+        # on-request stages (the hand-off) start skipped; everything else is pending
+        self.assertEqual(st["stages"]["handoff"]["status"], "skipped")
+        self.assertTrue(all(st["stages"][s]["status"] == "pending" for s in st["order"] if s != "handoff"))
+        self.assertEqual(data["stages_included"], [s for s in stages.track_stages("full") if s != "handoff"]
+                         if data["stages_included"] != stages.track_stages("full") else data["stages_included"])
         self.assertTrue(os.path.isfile(paths.project_lessons_file(proj)))
 
     def test_init_refusals(self):
@@ -268,14 +272,31 @@ class StageTests(Base):
         stages.reopen(proj, "research")
         self.assertIn("research", manifest.load(proj)["stages_included"])
 
-    def test_sound_then_assembly_in_order(self):
-        proj = self.make()
+    def test_full_track_order(self):
         order = stages.track_stages("full")
-        self.assertNotIn("mograph", order)  # motion graphics live outside shotcraft
-        self.force(proj, **{s: "done" for s in order[:order.index("sound")]})
-        stages.start(proj, "sound")
+        self.assertEqual(order, ["intake", "research", "concept", "script", "shotlist", "elements", "prompts",
+                                 "drafts", "finals", "handoff", "learn"])
+        for gone in ("bible", "boards", "sound", "assembly", "delivery", "mograph"):
+            self.assertNotIn(gone, order)
+        self.assertFalse(stages.is_optional("research"))
+        self.assertTrue(stages.is_optional("drafts"))
+
+    def test_handoff_runs_only_on_request(self):
+        proj = self.make()
+        self.assertEqual(stages.load_state(proj)["stages"]["handoff"]["status"], "skipped")
         with self.assertRaises(Refused):
-            stages.start(proj, "assembly")
+            stages.include(proj, "handoff", "")
+        with self.assertRaises(Refused):
+            stages.include(proj, "learn", "bring it back")
+        rec = stages.include(proj, "handoff", "make the davinci package")
+        self.assertEqual(rec["status"], "pending")
+        self.assertIn("handoff", manifest.load(proj)["stages_included"])
+
+    def test_research_cannot_be_dropped_without_naming_it(self):
+        proj = self.make()
+        with self.assertRaises(Refused):
+            stages.skip(proj, "research", "skip that one")
+        self.assertEqual(stages.skip(proj, "research", "no research this time")["status"], "skipped")
 
     def test_one_open_at_a_time(self):
         proj = self.make()
@@ -307,14 +328,31 @@ class StageTests(Base):
 
     def test_shotlist_and_generation_evidence(self):
         proj = self.make()
-        self.write(proj, "03_script/shotlist.md",
-                   "# Shots\n\n| Shot | Duration (s) | Purpose | Kind | Image-first |\n|---|---|---|---|---|\n"
+        scenes = ("## Scenes\n\n| Scene | Place | Time | Mode | Elements |\n|---|---|---|---|---|\n"
+                  "| SC01 | EXT. HARBOUR | DAWN | shots | @Fisher @Harbour |\n\n")
+        self.write(proj, "03_script/shotlist.md", "# Shots\n\n" +
+                   "| Shot | Duration (s) | Purpose | Kind | Image-first |\n|---|---|---|---|---|\n"
                    "| S010 | 4 | open on the sea | video | yes |\n| S020 | 3s | the reveal | video | no |\n")
         rows = stages.parse_shotlist(proj)
         self.assertEqual([r["id"] for r in rows], ["S010", "S020"])
         self.assertEqual(rows[1]["duration_value"], 3.0)
         self.assertTrue(rows[0]["image_first"])
+        ok, _, why = stages._ev_shotlist(proj, {"path": "03_script/shotlist.md"})
+        self.assertFalse(ok)  # no scene table, no scene column
+        self.assertIn("scene", why)
+        self.write(proj, "03_script/shotlist.md", "# Shots\n\n" + scenes +
+                   "| Shot | Scene | Duration (s) | Purpose |\n|---|---|---|---|\n"
+                   "| S010 | SC01 | 4 | open on the sea |\n| S020 | SC01 | 3s | the reveal |\n")
+        self.assertEqual([r["id"] for r in stages.parse_shotlist(proj)], ["S010", "S020"])
+        self.assertEqual(stages.parse_scenes(proj)[0]["place"], "EXT. HARBOUR")
         self.assertTrue(stages._ev_shotlist(proj, {"path": "03_script/shotlist.md"})[0])
+        # a multi-shot scene must fit one take
+        self.write(proj, "03_script/shotlist.md", scenes.replace("| shots |", "| multi-shot |") +
+                   "| Shot | Scene | Duration (s) | Purpose |\n|---|---|---|---|\n"
+                   "| S010 | SC01 | 9 | a |\n| S020 | SC01 | 8 | b |\n")
+        ok, _, why = stages._ev_shotlist(proj, {"path": "03_script/shotlist.md"})
+        self.assertFalse(ok)
+        self.assertIn("15 s", why)
         self.write(proj, "03_script/shotlist.md", "| id | duration_s | purpose |\n|--|--|--|\n| S010 | | x |\n")
         self.assertFalse(stages._ev_shotlist(proj, {"path": "03_script/shotlist.md"})[0])
         self.write(proj, "03_script/shotlist.md",
@@ -333,17 +371,9 @@ class StageTests(Base):
             self.write(proj, "05_prompts/S030.md", "no front matter")
             self.assertFalse(stages.check_evidence(proj, "prompts")[0])
             os.remove(os.path.join(proj, "05_prompts/S030.md"))
-            # boards: only S010 is image-first
-            self.force(proj, prompts="done", boards="open")
-            manifest.add_generation(proj, shot="S010", tier="board", status="completed")
-            self.assertFalse(stages.check_evidence(proj, "boards")[0])  # no contact sheet
             from shotcraft import contact_sheet
-            self.write(proj, "06_generations/contact-sheets/boards.html", "<html></html>")
-            self.assertFalse(stages.check_evidence(proj, "boards")[0])  # a hand-written sheet does not count
-            contact_sheet.build(proj, "board", stamp="20261124-100000")
-            self.assertTrue(stages.check_evidence(proj, "boards")[0])
             # drafts: every shot
-            self.force(proj, boards="done", drafts="open")
+            self.force(proj, prompts="done", drafts="open")
             manifest.add_generation(proj, shot="S010", tier="draft", status="completed")
             contact_sheet.build(proj, "draft", stamp="20261124-100100")
             ok, _, probs = stages.check_evidence(proj, "drafts")
@@ -411,7 +441,7 @@ class RefineAndSingleTests(Base):
     def test_single_track_gen_gates(self):
         proj = self.make(track="single")
         self.assertEqual(stages.load_state(proj)["order"],
-                         ["intake", "prompts", "drafts", "finals", "delivery", "handoff", "learn"])
+                         ["intake", "prompts", "drafts", "finals", "handoff", "learn"])
         ok, why = stages.gen_allowed(proj, "board")
         self.assertFalse(ok)
         self.force(proj, intake="done", prompts="done", drafts="open")

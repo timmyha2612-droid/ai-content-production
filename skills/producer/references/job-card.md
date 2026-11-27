@@ -16,7 +16,7 @@ as empty and the stage will not close.
 | `Goal` | What the piece must achieve, in one sentence, with the one action or feeling it should cause | Get first-time visitors to book a tasting at the bakery this month |
 | `Audience` | Who watches, where, and what they already know | Locals 25-45 scrolling Instagram on their phones, sound off, never heard of us |
 | `Use case` | The preset id plus the platform in words | social-vertical (Instagram Reel and TikTok) |
-| `Delivery` | Aspect, resolution, fps, exact length, formats, count | 9:16, 1080x1920, 30 fps, 15 s, MP4 H.264, 1 master + 1 cut-down 6 s |
+| `Delivery` | Aspect, resolution, fps, length (exact only when something fixes it; otherwise `flexible, set by the story`), formats, count | 9:16, 1080x1920, 30 fps, 15 s, MP4 H.264, 1 master + 1 cut-down 6 s |
 | `Budget` | Credits for the job and the single-job threshold | 300 credits, ask me above 50 per job |
 
 Keep each label exactly as written (capital first letter, no extra words before the colon).

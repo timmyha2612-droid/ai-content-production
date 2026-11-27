@@ -14,6 +14,8 @@ API:
     start(project, stage, note=None) -> record
     done(project, stage, user_said=None, note=None) -> record         (checks the evidence itself)
     skip(project, stage, user_said, note=None) -> record
+    include(project, stage, user_said, note=None) -> record   bring back a skipped stage (an on-request stage the
+        user now asks for, or one dropped earlier); it goes back to pending
     reopen(project, stage, note=None, user_said=None) -> {"reopened": stage, "reset": [later stages]}
     check_evidence(project, stage) -> (ok, found: [str], problems: [str])
     qa_record(project, stage, round_n, verdict, findings=None, note=None, by=None) -> round record
@@ -26,7 +28,8 @@ API:
     path_writable(project, relpath) -> (bool, reason)          (the guard's whole write rule in one call)
     gen_stage_for_tier(tier) -> stage name
     gen_allowed(project, tier) -> (bool, reason)               (refine track never; the tier's stage must be open)
-    parse_shotlist(project) -> [ {"id", "duration_s", "purpose", "kind", "image_first", ...} ]
+    parse_shotlist(project) -> [ {"id", "scene", "duration_s", "purpose", "elements", "kind", ...} ]
+    parse_scenes(project) -> [ {"scene", "place", "time", "mode", "elements", ...} ]   the shot list's scene table
     planned_shots(project) -> [shot ids]                       (shot list on full track, else the cards)
     generated_shots(project) -> [shot ids]   the planned shots that are generated (no `source: 00_inputs/...`)
     input_shots(project) -> {shot id: source path}   shots covered by the user's own files in 00_inputs/
@@ -102,9 +105,18 @@ def _blank():
             "note": None, "qa_rounds": [], "qa_override": None, "history": []}
 
 
+def on_request():
+    return list(load_tracks().get("on_request") or [])
+
+
 def init_state(project, track):
     order = track_stages(track)
     state = {"schema": 1, "track": track, "order": order, "stages": {s: _blank() for s in order}}
+    for s in on_request():
+        if s in state["stages"]:
+            state["stages"][s].update({"status": "skipped", "done_at": jsonio.now_iso(),
+                                       "note": "on request: runs only when the user asks (sc.py stage include %s)"
+                                               % s})
     save_state(project, state)
     return state
 
@@ -222,6 +234,23 @@ def skip(project, stage, user_said, note=None):
     save_state(project, state)
     _sync_included(project, state)
     manifest.add_decision(project, stage, "Stage %s skipped" % stage, user_said)
+    return rec
+
+
+def include(project, stage, user_said, note=None):
+    """Bring back a skipped stage (an on-request stage the user now asks for). It goes back to pending."""
+    if not (user_said or "").strip():
+        raise Refused("Including a stage needs the user's own words (--user-said).")
+    state = load_state(project)
+    rec = _need_stage(state, stage)
+    if rec["status"] != "skipped":
+        raise Refused("Stage %s is %s, not skipped; nothing to include." % (stage, rec["status"]))
+    rec["history"].append(_snapshot(rec, "included"))
+    rec.update({k: v for k, v in _blank().items() if k != "history"})
+    rec["note"] = note
+    save_state(project, state)
+    _sync_included(project, state)
+    manifest.add_decision(project, stage, "Stage %s included" % stage, user_said)
     return rec
 
 
@@ -398,7 +427,14 @@ def qa_record(project, stage, round_n, verdict, findings=None, note=None, by=Non
         raise Refused("QA is recorded on an open stage; %s is %s." % (stage, rec["status"]))
     qa = qa_status(project, stage)
     if qa["passed"]:
-        raise Refused("QA for %s already passed in round %d." % (stage, qa["latest"]["round"]))
+        latest = qa["latest"]
+        # A PASS recorded without --by can be re-recorded once, same round, to name the reviewer who ran it
+        # (otherwise a continuity gate that needs --by script-supervisor can never close).
+        if not (latest.get("by") is None and by and str(round_n) == str(latest["round"])
+                and str(verdict).upper() == "PASS"):
+            raise Refused("QA for %s already passed in round %d." % (stage, latest["round"]))
+        rec["qa_rounds"] = [r for r in rec["qa_rounds"] if r.get("round") != latest["round"]]
+        qa = dict(qa, next_round=latest["round"], passed=False, escalate=False)
     if qa["escalate"]:
         raise Refused("QA for %s has used all %d rounds. Escalate to the user." % (stage, qa["max_rounds"]))
     try:
@@ -472,15 +508,17 @@ def path_writable(project, relpath):
     stage = stage_for_path(project, rel)
     if stage is None:
         return True, "not a stage folder"
-    m = re.match(r"^05_prompts/(S\d{3}[A-Z]?)\.md$", rel)
+    # rel is case-folded on macOS and Windows, so match the shot id either way and put it back in capitals
+    m = re.match(r"^05_prompts/(s\d{3}[a-z]?)\.md$", rel, re.I)
     if m:  # shot by shot: an in-progress shot's own card stays editable; a locked shot's card does not
         from . import shots as _shots
-        rec = _shots._load(project)["shots"].get(m.group(1), {})
+        sid = m.group(1).upper()
+        rec = _shots._load(project)["shots"].get(sid, {})
         if rec.get("locked"):
             return False, ("%s is locked. Unlock it first: sc.py shots unlock %s --user-said \"<their words>\""
-                           % (m.group(1), m.group(1)))
+                           % (sid, sid))
         if rec.get("in_progress"):
-            return True, "%s is in progress" % m.group(1)
+            return True, "%s is in progress" % sid
     st = load_state(project)["stages"][stage]["status"]
     if st == "open":
         return True, "stage %s is open" % stage
@@ -542,7 +580,18 @@ _HEAD_ALIASES = {
     "purpose": ("purpose", "why", "intent"),
     "kind": ("kind", "type", "media"),
     "image_first": ("image_first", "imagefirst", "board", "boards", "image_first_"),
+    "scene": ("scene", "scene_id", "sc"),
+    "elements": ("elements", "element", "uses"),
 }
+_SCENE_HEAD = {
+    "scene": ("scene", "scene_id", "sc", "id"),
+    "place": ("place", "location", "where", "set"),
+    "time": ("time", "time_of_day", "when", "tod"),
+    "mode": ("mode", "generation", "gen_mode", "generate"),
+    "elements": ("elements", "element", "uses", "who_what"),
+}
+SCENE_MODES = ("shots", "multi-shot")
+MULTI_SHOT_MAX_S = 15
 
 
 def _norm_head(h):
@@ -571,9 +620,10 @@ def parse_shotlist_text(text):
                     if h in aliases and key not in colmap:
                         colmap[key] = j
             i += 2
+            scene_table = any(h in _SCENE_HEAD["place"] for h in heads)
             while i < len(lines) and lines[i].strip().startswith("|"):
                 cells = _cells(lines[i])
-                if "id" in colmap:
+                if "id" in colmap and not scene_table:
                     row = {heads[j] or "col%d" % j: (cells[j] if j < len(cells) else "") for j in range(len(heads))}
                     for key, j in colmap.items():
                         row[key] = cells[j] if j < len(cells) else ""
@@ -587,6 +637,52 @@ def parse_shotlist_text(text):
             continue
         i += 1
     return rows
+
+
+def parse_scenes_text(text):
+    """The scene table: a markdown table with a scene column and a place (or location) column."""
+    rows, lines, i = [], text.splitlines(), 0
+    while i < len(lines):
+        if lines[i].strip().startswith("|") and i + 1 < len(lines) and re.match(r"^\s*\|?\s*:?-{2,}", lines[i + 1]):
+            heads = [_norm_head(h) for h in _cells(lines[i])]
+            colmap = {}
+            for j, h in enumerate(heads):
+                for key, aliases in _SCENE_HEAD.items():
+                    if h in aliases and key not in colmap:
+                        colmap[key] = j
+            i += 2
+            is_scene = "scene" in colmap and "place" in colmap
+            while i < len(lines) and lines[i].strip().startswith("|"):
+                if is_scene:
+                    cells = _cells(lines[i])
+                    row = {key: (cells[j] if j < len(cells) else "").strip() for key, j in colmap.items()}
+                    row["scene"] = re.sub(r"[*`]", "", row["scene"]).strip()
+                    row["mode"] = (row.get("mode") or "shots").strip().lower() or "shots"
+                    rows.append(row)
+                i += 1
+            continue
+        i += 1
+    return rows
+
+
+def parse_scenes(project):
+    path = os.path.join(project, "03_script", "shotlist.md")
+    try:
+        with open(path, "r", encoding="utf-8") as fh:
+            return parse_scenes_text(fh.read())
+    except FileNotFoundError:
+        return []
+
+
+def element_labels(text):
+    """@Labels named in a shot or scene's elements cell (`@Boxer @Gym`, `Boxer, Gym`)."""
+    out = []
+    for tok in re.split(r"[\s,;]+", str(text or "")):
+        tok = tok.strip().strip("`*").lstrip("@")
+        tok = re.sub(r"\(.*\)$", "", tok)
+        if tok and tok not in ("-", "—", "none", "n/a") and tok not in out:
+            out.append(tok)
+    return out
 
 
 def parse_shotlist(project):
@@ -868,9 +964,59 @@ def _ev_shotlist(project, spec):
             bad.append("%s has no duration_s" % (sid or "a row"))
         if not str(r.get("purpose", "")).strip() or _PLACEHOLDER.match(str(r.get("purpose", "")).strip()):
             bad.append("%s has no purpose" % (sid or "a row"))
+    scenes = parse_scenes(project)
+    if load_state(project).get("track") == "full":
+        bad += _scene_problems(rows, scenes)
     if bad:
         return False, None, "shot list: " + "; ".join(bad)
-    return True, "shot list: %d shots with id, duration and purpose" % len(rows), None
+    return True, "shot list: %d scene(s), %d shots with id, scene, duration and purpose" % (
+        len(scenes), len(rows)), None
+
+
+def _scene_problems(rows, scenes):
+    """Scenes come first: every shot sits in a scene from the scene table, a scene's shots are together, and a
+    multi-shot scene fits one take (Kling 3.0 Omni: up to 15 s across its shots)."""
+    bad = []
+    if not scenes:
+        return ["no scene table (a markdown table with scene, place, time, mode and elements columns above the "
+                "shots)"]
+    known, seen = {}, set()
+    for sc in scenes:
+        sid = sc["scene"]
+        if not re.match(r"^SC\d+[A-Za-z]?$", sid):
+            bad.append("%r is not a scene id like SC01" % sid)
+        if sid in seen:
+            bad.append("scene %s appears twice" % sid)
+        seen.add(sid)
+        if not sc.get("place") or _PLACEHOLDER.match(sc["place"]):
+            bad.append("scene %s has no place" % sid)
+        if not sc.get("time") or _PLACEHOLDER.match(sc.get("time") or ""):
+            bad.append("scene %s has no time" % sid)
+        if sc["mode"] not in SCENE_MODES:
+            bad.append("scene %s mode %r is not one of %s" % (sid, sc["mode"], ", ".join(SCENE_MODES)))
+        known[sid] = sc
+    order, last = [], None
+    totals = {}
+    for r in rows:
+        scn = re.sub(r"[*`]", "", str(r.get("scene") or "")).strip()
+        if not scn:
+            bad.append("%s has no scene" % r.get("id"))
+            continue
+        if scn not in known:
+            bad.append("%s is in scene %s, which is not in the scene table" % (r.get("id"), scn))
+        if scn != last:
+            if scn in order:
+                bad.append("the shots of scene %s are not together" % scn)
+            order.append(scn)
+            last = scn
+        totals[scn] = totals.get(scn, 0) + (r.get("duration_value") or 0)
+    for scn, sc in known.items():
+        if scn not in totals:
+            bad.append("scene %s has no shots" % scn)
+        elif sc["mode"] == "multi-shot" and totals[scn] > MULTI_SHOT_MAX_S + 1e-6:
+            bad.append("multi-shot scene %s runs %g s; one take holds %d s (split it or use mode shots)"
+                       % (scn, totals[scn], MULTI_SHOT_MAX_S))
+    return bad
 
 
 def _ev_cards(project, spec):
@@ -996,6 +1142,49 @@ def _ev_delivery_report(project, spec):
                                 eff.get("duration_tolerance_s"), eff.get("loudness_lufs"))), None
 
 
+def _ev_elements(project, spec):
+    """Every element is locked, and every element the shot list names is a locked element."""
+    from . import elements
+    els = elements.list_elements(project)
+    if not els:
+        return False, None, "no elements yet (sc.py element add E01 --name ... --category character)"
+    problems = []
+    unlocked = [e["id"] for e in els if e.get("status") != "locked"]
+    if unlocked:
+        problems.append("not locked yet: " + ", ".join(unlocked))
+    labels = {e["label"].lower(): e for e in els}
+    named = []
+    for r in parse_shotlist(project):
+        named += element_labels(r.get("elements"))
+    for sc in parse_scenes(project):
+        named += element_labels(sc.get("elements"))
+    missing = sorted({n for n in named if n.lower() not in labels})
+    if missing:
+        problems.append("the shot list names elements that don't exist: " + ", ".join("@" + m for m in missing))
+    if problems:
+        return False, None, "; ".join(problems)
+    return True, "%d element(s) locked: %s" % (len(els), ", ".join("@" + e["label"] for e in els)), None
+
+
+def _ev_resolve_package(project, spec):
+    """The DaVinci package built by `sc.py handoff resolve`, unchanged since (recorded in project.json)."""
+    rec = manifest.load(project).get("resolve_package")
+    if not isinstance(rec, dict):
+        return False, None, "no DaVinci package yet (sc.py handoff resolve)"
+    changed = []
+    for rel, sha in (rec.get("files") or {}).items():
+        p = os.path.join(project, rel)
+        try:
+            if manifest.file_sha256(p) != sha:
+                changed.append(rel)
+        except OSError:
+            changed.append(rel)
+    if changed:
+        return False, None, "the DaVinci package changed since it was built (%s); run sc.py handoff resolve " \
+                            "again" % ", ".join(changed[:5])
+    return True, "DaVinci package: %s (%d clips)" % (rec.get("timeline"), rec.get("clips") or 0), None
+
+
 def _ev_lessons_decided(project, spec):
     from . import lessons
     open_ = [l for l in lessons.list_lessons(project) if l["status"] == "open"]
@@ -1008,7 +1197,7 @@ _CHECKS = {
     "file": _ev_file, "json": _ev_json, "card_lines": _ev_card_lines, "sections": _ev_sections,
     "files": _ev_files, "assets": _ev_assets, "shotlist": _ev_shotlist, "cards": _ev_cards,
     "generations": _ev_generations, "contact_sheet": _ev_contact_sheet, "delivery_report": _ev_delivery_report,
-    "lessons_decided": _ev_lessons_decided,
+    "lessons_decided": _ev_lessons_decided, "elements": _ev_elements, "resolve_package": _ev_resolve_package,
 }
 
 

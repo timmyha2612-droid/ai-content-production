@@ -546,17 +546,48 @@ class GenFlowTests(Base):
             gen.submit(proj, "S010", "draft", model="kling3_0_turbo")
         self.assertIn("takes", str(cm.exception))
 
-    def test_image_card_draft_and_board(self):
-        proj = project.init_project("Thumb", "full", use_case="thumbnail", root=self.root)
+    def test_element_card_generates_on_the_element_tier_and_locks(self):
+        from shotcraft import elements
+        proj = project.init_project("Boxer", "full", use_case="social-vertical", root=self.root)
         st = stages.load_state(proj)
-        for s in ("intake", "research", "concept", "script", "shotlist", "bible", "prompts"):
+        for s in ("intake", "research", "concept", "script", "shotlist"):
             st["stages"][s]["status"] = "done"
-        st["stages"]["boards"]["status"] = "open"
         stages.save_state(proj, st)
-        self.make_card(proj, "S010", use_case="thumbnail")
-        g = gen.submit(proj, "S010", "board", wait=True, user_said="go")["generations"][0]
-        self.assertEqual(g["outputs"][0], "06_generations/boards/S010-b1.png")
-        self.assertEqual(g["model"], "nano_banana_flash")
+        with self.assertRaises(Refused):  # elements stage not open
+            elements.add(proj, "Boxer", "character")
+        st = stages.load_state(proj)
+        st["stages"]["elements"]["status"] = "open"
+        stages.save_state(proj, st)
+        el = elements.add(proj, "Old Boxer", "character", label="Boxer",
+                          anchor="a wiry boxer in his sixties, grey stubble, broken nose, faded red hoodie")
+        self.assertEqual(el["id"], "E01")
+        self.assertEqual(el["views"], {"turnaround": "E01A", "expressions": "E01B"})
+        meta, _ = cards.read(os.path.join(proj, "04_elements", "cards", "E01A.md"))
+        self.assertIn("turnaround", meta["layers"]["subject"]["subject"])
+        self.assertIn("faded red hoodie", meta["layers"]["subject"]["subject"])
+        self.assertEqual(meta["tier_plan"], ["element"])
+        self.assertIn("text labels", meta["avoid"])
+        with self.assertRaises(Refused):
+            elements.add(proj, "Another", "character", label="Boxer")  # label taken
+        cards.approve(proj, os.path.join(proj, "04_elements", "cards", "E01A.md"), "turnaround looks right")
+        cards.approve(proj, os.path.join(proj, "04_elements", "cards", "E01B.md"), "faces too")
+        with self.assertRaises(Refused):  # an element card is never a draft
+            gen.submit(proj, "E01A", "draft", wait=True, user_said="go")
+        g1 = gen.submit(proj, "E01A", "element", wait=True, user_said="go")["generations"][0]
+        self.assertEqual(g1["model"], "nano_banana_2")
+        self.assertTrue(g1["outputs"][0].startswith("06_generations/elements/E01A-e1"))
+        g2 = gen.submit(proj, "E01B", "element", wait=True, user_said="go")["generations"][0]
+        with self.assertRaises(Refused):  # no approved take yet
+            elements.lock(proj, "E01", "lock him")
+        gen.approve(proj, g1["id"], "that's him")
+        gen.approve(proj, g2["id"], "good faces")
+        el = elements.lock(proj, "@Boxer", "lock him")
+        self.assertEqual(el["status"], "locked")
+        a = manifest.find_asset(proj, el["assets"][0]["asset"])
+        self.assertEqual((a["role"], a["rights"], a["label"]), ("character", "generated", "Boxer"))
+        self.assertTrue(stages.check_evidence(proj, "elements")[0])
+        elements.link(proj, "E01", "8b2f6a50-1c1e-4a8e-9a43-0d6f5f3c2a11")
+        self.assertEqual(elements.get(proj, "E01")["hf_element_id"], "8b2f6a50-1c1e-4a8e-9a43-0d6f5f3c2a11")
 
 
 # ---------------------------------------------------------------- scout

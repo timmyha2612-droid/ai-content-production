@@ -104,13 +104,14 @@ not read them out as a list.
 
 ### Stages and roles
 
-1. **Drop stages** (multiSelect): research, concept, boards, sound, assembly, handoff. Explain each
-   in its description. [Keep research and concept for new creative work; drop sound when there is no
-   text or graphics; keep handoff on the full track.]
-2. **Who does what.** "Anything you'll do yourself?" multiSelect: music and sound; the edit; colour grade;
-   motion graphics; none. [Their stages are dropped with their words or marked as theirs on the card.]
-3. **Hand-off.** "How do you want the result?" Options: Higgsfield Canvas build (Recommended on the full
-   track: assets uploaded plus a node-by-node build sheet); files in the project folder only; both.
+1. **Optional stages** (multiSelect): concept, drafts. Research always runs; the hand-off is never asked about
+   (it runs only when the user asks later). [Keep concept for new creative work. Drop drafts by default:
+   every element is locked before the shots, so drafts are only for unusually risky shots.]
+2. **Elements.** "Who and what recurs?" Confirm the characters, places and hero props to build as elements, and
+   any of the user's own photos or renders to use as an element's view. [Anyone or anything seen in more than
+   one shot is an element.]
+3. **Who does what.** The edit, sound, music, grade and final export happen in DaVinci, outside shotcraft. Ask
+   only whether native audio from the video model is wanted on the clips.
 4. **Audio plan.** Options: native audio from the video model; a music bed and sound design added later;
    voice-over; silent with captions. [Silent with captions for sound-off social; native audio only when the
    model and shot benefit, since it can cost more.]
@@ -129,7 +130,7 @@ not read them out as a list.
   picks the interview light from it.]
 - **Wardrobe and props.** Fixed items that must stay the same across shots.
 - **Consistency.** "Does the same character or product appear in several shots?" [Yes means a character
-  sheet in the bible and a Soul ID or reference images.]
+  sheet in the element sheets and a Soul ID or reference images.]
 
 ### Layer 3: world
 

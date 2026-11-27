@@ -7,7 +7,7 @@ runs this checklist), then the user's words in the review skill.
 **Boards** use the same checklist on stills (`06_generations/boards/`, tier `board`): skip the items marked
 *(motion)*, and judge each board as the start frame its draft will use.
 
-Read: the shot list, the bible, each shot's card, `project.json` generations for the tier (status, model,
+Read: the shot list, the element sheets, each shot's card, `project.json` generations for the tier (status, model,
 params, outputs, approvals), the contact sheet, `sc asset list --role draft --json` (or `--role board`).
 
 Look at the pictures yourself. For video, extract frames (first, middle, last, and a strip) as the
@@ -17,9 +17,9 @@ script-supervisor agent describes; the contact sheet is not enough to judge cont
 
 | id | check | how | kind | severity |
 |---|---|---|---|---|
-| DR-C01 *(people)* | Character identity holds: same face, age, build, hair, skin tone and marks in every shot of that character, and within each clip from first to last frame. | Frames side by side against the character's bible file and anchor image. Name the shots and the feature that changed. | judgement | blocker |
-| DR-C02 *(people)* | Wardrobe matches the bible for that scene: garments, colours, accessories, nothing appearing or vanishing between cuts. | Frames against the wardrobe plan. | fact | major |
-| DR-C03 | Props: same object, colour, size, state (full, half, empty) and hand as the bible and the neighbouring shots. | Last frame of shot A beside first frame of shot B. | fact | major |
+| DR-C01 *(people)* | Character identity holds: same face, age, build, hair, skin tone and marks in every shot of that character, and within each clip from first to last frame. | Frames side by side against the character's element sheet and anchor image. Name the shots and the feature that changed. | judgement | blocker |
+| DR-C02 *(people)* | Wardrobe matches the element sheets for that scene: garments, colours, accessories, nothing appearing or vanishing between cuts. | Frames against the wardrobe plan. | fact | major |
+| DR-C03 | Props: same object, colour, size, state (full, half, empty) and hand as the element sheets and the neighbouring shots. | Last frame of shot A beside first frame of shot B. | fact | major |
 | DR-C04 | Light direction (key side): the key comes from the same side (frame-left, frame-right, behind, above) and height within a scene. It flips only where the camera crosses the line (then it must flip) or the script moves the source. | Record the key side per shot from the card and the frames; check each cut pair against the scene light plan and the shot list. | judgement | major |
 | DR-C05 | Screen direction and the 180-degree line: travel keeps its direction across cuts (left to right stays left to right), eyelines match, two-person scenes keep each person on their side. | The cut pair strip (last frame of A beside first of B) for every cut that shares a subject or space. | judgement | major |
 | DR-C06 | Palette matches `look.md`: the dominant colours of each shot sit in the palette; no shot drifts warmer, cooler or more saturated than its neighbours without a reason. | Average and dominant colours per shot (the agent's palette recipe); compare with the hex values. | judgement | major |

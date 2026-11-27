@@ -1,0 +1,397 @@
+{
+  "schema": 1,
+  "about": "How each kind of element is prompted, one recipe per view. `sc.py element add` scaffolds one card per view from these: the layers below are written into the card, and {anchor} is replaced by the element's consistency anchor (one fixed sentence that describes it). Sheets (turnaround, expressions, outfit, product, angles) are shot on a plain background in flat even light, so the model learns the thing and not a place; plates and style frames are shot in the job's own light and look. hf_category is the Higgsfield Elements category the locked element is saved under. A view's finish (clean for sheets) overrides the job's look, so sheets stay neutral; plates, portraits and the style frame keep the job's finish.",
+  "categories": {
+    "character": {
+      "label": "Character (a person, a creature, a mascot)",
+      "hf_category": "character",
+      "asset_role": "character",
+      "input_role": "character",
+      "default_views": [
+        "turnaround",
+        "expressions"
+      ],
+      "views": {
+        "turnaround": {
+          "label": "Turnaround sheet",
+          "why": "The identity reference: the same body, face, hair and outfit from every side. Video models hold a character best from a clean full-body sheet.",
+          "aspect": "16:9",
+          "layers": {
+            "subject": {
+              "subject": "character turnaround sheet of {anchor}: four full-body views side by side, front, three-quarter, profile and back, same neutral standing pose, arms relaxed",
+              "consistency": "the same one in every panel"
+            },
+            "world": {
+              "environment": "plain seamless light grey studio background, nothing else in frame"
+            },
+            "camera": {
+              "shot_size": "full body, head to feet in every view",
+              "angle": "eye level",
+              "lens": "50mm, no distortion",
+              "composition": "four evenly spaced views on one row, equal height, nothing cropped"
+            },
+            "light_look": {
+              "setup": "flat even studio light",
+              "quality": "soft, shadowless",
+              "palette_grade": "true colours, neutral white balance"
+            }
+          },
+          "avoid": [
+            "different outfits between views",
+            "extra characters",
+            "text labels",
+            "cropped feet",
+            "dramatic shadows"
+          ],
+          "finish": "clean"
+        },
+        "expressions": {
+          "label": "Expression sheet",
+          "why": "The faces the script needs, so close-ups keep the same face while acting.",
+          "aspect": "16:9",
+          "layers": {
+            "subject": {
+              "subject": "expression sheet of {anchor}: six head-and-shoulders portraits in a two-by-three grid, the same face showing the expressions the script needs, described physically (brows, eyes, mouth)",
+              "consistency": "the same one in every panel"
+            },
+            "world": {
+              "environment": "plain light grey background"
+            },
+            "camera": {
+              "shot_size": "head and shoulders in each panel",
+              "angle": "eye level, facing camera",
+              "lens": "85mm portrait",
+              "composition": "even grid, same scale in every panel"
+            },
+            "light_look": {
+              "setup": "soft frontal studio light",
+              "quality": "even, gentle falloff"
+            }
+          },
+          "avoid": [
+            "different faces between panels",
+            "text labels",
+            "hands covering the face"
+          ],
+          "finish": "clean"
+        },
+        "outfit": {
+          "label": "Outfit (wardrobe W1, W2...)",
+          "why": "One look per outfit change, so wardrobe stays the same across scenes. Add one view per outfit.",
+          "aspect": "3:4",
+          "layers": {
+            "subject": {
+              "subject": "full-body front view of {anchor} wearing the outfit, every garment with its colour, material and fit, standing straight",
+              "wardrobe_props": ""
+            },
+            "world": {
+              "environment": "plain light grey studio background"
+            },
+            "camera": {
+              "shot_size": "full body",
+              "angle": "eye level",
+              "lens": "50mm",
+              "composition": "centred, small margin around the figure"
+            },
+            "light_look": {
+              "setup": "flat even studio light",
+              "quality": "soft"
+            }
+          },
+          "avoid": [
+            "extra accessories",
+            "logos",
+            "text"
+          ],
+          "finish": "clean"
+        },
+        "portrait": {
+          "label": "Hero portrait in the look",
+          "why": "The character in the job's own light and grade: checks the identity holds outside the studio.",
+          "aspect": "4:5",
+          "layers": {
+            "subject": {
+              "subject": "{anchor}, natural relaxed pose, looking just off camera"
+            },
+            "world": {
+              "environment": "a simple setting from the film's world, softly out of focus"
+            },
+            "camera": {
+              "shot_size": "medium close-up",
+              "angle": "eye level",
+              "lens": "85mm",
+              "dof": "shallow"
+            },
+            "light_look": {
+              "setup": "the job's key light (copy from look.md)"
+            }
+          },
+          "avoid": [
+            "extra people"
+          ]
+        }
+      }
+    },
+    "environment": {
+      "label": "Environment (a place, a set, a location)",
+      "hf_category": "environment",
+      "asset_role": "environment",
+      "input_role": "reference",
+      "default_views": [
+        "plate"
+      ],
+      "views": {
+        "plate": {
+          "label": "Empty establishing plate",
+          "why": "The place with nobody in it, in the scene's own light and time of day: the background every shot of the scene is built on.",
+          "aspect": "16:9",
+          "layers": {
+            "subject": {
+              "subject": "nobody in frame, the set empty and ready for the action"
+            },
+            "world": {
+              "environment": "{anchor}",
+              "background_far": "",
+              "background_near": "",
+              "foreground": "",
+              "time_of_day": "",
+              "weather_season": "",
+              "atmosphere": ""
+            },
+            "camera": {
+              "shot_size": "wide establishing",
+              "angle": "eye level",
+              "lens": "24mm",
+              "dof": "deep focus, everything sharp",
+              "composition": "the main playing area in the middle third, clear floor space where people will stand"
+            },
+            "light_look": {
+              "setup": "the scene's light plan (copy from the environment sheet)",
+              "direction": "",
+              "color_temp": "",
+              "practicals": ""
+            }
+          },
+          "avoid": [
+            "people",
+            "figures",
+            "text",
+            "logos"
+          ]
+        },
+        "reverse": {
+          "label": "Reverse angle",
+          "why": "The opposite side of the same place, so a conversation or a turn has a matching background.",
+          "aspect": "16:9",
+          "layers": {
+            "subject": {
+              "subject": "nobody in frame, the same set seen from the opposite direction"
+            },
+            "world": {
+              "environment": "{anchor}"
+            },
+            "camera": {
+              "shot_size": "wide",
+              "angle": "eye level",
+              "lens": "24mm",
+              "dof": "deep focus"
+            },
+            "light_look": {
+              "setup": "the same light as the plate, seen from the other side"
+            }
+          },
+          "avoid": [
+            "people",
+            "text",
+            "logos"
+          ]
+        },
+        "detail": {
+          "label": "Surface and dressing details",
+          "why": "Close views of the textures and set dressing that close-ups will show.",
+          "aspect": "1:1",
+          "layers": {
+            "subject": {
+              "subject": "detail sheet of the set's key surfaces and dressing, four close-up panels, the same place in every panel"
+            },
+            "world": {
+              "environment": "{anchor}"
+            },
+            "camera": {
+              "shot_size": "close-up panels",
+              "composition": "two-by-two grid"
+            },
+            "light_look": {
+              "setup": "the scene's light"
+            }
+          },
+          "avoid": [
+            "people",
+            "text labels"
+          ],
+          "finish": "clean"
+        },
+        "time_variant": {
+          "label": "Same place, other time or weather",
+          "why": "When a place appears at two times of day or in different weather. One view per variant.",
+          "aspect": "16:9",
+          "layers": {
+            "subject": {
+              "subject": "nobody in frame, the same set from the plate's camera position at another time or weather"
+            },
+            "world": {
+              "environment": "{anchor}",
+              "time_of_day": "",
+              "weather_season": ""
+            },
+            "camera": {
+              "shot_size": "wide establishing",
+              "angle": "eye level",
+              "lens": "24mm",
+              "dof": "deep focus"
+            },
+            "light_look": {
+              "setup": "the light of that time"
+            }
+          },
+          "avoid": [
+            "people",
+            "text"
+          ]
+        }
+      }
+    },
+    "prop": {
+      "label": "Prop (an object, a product, a vehicle)",
+      "hf_category": "prop",
+      "asset_role": "prop",
+      "input_role": "reference",
+      "default_views": [
+        "product"
+      ],
+      "views": {
+        "product": {
+          "label": "Clean product shot",
+          "why": "The object alone, sharp and true to colour: shape, material, markings.",
+          "aspect": "1:1",
+          "layers": {
+            "subject": {
+              "subject": "{anchor}, alone, in its exact shape, material and colour"
+            },
+            "world": {
+              "environment": "plain seamless light grey background"
+            },
+            "camera": {
+              "shot_size": "the whole object filling most of the frame",
+              "angle": "three-quarter view, slightly above",
+              "lens": "85mm, no distortion",
+              "dof": "everything sharp"
+            },
+            "light_look": {
+              "setup": "soft studio light from above and both sides",
+              "quality": "soft, true colour"
+            }
+          },
+          "avoid": [
+            "hands",
+            "other objects",
+            "text you do not own",
+            "logos you do not own"
+          ],
+          "finish": "clean"
+        },
+        "angles": {
+          "label": "Multi-angle sheet",
+          "why": "Front, side, back and top, for props seen from many sides or handled on screen.",
+          "aspect": "16:9",
+          "layers": {
+            "subject": {
+              "subject": "multi-angle sheet of {anchor}: front, side, back and top views on one row, same scale",
+              "consistency": "the same one in every panel"
+            },
+            "world": {
+              "environment": "plain light grey background"
+            },
+            "camera": {
+              "composition": "four evenly spaced views, nothing cropped",
+              "lens": "no distortion"
+            },
+            "light_look": {
+              "setup": "flat even studio light"
+            }
+          },
+          "avoid": [
+            "hands",
+            "text labels",
+            "other objects"
+          ],
+          "finish": "clean"
+        },
+        "in_hand": {
+          "label": "Scale in hand",
+          "why": "Shows its size against a hand, so it is never drawn too big or too small.",
+          "aspect": "4:5",
+          "layers": {
+            "subject": {
+              "subject": "{anchor} held naturally in one hand, showing its true size"
+            },
+            "world": {
+              "environment": "plain background"
+            },
+            "camera": {
+              "shot_size": "close-up on the hand and object"
+            },
+            "light_look": {
+              "setup": "soft studio light"
+            }
+          },
+          "avoid": [
+            "extra fingers",
+            "distorted hand",
+            "text"
+          ],
+          "finish": "clean"
+        }
+      }
+    },
+    "style": {
+      "label": "Style frame (the look: palette, grade, texture)",
+      "hf_category": "other",
+      "asset_role": "moodboard",
+      "input_role": "style",
+      "default_views": [
+        "frame"
+      ],
+      "views": {
+        "frame": {
+          "label": "Style frame",
+          "why": "One representative frame of the finished film: palette, contrast, grain, lens character. Sent as the style reference.",
+          "aspect": "16:9",
+          "layers": {
+            "subject": {
+              "subject": "a representative frame of the film: {anchor}"
+            },
+            "world": {
+              "environment": ""
+            },
+            "camera": {
+              "lens": "",
+              "dof": ""
+            },
+            "light_look": {
+              "setup": "",
+              "palette_grade": "",
+              "texture": "",
+              "finish": "",
+              "mood": ""
+            }
+          },
+          "avoid": [
+            "text",
+            "logos"
+          ]
+        }
+      }
+    }
+  }
+}

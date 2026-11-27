@@ -51,12 +51,12 @@ second for a calm read, 3 for a fast one.
 
 AI models don't remember the previous shot. Continuity has to be planned:
 
-- **Recurring people and products**: flag them for the bible and for image-first. Approved stills become start
+- **Recurring people and products**: flag them for the element sheets and for image-first. Approved stills become start
   frames or references, so the look carries over.
 - **Screen direction**: if something moves left to right in one shot, keep it left to right in the next, or show
   the turn. Write the direction in the continuity column.
 - **Light and time of day**: one light direction and colour temperature per scene. Write it once in the
-  continuity column; the bible's `look.md` will repeat it.
+  continuity column; the element sheets's `look.md` will repeat it.
 - **Match cuts and seamless joins**: plan the end frame of shot A as the start frame of shot B. Mark both shots
   image-first and note "ends on the frame S050 opens on".
 - **Loops**: the last frame must match the first. Needs a model with an end frame; mark it image-first.

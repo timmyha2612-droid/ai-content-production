@@ -213,6 +213,7 @@ class FinishMediaTest(unittest.TestCase):
     def test_short_audio_fails_delivery_then_passes_after_roomtone(self):
         proj = project.init_project("Short Audio", "full", use_case="social-vertical", root=self.p("projects"))
         raw = clip(self.p("short.mp4"), w=1080, h=1920, dur=3, audio_dur=1.5)
+        os.makedirs(os.path.join(proj, "09_delivery"), exist_ok=True)  # no longer made at init
         shutil.copy(raw, os.path.join(proj, "09_delivery", "reel.mp4"))
         rep = delivery.check(proj, duration=3)
         item = [c for c in rep["checks"] if c["check"] == "audio covers picture"][0]

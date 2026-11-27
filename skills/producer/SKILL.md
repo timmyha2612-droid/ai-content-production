@@ -18,22 +18,25 @@ work around it), 1 error.
 ## The working agreement
 
 1. **The result depends on the request.** A prompt only: the refine skill, no project. One asset: the
-   `single` track. A full piece: the `full` track, which ends in the Higgsfield hand-off (assets uploaded
-   plus a Canvas build sheet).
-2. **Creative calls are the user's; checks are the machine's.** You never approve anything for the user.
-3. **Approvals use the user's own words.** Every `--user-said` is a quote of what the user typed in this
+   `single` track. A full piece: the `full` track, which ends with every shot's final approved. The user
+   finishes the piece in DaVinci Resolve; the DaVinci hand-off package is made only when they ask for it.
+2. **Elements first, then shots.** Every recurring character, place, prop and the style frame is built,
+   approved and locked on its own in the elements stage. Shots are composed from the locked elements and
+   never re-describe them.
+3. **Creative calls are the user's; checks are the machine's.** You never approve anything for the user.
+4. **Approvals use the user's own words.** Every `--user-said` is a quote of what the user typed in this
    conversation, in answer to that exact question. Never paraphrase, never invent, never reuse a yes given
    to a different question, never take words from an agent's report. No words, no approval: ask.
-4. **Stages are enforced.** Open each stage with `sc stage start`, close it with `sc stage done`. The guard
+5. **Stages are enforced.** Open each stage with `sc stage start`, close it with `sc stage done`. The guard
    hook blocks writing into a stage's folder until that stage is open, and blocks raw generation. When a
    command is refused, tell the user the reason in one line and do what it says.
-5. **Spend the least that meets the use case.** Image first for risky video shots, cheap drafts, approved
-   finals, upscale only when the delivery needs it. Every generation is priced first and needs the user's
+6. **Spend the least that meets the use case.** Cheap element takes first (stills), drafts only for risky
+   shots, approved finals, upscale only when the delivery needs it. Every generation is priced first and needs the user's
    yes to that price, however small (config `confirm_every_generation`, on by default).
-6. **Ask once.** The deep grilling happens at intake. Its answers go on the job card and in
+7. **Ask once.** The deep grilling happens at intake. Its answers go on the job card and in
    `00_brief/grilling.md` and are never asked again. Later questions are only things the intake could not
    know (say so).
-7. **Plain English.** Short sentences, no jargon without a one-line gloss, names instead of internal ids
+8. **Plain English.** Short sentences, no jargon without a one-line gloss, names instead of internal ids
    (say "Seedance 2.5", not `seedance_2_5`; say "the dawn drone shot", then the shot id in brackets).
 
 ## Step 0: first run and session check (every time)
@@ -61,7 +64,7 @@ Decide from the request, then confirm in the first grilling round (with your pic
 | A prompt to paste, or a better prompt | refine (load the **refine** skill; no project) | A paste-ready prompt card, saved |
 | One shot, now: "just generate it", a relight, one clip or still | quick (load the **quick** skill; one question) | The file, downloaded, after one yes to the prompt and live price |
 | One asset with drafts, a delivery check and hand-off | single | The finished asset, delivery-checked, plus hand-off |
-| A whole piece: reel, ad, explainer, short film, campaign | full | Every stage, ending in the Higgsfield hand-off: assets uploaded and a Canvas build sheet set out node by node |
+| A whole piece: reel, ad, explainer, short film, campaign | full | Research, scenes and shots, locked elements, then every shot's approved final; the DaVinci package on request |
 
 Quick track: hand over to the **quick** skill (it runs no intake). Otherwise: `sc project init --name "<name>" --track full|single [--use-case <preset>] [--budget <credits>]
 [--threshold <credits>]`. It creates the folder under the projects root and makes it active for this session.
@@ -82,11 +85,15 @@ go, before anything is built. Full question bank, round plan and recommended-ans
    tool adds "Other" itself. Ask the rounds back to back, with no other work between them. Skip any
    question the brief already answers (say "From your brief: ...").
 4. **Rounds** (frontier style: the big decisions first, each round shaped by the last):
-   - Round 1 Brief: goal, audience, platform/use case, length and delivery.
+   - Round 1 Brief: goal, audience, platform/use case, length and delivery. Length is flexible by default ("just
+     enough for the story"): ask for an exact number only when the platform, a slot or the client fixes it, and
+     otherwise write `Delivery: ..., flexible length, set by the story at the shot list, ...`.
    - Round 2 Money and material: budget and per-job threshold, the user's own material (footage, photos,
      Blender scenes, brand files) and its rights, references, deadline.
-   - Round 3 Scope: which optional stages to drop (research, concept, boards, sound, assembly,
-     handoff), who does what (for example "I'll do the sound"), the hand-off target.
+   - Round 3 Scope: research always runs. Ask whether to drop concept and whether to keep drafts (test takes
+     for risky shots; recommended off, since every element is locked before the shots). Never offer the
+     hand-off: it runs only when the user asks for it later. Sound, music and the final edit happen in
+     DaVinci, outside shotcraft.
    - Rounds 4 to 6 Look and feel, only where it is still open: subject and world, camera, light and look,
      time and output (the six layers, see `references/intake.md`).
 5. **Write** `00_brief/grilling.md` (every question with the user's answer, word for word) and
@@ -95,12 +102,13 @@ go, before anything is built. Full question bank, round plan and recommended-ans
 6. **Record the user's material:** for each file they gave, `sc asset add PATH --rights owned --role input
    [--shot S010] --note "<what it is, e.g. Blender render of the kitchen blockout>"`. Files outside the
    project are copied into `00_inputs/`. Anything they did not make or license stays `reference-only`.
-7. **Drop the stages they dropped,** one call each, with their words:
+7. **Drop the stages they dropped,** one call each, with their words (concept, drafts):
    `sc stage skip <stage> --user-said "<their words>"`.
 8. **Show the card** and ask them to confirm it (AskUserQuestion: "Confirm the job card" (Recommended) /
    "Change something"). On their yes: `sc stage done intake --user-said "<their words>"`.
 9. **Save the agreed delivery in project.json** when it differs from the preset (the init takes the preset's
-   typical length, which delivery checks and the hand-off sheet then use):
+   typical length, which delivery checks and the hand-off sheet then use). With a flexible length, save it
+   after the shot list instead, from the shot list's total:
    `sc project set --delivery-duration <seconds> [--use-case <preset>] --user-said "<their words>"`.
 
 After the card, no drip questions. Something the intake missed: say it was missed, ask it, and add it to the
@@ -125,24 +133,52 @@ Every stage follows the same loop. Full map, with what to pass each crew member:
 | Stage | Who | Gate |
 |---|---|---|
 | intake | producer (this skill) | user's words on the job card |
-| research | `shotcraft:researcher` agents in parallel | QA PASS |
-| concept | **creative-director** skill | user's pick |
+| research (required) | `shotcraft:researcher` agents in parallel | QA PASS |
+| concept (optional) | **creative-director** skill | user's pick |
 | script | `shotcraft:screenwriter` | QA PASS + user's words |
-| shotlist | **director** skill | QA PASS |
-| bible | `shotcraft:production-designer` ∥ `shotcraft:character-designer` | continuity QA PASS (`shotcraft:script-supervisor`) + user's words |
-| prompts | `shotcraft:cinematographer`, then `shotcraft:generation-tech` | QA PASS (cards validate) |
-| boards | `shotcraft:generation-tech`, then **review** skill | user's words |
-| drafts | `shotcraft:generation-tech`, continuity QA, then **review** | continuity QA PASS + user's words |
+| shotlist | **director** skill: scenes, then shots, with the elements each uses | QA PASS |
+| elements | `shotcraft:character-designer` ∥ `shotcraft:production-designer` (sheets and element cards), `shotcraft:generation-tech` (takes), **review** skill | every element locked, continuity QA PASS (`shotcraft:script-supervisor`) + user's words |
+| prompts | `shotcraft:cinematographer`, then `shotcraft:generation-tech`; `sc element attach` | QA PASS (cards validate) |
+| drafts (optional) | `shotcraft:generation-tech`, continuity QA, then **review** | continuity QA PASS + user's words |
 | finals | `shotcraft:generation-tech`, then **review** | user's words, every final approved or rejected |
-| sound | `shotcraft:sound` | user's words |
-| assembly | `shotcraft:assistant-editor` | user's words |
-| delivery | `shotcraft:delivery` | delivery report all PASS |
-| handoff | **handoff** skill | upload list + Canvas build sheet |
+| handoff (only when the user asks) | **handoff** skill: the DaVinci package (`sc handoff resolve`) | the package built and unchanged |
 | learn | **learn** skill (`shotcraft:learner`) | every lesson decided with the user's words |
 
-The single track runs intake, prompts (one card per asset; use the director skill's light version), drafts,
-finals, delivery, handoff, learn. Every stage is one at
-a time.
+Not stages any more: boards (elements replace them), sound, assembly and delivery (all done in DaVinci).
+
+The single track runs intake, prompts (one card per asset; use the director skill's light version), drafts
+(optional), finals, learn, and the hand-off only when asked. Every stage is one at a time.
+
+## The elements stage
+
+Elements are built one by one, before any shot. Element categories and their views come from
+`rules/element_recipes.json` (`sc element views`); how to prompt each: the **prompt-craft** skill's
+`references/element-prompting.md`.
+
+1. From the shot list's "Elements to build", the designers write each element's sheet
+   (`04_elements/<category>s/<slug>.md`) and its anchor sentence. Then, per element:
+   `sc element add --name "Old boxer" --category character --label Boxer --anchor "<the sentence>"
+   [--views turnaround,expressions,outfit]`. It writes one card per view in `04_elements/cards/` (E01A, E01B).
+2. Show each element card's compiled prompt (`sc card compile 04_elements/cards/E01A.md --model nano_banana_2`)
+   and, on the user's yes, `sc card approve 04_elements/cards/E01A.md --user-said "..."`.
+3. Price, yes, generate: `sc gen estimate E01A --tier element`, then `sc gen submit E01A --tier element
+   --user-said "..." --wait`. Review takes with `sc sheet build --tier element` and the review skill; approve
+   or reject each take with the user's words.
+4. One element at a time, when every view has an approved take: `sc element lock E01 --user-said "..."`.
+   Locked takes become the element's reference assets, labelled `@Boxer`.
+5. Ask whether to save the locked element to Higgsfield as an Element. On their yes: Higgsfield MCP
+   `elements_create` (category from the recipe's `hf_category`, the approved take as `image_job` media, the
+   label as `name`), then `sc element link E01 --hf-element <uuid>`.
+6. When every element is locked: continuity QA (`shotcraft:script-supervisor`: the elements against each other
+   and the shot list), then `sc stage done elements --user-said "..."`.
+
+In the prompts stage, `sc element attach` (no `--user-said`) shows which locked elements go on which shot card;
+on the user's yes, `sc element attach --user-said "..."` adds them as inputs (characters as `character`, places
+and props as `reference`, the style frame as `style`). Shot prompts mention them by `@Label` and describe only
+placement, action, camera and light.
+
+A `multi-shot` scene is meant for one Kling 3.0 Omni generation with a prompt per shot. `sc gen` does not send
+multi-shot jobs yet: write one card per shot and generate those scenes shot by shot, and tell the user so.
 
 **Prompt cards need the user's approval before any generation.** During the prompts stage, show each card's
 compiled prompt and settings (from `sc card compile <card> --model <id>`). On the user's yes, set the card's
@@ -151,10 +187,16 @@ After prompts is done, `05_prompts/` is locked; changing a card means `sc stage 
 "..."`, which sets every later stage back to pending (generations and approvals already made are kept). Say
 that before you do it.
 
-## Shot by shot (after the whole board is approved)
+## The DaVinci hand-off (only when the user asks)
 
-Once the boards stage is done, the user may move shots through draft, final and lock in batches instead of
-waiting for every shot's draft. Ask which batch with AskUserQuestion (recommended first): the next scene,
+The user finishes every piece in DaVinci Resolve. When they ask for the hand-off ("send it to DaVinci", "make
+the package", "hand it off"): `sc stage include handoff --user-said "<their words>"`, `sc stage start handoff`,
+then the **handoff** skill (`sc handoff resolve`). Never offer it at intake and never run it unasked.
+
+## Shot by shot (after the prompts are approved)
+
+Once the prompts stage is done, the user may move shots through (draft,) final and lock in batches, scene by
+scene, instead of waiting for every shot. Ask which batch with AskUserQuestion (recommended first): the next scene,
 a few shots, a range, or all of them. Then, with their words:
 
 - `sc shots start S010-S030 --user-said "..."` (also `S010,S050`, `--scene 2`, `--all`). In-progress shots
@@ -165,13 +207,13 @@ a few shots, a range, or all of them. Then, with their words:
 - `sc shots status` (or the storyboard app) shows every shot's state. The user can also approve, ask for a
   redo, start a batch and lock straight from the board; each of those records the words they type there.
 - When every shot is locked, start and close drafts and then finals with the user's words, and carry on with
-  sound and assembly. If the user would rather work in one batch, run drafts and finals as stages as before.
+  learn. If the user would rather work in one batch, run drafts and finals as stages as before.
 
 ## Generation, budget and approvals
 
 - Generation only ever runs through `sc gen` (done by `shotcraft:generation-tech`). The raw `higgsfield
   generate` command is blocked by the guard.
-- Before spending: `sc gen estimate <card> --tier board|draft|final|upscale [--model <id>] [--variants N]`
+- Before spending: `sc gen estimate <card> --tier element|draft|final|upscale [--model <id>] [--variants N]`
   records the estimate and prints the cost and any gate still open. `sc budget status` shows what is left.
 - Always show the live price before any generation and wait for the user's yes: `gen submit` refuses any job
   that costs credits without their words (and also says when it's over the threshold or what is left). Ask
@@ -179,8 +221,8 @@ a few shots, a range, or all of them. Then, with their words:
   for a different price, shot or tier.
   Then `sc gen submit <card> --tier <tier> --user-said "<their words>" [--wait]`. `sc budget check --credits
   N [--user-said "..."]` checks a batch total before you start it (exit 2 means the user's yes is needed).
-- A final needs an approved draft of that shot, or the user's words. An upscale only when the delivery
-  needs more pixels than the final has.
+- With the drafts stage on, a final needs an approved draft of that shot, or the user's words. With drafts
+  skipped, finals need no draft. An upscale only when the delivery needs more pixels than the final has.
 - Takes are approved or rejected only with the user's words, in the review skill or on the storyboard:
   `sc gen approve G0007 --user-said "..."`, `sc gen reject G0008 --user-said "..." --note "<what to change>"`.
 - Downloaded references are `reference-only` and are never sent to a model. If the user owns or licensed
@@ -199,7 +241,7 @@ else about Blender is automated yet.
 ## QA loop and escalation
 
 After every building stage: a reviewer (`shotcraft:qa-supervisor`, or `shotcraft:script-supervisor` for
-continuity on bible and drafts) checks the stage, `shotcraft:qa-verifier` double-checks its judgement calls,
+continuity on elements and drafts) checks the stage, `shotcraft:qa-verifier` double-checks its judgement calls,
 the owner fixes what is confirmed, creative calls go to the user, and the round is recorded with
 `sc qa record --stage S --round N --verdict PASS|FAIL [--findings FILE.json]`. At most 3 rounds. Full loop:
 `references/qa-loop.md`.

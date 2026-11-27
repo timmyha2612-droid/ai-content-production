@@ -6,7 +6,15 @@ scale with seconds.
 
 ## 1. Fit the shots to the delivery
 
-- The delivery length comes from the job card (Delivery line) and the preset's `duration` (typical, min, max).
+- **The story sets the length** [user, 2026-11-28: "the time should be flexible and just enough for the story
+  needed"]. Unless the user fixed an exact length at intake, the length is the shortest that tells the story:
+  plan the beats, give each the time its action needs, and add them up. Never pad to the preset's typical length
+  or to a model's maximum (a 30 s model does not make a 30 s piece). Stay inside the preset's min and max, and
+  the platform's limits.
+- Write the total on the shot list, then the producer saves it: `sc project set --delivery-duration <s>` with
+  the user's words about the shot list or its length.
+- The delivery length comes from the job card (Delivery line, which may say `flexible, set by the story`) and,
+  once the shot list is done, from that total. The preset's `duration` gives the min and max only.
 - The `duration_s` values must add up to the delivery length, within 0.5 s.
 - Fit in this order: the beats first (hook, setup, turn, payoff, CTA), then the shots inside each beat.
 - If the script runs long, cut a shot or a beat before squeezing every shot. Under 1 s a shot rarely reads,

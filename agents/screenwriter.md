@@ -44,7 +44,7 @@ Read `${CLAUDE_PLUGIN_ROOT}/skills/prompt-craft/SKILL.md` first. Then:
 - Lip-sync is expensive and fragile. Prefer VO over a speaking person unless the brief asks for dialogue; when it
   does, mark the row `dialogue` so routing picks a model with native audio.
 - No real public figures, trademarks, branded characters or copyrighted lyrics. They fail as `ip_detected`.
-- Name recurring people and places the same way every time (they become bible entries).
+- Name recurring people and places the same way every time (they become element sheets).
 - If the user supplied footage, photos or renders (`00_inputs/`, `sc.py asset list --role input`), write them
   in where they fit and mark the row `source: 00_inputs/<file>`.
 

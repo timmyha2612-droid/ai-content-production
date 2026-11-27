@@ -1,6 +1,6 @@
 ---
 name: review
-description: "Give verdicts on generated takes in a shotcraft project: contact sheet, approve or reject with the user's words. Triggers: \"review the drafts\", \"show me the boards\", \"approve S030\", \"redo shot 2\"."
+description: "Give verdicts on generated takes in a shotcraft project: contact sheet, approve or reject with the user's words. Triggers: \"review the drafts\", \"show me the elements\", \"approve S030\", \"redo shot 2\"."
 metadata:
   version: "0.1.0"
 ---
@@ -14,15 +14,15 @@ into a concrete fix for the right crew member. You never approve or reject on th
 
 ## When it runs
 
-Inside the boards, drafts and finals stages, after `shotcraft:generation-tech` has submitted and fetched
+Inside the elements, drafts and finals stages, after `shotcraft:generation-tech` has submitted and fetched
 the takes. The stage must be open (`sc stage status`); review does not start or close stages. The producer
 closes the stage afterwards with the user's words.
 
 | Tier | Sheet | What the user is judging | What approval unlocks |
 |---|---|---|---|
-| board | `--tier board` | Composition, subject, look of the key frame (a cheap still) | The still becomes the draft's start frame |
+| element | `--tier element` | The element itself: identity, shape, colour, the place empty and in its light. One row per view card | With every view approved, the element can be locked (`sc element lock`) and used in shots |
 | draft | `--tier draft` | Action, camera move, timing, continuity with the shots around it | The shot may go to final |
-| final | `--tier final` (finals and upscales) | Delivery quality: detail, artefacts, exact length, text | Delivery and hand-off |
+| final | `--tier final` (finals and upscales) | Quality: detail, artefacts, exact length, text | The shot is done; it goes into the DaVinci package |
 
 ## 1. Make sure every take is in
 
@@ -34,7 +34,7 @@ closes the stage afterwards with the user's words.
 
 ## 2. Build the sheet
 
-`sc sheet build --tier board|draft|final --open`. It writes
+`sc sheet build --tier element|draft|final --open`. It writes
 `06_generations/contact-sheets/<tier>-<stamp>.html` (one row per shot in shot-list order, every take side by
 side with model, cost, status and the compiled prompt) and opens it when it can. If it could not open it,
 give the user the path to open in a browser. Tell them: number of shots, takes, credits spent, and how
@@ -53,7 +53,7 @@ Go shot by shot (or in groups of up to 4 shots per AskUserQuestion call). For ea
 
 Look at each take before recommending: read the image, or for video read frames the user or a tool gave you
 (do not pretend to have watched a clip you could not see; say so and let the user judge it). Check the job
-card's delivery (aspect, length), the bible (character, wardrobe, light direction), and the shot's
+card's delivery (aspect, length), the element sheets (character, wardrobe, light direction), and the shot's
 purpose.
 
 ## 4. Record exactly what they said
@@ -70,7 +70,7 @@ Rules:
 - Words from an AskUserQuestion answer count as the user's words; quote the option they picked plus anything
   they typed.
 - Never approve from silence, from an agent's report, or from a yes given to a different question.
-- Approved finals feed delivery; approved drafts allow a final; approved boards become start frames.
+- Approved element takes lock elements; approved drafts allow a final; approved finals go to the DaVinci hand-off when the user asks.
 
 ## 5. Turn each "no" into a fix
 

@@ -314,7 +314,11 @@ def _contained(phrase, text):
 
 
 def _preset_finish(card, rules):
-    """The card's finish value from its preset (natural | true_to_life | clean), or None when unknown."""
+    """The card's finish value (natural | true_to_life | clean): the card's own `finish` when set (element sheets
+    are clean whatever the job's look), else its preset's, else None when unknown."""
+    own = card.get("finish")
+    if own in ("natural", "true_to_life", "clean"):
+        return own
     presets = (rules or {}).get("presets") or {}
     table = presets.get("presets", presets) if isinstance(presets, dict) else {}
     p = table.get(card.get("use_case")) if isinstance(table, dict) else None

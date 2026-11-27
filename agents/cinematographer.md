@@ -126,7 +126,7 @@ idea per shot. You hand the generation-tech a card that only needs a model choic
 - **Never a stiff subject.** A person always has a Performance (an action, small behaviours, an eyeline) and an
   Emotion shown through the body ("shoulders drop"), both written into `subject.action`. Props belong to the
   place: write them into the environment or a plane, not a list.
-- **The bible is the contract.** Reuse the production-designer's look line and environment lines and the
+- **The element sheets is the contract.** Reuse the production-designer's look line and environment lines and the
   character-designer's anchors **word for word**. Never re-describe a character or a place in your own words.
 
 ## Choosing from intent
@@ -229,7 +229,7 @@ pairing, skin texture, 30-degree and 180-degree rules); these add to them:
   `rationale` as visual targets only: never register them as assets or put them in `inputs`.
 
 **Scene light plan.** Do not write your own. Copy the anchor phrase from the `Scene light plan (scene <n>):`
-line in the environment file's Light section (`04_bible/environments/`), for example "north window on the
+line in the environment file's Light section (`04_elements/environments/`), for example "north window on the
 left wall, one table lamp right of the bed, blue hour outside". The director wrote it in the shot list and the
 production designer copied it there; continuity is checked against that line. Reuse it word for word in every
 card of the scene (models have no memory between shots, so the phrase rebuilds the same light). If a scene has
@@ -263,7 +263,7 @@ environment is set but none of foreground, near or far background is; fix that b
 
 1. `03_script/shotlist.md` (ids, durations, purpose, kind, image-first, move, continuity, source),
    `03_script/script.md`, `00_brief/job-card.md`.
-2. The bible: `04_bible/look.md`, `04_bible/environments/`, `04_bible/props/`, `04_bible/characters/`
+2. The element sheets: `04_elements/style/look.md`, `04_elements/environments/`, `04_elements/props/`, `04_elements/characters/`
    (`cast.md` first).
 3. `${CLAUDE_PLUGIN_ROOT}/skills/prompt-craft/SKILL.md`, then its references:
    `references/taxonomy-guide.md`, `references/camera-movement-cookbook.md`, `references/negatives-system.md`,
@@ -291,7 +291,7 @@ environment is set but none of foreground, near or far background is; fix that b
 2. Edit the JSON front matter (Edit tool, keep it valid JSON):
    - `title`, `kind` (video or image, from the shot list).
    - `layers.intent`: use, platform, audience (planning only, not in the prompt).
-   - `layers.subject`: subject and one action, with the bible anchors verbatim; `consistency` names the reference;
+   - `layers.subject`: subject and one action, with the element sheets anchors verbatim; `consistency` names the reference;
      `placement` (the midground) and `interaction` (how the place acts on the subject).
    - `layers.world`: the environment line verbatim; time of day, atmosphere; `background_far`,
      `background_near`, `foreground`, and `parallax` for video.
@@ -305,10 +305,13 @@ environment is set but none of foreground, near or far background is; fix that b
    - `layers.time_output`: beats, pacing, transition_in, transition_out, loop, on_screen_text (what will be added
      in post, so the picture leaves room), audio.
    - `settings.duration_s`: exactly the shot list's duration. Don't add the handles; the compiler does.
-   - `tier_plan`: add `"board"` first for image-first shots (people or recurring characters, product, logo or
-     text that must be exact, complex moves, 8 s or longer, end frames; `rules/routing.json` `image_first`).
-   - `inputs`: bible or user assets by id with their role (`start_frame`, `end_frame`, `reference`, `character`,
-     `style`). Never a `reference-only` asset.
+   - `tier_plan`: `["final"]`, or `["draft", "final"]` when the drafts stage is on and the shot is risky.
+   - `inputs`: the shot's locked elements (`sc element attach` puts them on: characters as `character`, places and
+     props as `reference`, the style frame as `style`) and the user's own assets by id with their role
+     (`start_frame`, `end_frame`, ...). Never a `reference-only` asset.
+   - Locked elements: mention each by `@Label` in the field it belongs to (`subject.consistency: "same man as
+     @Boxer"`, `world.environment: "@Gym, the heavy bag in frame left"`) and never re-describe it. The prompt
+     carries only what is new in this shot: placement, action, camera, light direction, beats.
    - `avoid`: add the categories that apply from `negatives.json` (people, product, text, motion, locked_off, loop).
    - `rationale`: one line each on why this framing, move and light.
    - Leave `model`, `status` and `approved_said` alone: the generation-tech picks models, and only the producer
@@ -329,7 +332,7 @@ environment is set but none of foreground, near or far background is; fix that b
 - `sc asset list [--role R] [--rights R] [--shot S] --json`
 - `sc project status --json`, `sc stage status prompts --json`
 - `sc lessons add "<one line>" --kind project` for a continuity fact that later stages must keep (optionally
-  each scene's light plan, copied from the bible).
+  each scene's light plan, copied from the element sheets).
 
 ## Never
 

@@ -220,6 +220,10 @@ def cmd_stage(args):
     elif action == "skip":
         rec = stages.skip(proj, args.stage, args.user_said, note=args.note)
         emit(args, {"stage": args.stage, "status": rec["status"]}, "Stage %s skipped." % args.stage)
+    elif action == "include":
+        rec = stages.include(proj, args.stage, args.user_said, note=args.note)
+        emit(args, {"stage": args.stage, "status": rec["status"]},
+             "Stage %s is back on the plan (pending)." % args.stage)
     elif action == "reopen":
         res = stages.reopen(proj, args.stage, note=args.note, user_said=args.user_said)
         emit(args, res, "Stage %s is open again.%s" % (
@@ -531,8 +535,8 @@ def build_parser():
     sp.add_argument("--line", help="the job-card line it belongs to (default: the question)")
     sp.add_argument("--note")
 
-    s = group("stage", "stage gates: status, start, done, skip, reopen")
-    for name in ("status", "start", "done", "skip", "reopen"):
+    s = group("stage", "stage gates: status, start, done, skip, include, reopen")
+    for name in ("status", "start", "done", "skip", "include", "reopen"):
         sp = leaf(s, name, cmd_stage)
         sp.set_defaults(stage_cmd=name)
         sp.add_argument("stage", nargs="?" if name == "status" else None)
@@ -675,7 +679,7 @@ def build_parser():
     for name in ("estimate", "submit"):
         sp = leaf(s, name, delegate("gen", name, ["gen"]))
         sp.add_argument("card")
-        sp.add_argument("--tier", required=True, choices=["board", "draft", "final", "upscale"])
+        sp.add_argument("--tier", required=True, choices=["element", "board", "draft", "final", "upscale"])
         sp.add_argument("--model")
         sp.add_argument("--variants", type=int, help="how many takes (default: the card's settings.variants)")
         if name == "submit":
@@ -706,7 +710,7 @@ def build_parser():
 
     s = group("sheet", "contact sheets")
     sp = leaf(s, "build", delegate("sheet", "build", ["contact_sheet"]))
-    sp.add_argument("--tier", required=True, choices=["board", "draft", "final"])
+    sp.add_argument("--tier", required=True, choices=["element", "board", "draft", "final"])
     sp.add_argument("--open", action="store_true")
 
     s = group("delivery", "delivery checks")
@@ -774,7 +778,40 @@ def build_parser():
     sp.add_argument("--port", type=int, default=8765)
     sp.add_argument("--no-open", dest="no_open", action="store_true", help="print the link, don't open a browser")
 
-    s = group("handoff", "Higgsfield hand-off")
+    s = group("element", "elements: build and lock each character, place, prop and style frame before the shots")
+    leaf(s, "views", delegate("element", "views", ["elements"]), help="every element category and its views")
+    sp = leaf(s, "add", delegate("element", "add", ["elements"]), help="a new element, one card per view")
+    sp.add_argument("--name", required=True)
+    sp.add_argument("--category", required=True, choices=["character", "environment", "prop", "style"])
+    sp.add_argument("--label", help="the @Label prompts and the shot list use (default: from the name)")
+    sp.add_argument("--views", help="comma list (default: the category's default views; see sc.py element views)")
+    sp.add_argument("--anchor", help="the one fixed sentence that describes it, repeated in every prompt")
+    leaf(s, "list", delegate("element", "list", ["elements"]))
+    sp = leaf(s, "view", delegate("element", "view", ["elements"]), help="add a view to an element")
+    sp.add_argument("element")
+    sp.add_argument("view")
+    sp = leaf(s, "lock", delegate("element", "lock", ["elements"]), help="lock an element on its approved takes")
+    sp.add_argument("element")
+    sp.add_argument("--take", action="append", help="view=G0007 to pick a take (default: the latest approved)")
+    sp.add_argument("--user-said", dest="user_said", required=True)
+    sp = leaf(s, "unlock", delegate("element", "unlock", ["elements"]))
+    sp.add_argument("element")
+    sp.add_argument("--user-said", dest="user_said", required=True)
+    sp = leaf(s, "link", delegate("element", "link", ["elements"]),
+              help="record the Higgsfield Element a locked element was saved as")
+    sp.add_argument("element")
+    sp.add_argument("--hf-element", dest="hf_element", required=True)
+    sp.add_argument("--hf-name", dest="hf_name")
+    sp = leaf(s, "attach", delegate("element", "attach", ["elements"]),
+              help="put each shot's locked elements on its card as inputs (no --user-said: show the plan)")
+    sp.add_argument("shots", nargs="*")
+    sp.add_argument("--dry-run", dest="dry_run", action="store_true")
+    sp.add_argument("--user-said", dest="user_said")
+
+    s = group("handoff", "hand-off (on request): DaVinci package, Higgsfield upload")
+    sp = leaf(s, "resolve", delegate("handoff", "resolve", ["resolve"]),
+              help="approved finals by scene + timeline.fcpxml + shots.csv for DaVinci Resolve")
+    sp.add_argument("--dry-run", dest="dry_run", action="store_true")
     leaf(s, "build", delegate("handoff", "build", ["handoff"]))
     sp = leaf(s, "upload", delegate("handoff", "upload", ["handoff"]))
     sp.add_argument("--dry-run", dest="dry_run", action="store_true")
