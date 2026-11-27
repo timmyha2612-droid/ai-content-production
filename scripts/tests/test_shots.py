@@ -44,7 +44,7 @@ class Base(unittest.TestCase):
         self.set_stages(open_=("prompts",))
         for sid in ("S010", "S020", "S030", "S040"):
             self.card(sid)
-        self.set_stages(done=("intake", "research", "concept", "script", "shotlist", "bible", "prompts", "boards"))
+        self.set_stages(done=("intake", "research", "concept", "script", "shotlist", "elements", "prompts"))
 
     def tearDown(self):
         self.env.stop()
@@ -96,11 +96,11 @@ class TestSelectAndStart(Base):
         with self.assertRaises(Refused):
             shots.start(self.proj, ["S010"], "")
         st = stages.load_state(self.proj)
-        st["stages"]["boards"]["status"] = "open"
+        st["stages"]["prompts"]["status"] = "open"
         stages.save_state(self.proj, st)
         with self.assertRaises(Refused) as cm:
             shots.start(self.proj, ["S010"], "go on shot one")
-        self.assertIn("board", str(cm.exception))
+        self.assertIn("prompts", str(cm.exception))
 
     def test_progress_states(self):
         pr = shots.progress(self.proj)
@@ -151,10 +151,11 @@ class TestFlow(Base):
         self.assertEqual(shots.progress(self.proj)["S010"]["state"], "final_approved")
         self.draft("S010")
 
-    def test_board_tier_still_follows_the_stage(self):
+    def test_board_tier_is_not_on_the_full_track(self):
         shots.start(self.proj, ["S010"], "go")
         ok, why = shots.gen_allowed(self.proj, "board", "S010")
         self.assertFalse(ok)
+        self.assertIn("not on the full track", why)
 
     def test_shots_json_is_guarded(self):
         ok, why = stages.path_writable(self.proj, ".shotcraft/shots.json")

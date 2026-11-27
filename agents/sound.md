@@ -84,7 +84,7 @@ it on without being needed to understand the piece.
 1. `03_script/script.md` (the SOUND / TEXT column: VO lines, music cues, effects, timings),
    `03_script/shotlist.md` (shot durations), `00_brief/job-card.md` (delivery, audio, budget).
 2. `${CLAUDE_PLUGIN_ROOT}/rules/presets.json` for the use case: `audio`, `loudness`, notes.
-3. `04_bible/look.md` (mood and era, so the sound matches the world), `01_research/direction-note.md` (music seen
+3. `04_elements/style/look.md` (mood and era, so the sound matches the world), `01_research/direction-note.md` (music seen
    in the references).
 4. Approved finals or drafts (`sc asset list --role final --json`, `--role draft`) to time effects to picture, and
    the cards' `settings.audio` to see which shots carry native audio.

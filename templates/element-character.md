@@ -1,8 +1,8 @@
 # <Role name, e.g. The Barista>
 
 <!--
-04_bible/characters/<name-slug>.md, one file per recurring character. Written by the character-designer agent
-in the bible stage. Also keep 04_bible/characters/cast.md: one table of every character (name, shots, method,
+04_elements/characters/<name-slug>.md, one file per recurring character. Written by the character-designer agent
+in the elements stage. Also keep 04_elements/characters/cast.md: one table of every character (name, shots, method,
 anchor, outfit ids) so the cinematographer and script-supervisor read one file.
 The anchor is the exact description every prompt card reuses word for word in its subject layer, so the person
 looks the same in every shot. Concrete, visible facts only: age range, skin, hair, build, clothes with colour

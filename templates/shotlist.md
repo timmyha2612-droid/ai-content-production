@@ -2,31 +2,45 @@
 
 <!--
 03_script/shotlist.md. Written by the director skill in the shotlist stage, from 03_script/script.md.
-The gate (sc.py stage done shotlist) reads the ONE table below. Rules it checks:
-  - id: looks like S010. Steps of 10; an insert between S010 and S020 is S015; a split take is S010A. No id twice.
-  - duration_s: seconds the shot PLAYS IN THE EDIT, a number above 0 (e.g. 2.5). Stills too: how long they hold.
-  - purpose: what the viewer must get from the shot, in a few words. Not empty, not TBD, ... or <...>.
-Other stages read:
-  - kind: video or image.
-  - image_first: yes or no. "yes" means the shot starts as a cheap still (a board) before any video is made.
-    A shot also counts as image-first when its prompt card's tier_plan includes "board".
-The other columns are free text the gate ignores: beat, size_angle (shot size and angle, e.g. MCU, low angle),
-move (camera movement, e.g. slow push-in), composition (the composition guide technique, three at most: one
-geometry, one depth, one light, e.g. frame within a frame; deep staging), continuity, graphics (text or graphics to add on this shot in your motion graphics tool),
-source (gen, or a 00_inputs/ file the user supplied, e.g. their own footage or a 3D render).
-Keep the id column first. Do not add a second table with an id or Shot column: it would be read as more shots.
-Pipes (|) inside a cell break the table: write "or" instead.
-Replace every <...> and delete these comments when the list is filled.
+Scenes first, then shots. The gate (sc.py stage done shotlist) reads two tables:
+
+SCENE TABLE (columns scene, place, time, mode, elements):
+  - A scene is one continuous piece of action in ONE place at ONE time. A new place or a new time is a new scene.
+  - scene: SC01, SC02 ... in story order. place: the slugline place (INT. BOXING GYM). time: DAY, NIGHT, DAWN ...
+  - mode: how Higgsfield makes it. "shots" = one generation per shot (most control, any model).
+    "multi-shot" = the whole scene in ONE Kling 3.0 Omni generation with a prompt per shot (best continuity
+    between its cuts); the scene's shots must add up to 15 s or less.
+  - elements: the @Labels of the locked elements in the scene (characters, the place, props, style frame).
+
+SHOT TABLE (columns id, scene, duration_s, purpose, elements):
+  - A shot is one uninterrupted camera take between two cuts: one framing, one camera move.
+  - id: S010, S020 ... in steps of 10, numbered through the whole piece; an insert is S015; a split take S010A.
+  - scene: the scene it belongs to. A scene's shots sit together, in order.
+  - duration_s: seconds the shot PLAYS IN THE EDIT, above 0. purpose: what the viewer must get from it.
+  - elements: only when the shot differs from its scene (a prop only in this shot); empty = the scene's elements.
+Other columns are free text: beat, kind (video or image), size_angle, move, composition, continuity, graphics,
+source (gen, or a 00_inputs/ file the user supplied).
+Pipes (|) inside a cell break a table: write "or" instead. Replace every <...> and delete these comments.
 -->
 
-Delivery: <aspect, width x height, fps, total length in seconds> (preset <preset id>). Handles: <seconds> each side.
+Delivery: <aspect, width x height, fps> (preset <preset id>). Length: <flexible, set by the story, or the fixed
+length>. Handles: <seconds> each side.
 Script: 03_script/script.md
 
-| id | beat | duration_s | kind | image_first | purpose | size_angle | move | composition | continuity | graphics | source |
-|---|---|---|---|---|---|---|---|---|---|---|---|
-| S010 | <hook> | <seconds> | <video or image> | <yes or no> | <what the viewer must get> | <e.g. ECU, top-down> | <e.g. static> | <e.g. centre framing; pool of light> | <what must match the shots around it> | <none, or the text> | <gen or 00_inputs/file> |
-| S020 | <setup> | <seconds> | <video or image> | <yes or no> | <what the viewer must get> | <...> | <...> | <...> | <...> | <...> | <...> |
-| S030 | <payoff> | <seconds> | <video or image> | <yes or no> | <what the viewer must get> | <...> | <...> | <...> | <...> | <...> | <...> |
+## Scenes
+
+| scene | place | time | mode | elements |
+|---|---|---|---|---|
+| SC01 | <INT. PLACE> | <NIGHT> | <shots or multi-shot> | <@Character @Place @Prop> |
+| SC02 | <EXT. PLACE> | <DAWN> | <shots or multi-shot> | <@Character @Place> |
+
+## Shots
+
+| id | scene | beat | duration_s | kind | purpose | elements | size_angle | move | composition | continuity | graphics | source |
+|---|---|---|---|---|---|---|---|---|---|---|---|---|
+| S010 | SC01 | <hook> | <seconds> | <video or image> | <what the viewer must get> | | <e.g. ECU, top-down> | <e.g. static> | <...> | <what must match> | <none> | <gen> |
+| S020 | SC01 | <setup> | <seconds> | <video> | <...> | <@Prop, only if it differs> | <...> | <...> | <...> | <...> | <...> | <...> |
+| S030 | SC02 | <payoff> | <seconds> | <video> | <...> | | <...> | <...> | <...> | <...> | <...> | <...> |
 
 **Total:** <sum of duration_s> s (delivery <length> s).
 
@@ -54,13 +68,17 @@ Script: 03_script/script.md
      colour, the ambient colour). The production designer copies each line word for word into the environment
      file's Light section; every card in the scene repeats the anchor. A place at two times of day is two scenes. -->
 
-- Scene 1 (<place>): <anchor phrase, e.g. north window on the left wall, one table lamp right of the bed, blue hour outside>
+- SC01 (<place>): <anchor phrase, e.g. north window on the left wall, one table lamp right of the bed, blue hour outside>
 
-## Bible needs
+## Elements to build
 
-- Characters: <names, shots>
-- Environments: <places, shots>
-- Props: <hero props, shots>
+<!-- Every @Label used above, built and locked one by one in the elements stage before any shot is generated.
+     Views per category: sc.py element views. -->
+
+- Characters: <@Label, who, views (turnaround, expressions, outfit W1 ...), scenes>
+- Environments: <@Label, the place, views (plate, reverse, time_variant ...), scenes>
+- Props: <@Label, the object, views (product, angles, in_hand), shots>
+- Style frame: <@Look, one frame of the finished film>
 
 ## Motion graphics list
 

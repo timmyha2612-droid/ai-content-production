@@ -32,7 +32,7 @@ Then `sc setup --projects-root "<their folder>"`. It saves `~/.shotcraft/config.
 | rule files | everything | A broken install: reinstall the plugin. |
 
 Only raise what blocks the user's request. Planning stages (intake, research, concept, script, shot list,
-bible, prompts) need none of the tools. Refine needs none.
+elements cards, prompts) need none of the tools. Refine needs none.
 
 Credits are the user's Higgsfield plan credits. shotcraft never shows a price in money unless the user set
 `currency_note` in the config. Costs always come live from Higgsfield (`gen estimate`), never from memory.

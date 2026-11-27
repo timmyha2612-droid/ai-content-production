@@ -49,7 +49,7 @@ guess.
 1. `${CLAUDE_PLUGIN_ROOT}/skills/producer/references/checklists/_how-to-read.md`: kinds, severities, ids,
    evidence and the verdict rule.
 2. The stage checklist: `${CLAUDE_PLUGIN_ROOT}/skills/producer/references/checklists/<stage>.md` (research,
-   script, shotlist, bible, prompts, drafts, finals, delivery). Boards use `drafts.md`. A stage with no
+   script, shotlist, elements, prompts, drafts, finals). A stage with no
    checklist (sound, assembly, handoff): check the stage's outputs against the stage map and the job card, and
    say in `checked` that there is no checklist.
 3. The job card (`00_brief/job-card.md`) and `00_brief/grilling.md`: what the user asked for, in their words.

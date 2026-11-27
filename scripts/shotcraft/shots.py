@@ -93,7 +93,7 @@ def scene_of(project):
 def _board_ready(project):
     st = stages.load_state(project)
     rec = st["stages"].get("boards")
-    if rec is None:  # a track without boards: the prompts stage is the last gate before generation
+    if rec is None:  # a track without boards (the default now): the prompts stage is the last gate
         rec = st["stages"].get("prompts")
     return bool(rec) and rec["status"] in ("done", "skipped")
 
@@ -140,8 +140,8 @@ def select(project, items=(), all_shots=False, scenes=()):
 def start(project, ids, user_said):
     _need_said(user_said, "Starting shots")
     if not _board_ready(project):
-        raise Refused("The whole board isn't approved yet. Close the boards stage first (sc.py stage done boards "
-                      "--user-said \"...\"), then start shots.")
+        raise Refused("The prompt cards aren't all approved yet. Close the prompts stage first (sc.py stage done "
+                      "prompts), then start shots.")
     data = _load(project)
     res = {"started": [], "already": [], "locked": []}
     for s in ids:

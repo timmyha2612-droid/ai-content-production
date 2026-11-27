@@ -5,13 +5,14 @@
 checks the evidence listed here itself (from `rules/stages.json`); it never takes it on trust.
 
 Tracks:
-- **full**: intake, research, concept, script, shotlist, bible, prompts, boards, drafts, finals,
-  sound, assembly, delivery, handoff, learn
-- **single**: intake, prompts, drafts, finals, delivery, handoff, learn
+- **full**: intake, research, concept, script, shotlist, elements, prompts, drafts, finals, handoff, learn
+- **single**: intake, prompts, drafts, finals, handoff, learn
 - **refine**: refine (no generation; normally no project at all, see the refine skill)
 
-Optional (droppable at intake with the user's words, `sc stage skip <stage> --user-said "..."`): research,
-concept, sound, assembly, boards, handoff. Motion graphics are not a shotcraft stage: they are done in the user's own motion graphics tool, from the shot list's graphics column.
+Optional (droppable at intake with the user's words, `sc stage skip <stage> --user-said "..."`): concept,
+drafts. Research is required. The hand-off is **on request**: it starts skipped and runs only when the user asks
+(`sc stage include handoff --user-said "..."`). Sound, music, the edit and the export happen in DaVinci, outside
+shotcraft. Older projects keep their old stages (bible, boards, sound, assembly, delivery) and still work. Motion graphics are not a shotcraft stage: they are done in the user's own motion graphics tool, from the shot list's graphics column.
 
 ## What every agent gets
 
@@ -66,19 +67,24 @@ the files exist, and never pass its words on as the user's.
   purpose; optional kind and image_first. Ids look like S010, S020.
 - Gate: QA PASS.
 
-### bible
-- Who: `shotcraft:production-designer` (writes `04_bible/look.md`, `04_bible/environments/`,
-  `04_bible/props/`, `04_bible/moodboard/`) in parallel with `shotcraft:character-designer` (writes
-  `04_bible/characters/`). Pass each the shot list and the paths it owns.
-- Hybrid: if the user brought a Blender scene or wants one, the production-designer plans "Blender
-  blockout, render, use as start frame or reference". Renders go into `00_inputs/` as owned
-  (`sc asset add PATH --rights owned --role environment --note "Blender render ..."`).
-- Evidence: `04_bible/look.md` and at least one file in `characters/` or `environments/`.
+### elements
+- Who: `shotcraft:character-designer` (characters) in parallel with `shotcraft:production-designer` (look,
+  environments, props, style frame) write each element's sheet in `04_elements/<category>s/` and its anchor,
+  then add it: `sc element add --name ... --category character|environment|prop|style --label ... --anchor
+  "..." [--views ...]` (one card per view in `04_elements/cards/`, scaffolded from
+  `rules/element_recipes.json`). `shotcraft:generation-tech` fills the cards' models and generates on the
+  element tier; the **review** skill takes the user through the takes.
+- Commands: `sc element views`, `sc card approve 04_elements/cards/E01A.md --user-said "..."`,
+  `sc gen estimate|submit E01A --tier element`, `sc sheet build --tier element`, `sc gen approve|reject`,
+  `sc element lock E01 --user-said "..."`, `sc element link E01 --hf-element <uuid>` after saving it to
+  Higgsfield (MCP `elements_create`) with the user's yes.
+- Hybrid: a Blender render or the user's own photo can be an element's view (`00_inputs/`, rights owned).
+- Evidence: every element locked, and every `@Label` the shot list names is a locked element.
 - Gate: continuity QA PASS by `shotcraft:script-supervisor`, then the user's words.
 
 ### prompts
 - Who: `shotcraft:cinematographer` fills the six layers per shot (camera, light, look, beats) from the
-  shot list and bible; then `shotcraft:generation-tech` makes the cards valid, picks models and compiles.
+  shot list and the locked elements, mentioning each by `@Label` and never re-describing it; then `shotcraft:generation-tech` makes the cards valid, picks models and compiles.
   Split shots between agents when there are many (disjoint card files).
 - Commands: `sc card new --shot S010 [--from-text "..."]`, `sc card validate <card>`,
   `sc route --use-case <preset> --tier draft|final [--kind video|image] [--duration 6] [--needs audio,refs,end_frame]`,
@@ -86,22 +92,15 @@ the files exist, and never pass its words on as the user's.
 - Then the producer shows the user every compiled prompt (or a compact table: shot, model, length, prompt
   first line) and, on their yes, sets `"status": "approved"` and `"approved_said": "<their words>"` in each
   card's front matter. This must happen before `stage done prompts`: after that, `05_prompts/` is locked.
+- Then `sc element attach` (the plan) and, on the user's yes, `sc element attach --user-said "..."`: each
+  shot's locked elements go on its card as inputs.
 - Evidence: a valid card for every shot on the shot list (single track: at least one).
 - Gate: QA PASS.
 
-### boards (optional; image first)
-- Who: `shotcraft:generation-tech`. Scope: video shots flagged image-first (people, product, text,
-  complex moves, 8 s or longer, end frames) or whose card's tier_plan includes board.
-- Commands: `sc gen estimate <card> --tier board`, `sc gen submit <card> --tier board [--user-said "..."]
-  --wait`, `sc gen status|fetch G0001`, `sc sheet build --tier board`.
-- Then the **review** skill. Approved boards become start frames for drafts (the card's `inputs` needs
-  `{"asset": "<board asset id>", "as": "start_frame"}`; if 05_prompts is locked, ask before
-  `sc stage reopen prompts`).
-- Evidence: a completed board per image-first shot, and a board contact sheet. Gate: the user's words.
-
-### drafts
-- Who: `shotcraft:generation-tech` (all shots, cheap models, `settings.variants` takes each).
-- Commands as boards with `--tier draft`; `sc sheet build --tier draft`.
+### drafts (optional)
+- Who: `shotcraft:generation-tech` (cheap models, `settings.variants` takes each). Optional: elements are
+  locked before the shots, so drafts are for risky shots only. Skipped, finals need no approved draft.
+- Commands: `sc gen estimate <card> --tier draft`, `sc gen submit <card> --tier draft --user-said "..." --wait`, `sc sheet build --tier draft`.
 - Then continuity QA with `shotcraft:script-supervisor` on the drafts (characters, wardrobe, light
   direction, screen direction across cuts), then the **review** skill.
 - Evidence: a completed draft per shot, a draft contact sheet. Gate: continuity QA PASS + the user's words.
@@ -113,33 +112,14 @@ the files exist, and never pass its words on as the user's.
 - Then the **review** skill: every final approved or rejected with the user's words.
 - Evidence: an approved final (or upscale) for every shot, none undecided. Gate: the user's words.
 
-### sound (optional)
-- Who: `shotcraft:sound`. Pass the script's sound column, the audio plan and the licence rules.
-- Evidence: files in `07_sound/` and a licence note (a file with "licence" or "license" in its name).
-- Gate: the user's words.
-
-### assembly (optional)
-- Who: `shotcraft:assistant-editor`. Commands: `sc assembly animatic [--audio <file>] [--burn-ids]`.
-- Evidence: `08_assembly/animatic.mp4`, an EDL or notes. Gate: the user's words.
-
-### delivery
-- Who: `shotcraft:delivery`. Commands: `sc delivery check [--spec <preset>] [--duration S] [--tolerance S]
-  [--lufs L]`.
-- Hand the agent: `Master:`, `Spec:`, `Versions:`, `Reframe:` (if the user said), and `Grain:` copied from the
-  job card's `Grain:` line (`off`, `subtle` or `film`, vignette yes or no). With grain off and no vignette the
-  agent skips `sc finish texture`. It runs `sc finish roomtone` only as a single-bed safety floor when a
-  deliverable still fails the digital-silence check; per-scene beds come from the sound stage.
-- Evidence: delivered files in `09_delivery/` and `09_delivery/delivery-report.json` with every check PASS.
-  The agent also writes `09_delivery/delivery-notes.md`, which always carries the AI-label line for realistic
-  AI content.
-- Gate: the spec check. A FAIL goes back to the stage that made the file.
-
-### handoff (optional; default on the full track)
-- Who: the **handoff** skill. Commands: `sc handoff build`, `sc handoff upload [--dry-run]`.
-- Evidence: `10_handoff/canvas-build-sheet.md` and `10_handoff/upload-list.json`.
-- Result for the user: the approved assets uploaded to Higgsfield and a Canvas build sheet that sets out
-  every node, input and setting, plus browser-assisted Canvas set-up where available. Higgsfield has no
-  Canvas API yet; say so plainly if asked.
+### handoff (only when the user asks)
+- When: the user asks for it ("send it to DaVinci", "make the package"). `sc stage include handoff
+  --user-said "<their words>"`, then `sc stage start handoff`. Never offer it unasked.
+- Who: the **handoff** skill. Commands: `sc handoff resolve [--dry-run]`.
+- Writes `10_handoff/resolve/`: the approved final of every shot filed by scene (`SC01/SC01_S010_v1.mp4`),
+  `timeline.fcpxml` (every shot in order at its cut length; in Resolve: File > Import > Timeline) and
+  `shots.csv`. Optional, on the user's yes: the Higgsfield project upload (`sc handoff upload`).
+- Evidence: the package recorded by `sc handoff resolve`, unchanged since. Gate: the evidence.
 
 ### learn
 - Who: the **learn** skill (it runs `shotcraft:learner` and puts each proposal to the user).

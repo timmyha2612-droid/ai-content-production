@@ -5,7 +5,7 @@ Stage output: a completed final (or upscale) for every approved shot (`06_genera
 words. There is no QA gate on finals, but the producer runs this when the user asks ("QA this"), or before the
 review when the finals changed model or settings from the approved drafts.
 
-Read: the shot list, the bible, the cards, the approved drafts and the finals in `project.json`, the preset, the
+Read: the shot list, the element sheets, the cards, the approved drafts and the finals in `project.json`, the preset, the
 final contact sheet.
 
 | id | check | how | kind | severity |

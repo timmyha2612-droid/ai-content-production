@@ -42,9 +42,9 @@ from . import Refused, ShotcraftError, budget, jsonio, manifest, paths, project 
 from .providers import get_provider
 from .providers.base import ACTIVE, STATUS_HELP, TERMINAL
 
-TIER_DIR = {"board": "boards", "draft": "drafts", "final": "finals", "upscale": "upscaled"}
-TIER_ROLE = {"board": "board", "draft": "draft", "final": "final", "upscale": "upscaled"}
-TIER_LETTER = {"board": "b", "draft": "d", "final": "f", "upscale": "u"}
+TIER_DIR = {"element": "elements", "board": "boards", "draft": "drafts", "final": "finals", "upscale": "upscaled"}
+TIER_ROLE = {"element": "reference", "board": "board", "draft": "draft", "final": "final", "upscale": "upscaled"}
+TIER_LETTER = {"element": "e", "board": "b", "draft": "d", "final": "f", "upscale": "u"}
 APPROVED_CARD = ("approved", "generated", "final")
 MEDIA_KEYS = ("start_image", "end_image", "image_references", "video_references", "audio_references",
               "source_video")
@@ -73,6 +73,8 @@ def card_path(project, ref):
     cands = []
     if re.match(r"^S\d{3,4}[A-Z]?$", ref):
         cands.append(os.path.join(project, "05_prompts", ref + ".md"))
+    if re.match(r"^E\d{2,3}[A-Z]$", ref):
+        cands.append(os.path.join(project, "04_elements", "cards", ref + ".md"))
     if os.path.isabs(os.path.expanduser(ref)):
         cands.append(os.path.expanduser(ref))
     else:
@@ -81,8 +83,11 @@ def card_path(project, ref):
     if found is None:
         raise ShotcraftError("No prompt card at %s." % ref)
     real = os.path.realpath(found)
+    if os.path.dirname(real) == os.path.realpath(os.path.join(project, "04_elements", "cards")):
+        return real
     if os.path.dirname(real) != os.path.realpath(os.path.join(project, "05_prompts")):
-        raise Refused("Cards are generated only from this project's 05_prompts/<shot>.md (not %s)." % ref)
+        raise Refused("Cards are generated only from this project's 05_prompts/<shot>.md or "
+                      "04_elements/cards/<E01A>.md (not %s)." % ref)
     return real
 
 
@@ -146,6 +151,14 @@ def _choose_model(project, meta, tier, model, use_case):
             need = None
     if model:
         return model, need, "you asked for it (--model)"
+    if tier == "element":
+        card_model = (meta.get("model") or {}).get("element") if isinstance(meta.get("model"), dict) else None
+        if card_model:
+            return card_model, None, "the element card names it"
+        pol = rules.load("routing", project).get("element_policy") or {}
+        if not pol.get("default_model"):
+            raise Refused("No element model on the card and no element_policy.default_model. Pass --model.")
+        return pol["default_model"], None, "element sheets default to %s (rules/routing.json)" % pol["default_model"]
     card_model = (meta.get("model") or {}).get(tier) if isinstance(meta.get("model"), dict) else None
     if card_model and tier != "board":
         return card_model, need, "the card names it for the %s tier" % tier
@@ -404,7 +417,17 @@ def gates(project, pl, skip_draft_said=None, quick_priced=False):
     # The quick track goes straight to the tier the user chose, but only through `sc.py quick go`, whose one yes
     # named that tier and its price. A plain `sc.py gen submit` on a quick project keeps the draft gate.
     quick = quick_priced and data.get("track") == "quick"
-    if pl["tier"] == "final" and not quick and not _approved(gens, pl["shot"], ("draft",)) \
+    drafts_needed = True
+    try:
+        st = stages.load_state(project)
+        drafts_needed = st["stages"].get("drafts", {}).get("status") not in ("skipped", None)
+    except ShotcraftError:
+        pass
+    if pl["tier"] == "element" and not (pl.get("card_rel") or "").startswith("04_elements/"):
+        problems.append("the element tier generates only element cards (04_elements/cards/E01A.md)")
+    if pl["tier"] != "element" and (pl.get("card_rel") or "").startswith("04_elements/"):
+        problems.append("an element card generates only on the element tier (--tier element)")
+    if pl["tier"] == "final" and not quick and drafts_needed and not _approved(gens, pl["shot"], ("draft",)) \
             and not _said(skip_draft_said):
         problems.append("%s has no approved draft. Approve one (sc.py gen approve GEN_ID --user-said \"...\") or, if "
                         "the user wants to go straight to the final, pass their words with --skip-draft-said."

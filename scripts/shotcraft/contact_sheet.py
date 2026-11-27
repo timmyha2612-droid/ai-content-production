@@ -23,15 +23,16 @@ import datetime
 import html
 import json
 import os
+import re
 import shutil
 import subprocess
 import sys
 
 from . import Refused, jsonio, manifest
 
-TIER_GENS = {"board": ("board",), "draft": ("draft",), "final": ("final", "upscale")}
+TIER_GENS = {"element": ("element",), "board": ("board",), "draft": ("draft",), "final": ("final", "upscale")}
 SPENDING = ("submitted", "queued", "in_progress", "completed")
-TIER_LABEL = {"board": "Boards", "draft": "Drafts", "final": "Finals"}
+TIER_LABEL = {"element": "Elements", "board": "Boards", "draft": "Drafts", "final": "Finals"}
 SHEET_DIR = "06_generations/contact-sheets"
 VIDEO_EXT = {".mp4", ".mov", ".m4v", ".webm", ".mkv"}
 IMAGE_EXT = {".jpg", ".jpeg", ".png", ".webp", ".gif", ".avif", ".svg", ".bmp"}
@@ -77,18 +78,23 @@ def _shot_info(project):
 
 def _card(project, shot):
     from . import stages
-    return stages.read_card_meta(os.path.join(project, "05_prompts", "%s.md" % shot)) or {}
+    folder = ("04_elements", "cards") if re.match(r"^E\d{2,3}[A-Z]$", str(shot)) else ("05_prompts",)
+    return stages.read_card_meta(os.path.join(project, *(folder + ("%s.md" % shot,)))) or {}
 
 
 def collect(project, tier):
     if tier not in TIER_GENS:
-        raise Refused("Tier must be board, draft or final.")
+        raise Refused("Tier must be element, board, draft or final.")
     data = manifest.load(project)
     names = _model_names(project)
     # estimate-only records are not takes: they cost nothing and can't be approved or rejected
     gens = [g for g in data.get("generations", []) if g.get("tier") in TIER_GENS[tier]
             and g.get("status") != "estimated"]
     order, rows = _shot_info(project)
+    if tier == "element":  # one row per element view card, not per shot
+        order = []
+        for el in data.get("elements") or []:
+            order += list((el.get("views") or {}).values())
     for g in gens:
         if g.get("shot") and g["shot"] not in order:
             order.append(g["shot"])

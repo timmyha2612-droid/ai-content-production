@@ -26,11 +26,12 @@ FOLDERS = [
     "00_brief", "00_inputs",
     "01_research", "01_research/refs",
     "02_concept", "03_script",
-    "04_bible", "04_bible/characters", "04_bible/environments", "04_bible/props", "04_bible/moodboard",
+    "04_elements", "04_elements/characters", "04_elements/environments", "04_elements/props", "04_elements/style",
+    "04_elements/cards",
     "05_prompts",
-    "06_generations", "06_generations/boards", "06_generations/drafts", "06_generations/finals",
+    "06_generations", "06_generations/elements", "06_generations/drafts", "06_generations/finals",
     "06_generations/upscaled", "06_generations/contact-sheets",
-    "07_sound", "08_assembly", "09_delivery", "10_handoff",
+    "10_handoff",
     ".shotcraft", ".shotcraft/qa", ".shotcraft/rules",
 ]
 

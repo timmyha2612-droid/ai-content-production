@@ -12,7 +12,7 @@ Every building stage is checked by someone who did not build it, before the user
 | research | QA PASS | `shotcraft:qa-supervisor` |
 | script | QA PASS + user | `shotcraft:qa-supervisor` |
 | shotlist | QA PASS | `shotcraft:qa-supervisor` |
-| bible | continuity QA PASS + user | `shotcraft:script-supervisor` |
+| elements | every element locked + continuity QA PASS + user | `shotcraft:script-supervisor` |
 | prompts | QA PASS | `shotcraft:qa-supervisor` (and every card must pass `sc card validate`) |
 | drafts | continuity QA PASS + user | `shotcraft:script-supervisor` |
 

@@ -79,7 +79,7 @@
       "gate": [
         "qa_pass"
       ],
-      "optional": true,
+      "optional": false,
       "folders": [
         "01_research/*"
       ]
@@ -128,7 +128,7 @@
     },
     "shotlist": {
       "owner": "director skill",
-      "outputs": "03_script/shotlist.md: a table where every shot has an id, duration_s and purpose",
+      "outputs": "03_script/shotlist.md: a scene table (scene, place, time, mode, elements) and a shot table (id, scene, duration_s, purpose, elements)",
       "evidence": [
         {
           "check": "shotlist",
@@ -167,6 +167,24 @@
       "optional": false,
       "folders": [
         "04_bible/*"
+      ]
+    },
+    "elements": {
+      "owner": "production-designer + character-designer agents (sheets and element cards), generation-tech (takes)",
+      "outputs": "04_elements/<category>/<slug>.md per element (its sheet), 04_elements/cards/E01.md per element (its prompt card), one approved take per element locked with sc.py element lock",
+      "evidence": [
+        {
+          "check": "elements"
+        }
+      ],
+      "gate": [
+        "continuity_qa_pass",
+        "user_said"
+      ],
+      "optional": false,
+      "folders": [
+        "04_elements/*",
+        "06_generations/elements/*"
       ]
     },
     "prompts": {
@@ -212,7 +230,7 @@
     },
     "drafts": {
       "owner": "generation-tech",
-      "outputs": "at least one completed draft per shot; a draft contact sheet",
+      "outputs": "Optional test takes for risky shots only (elements are already locked): a completed draft per shot in scope and a draft contact sheet",
       "evidence": [
         {
           "check": "generations",
@@ -230,7 +248,7 @@
         "continuity_qa_pass",
         "user_said"
       ],
-      "optional": false,
+      "optional": true,
       "folders": [
         "06_generations/drafts/*"
       ]
@@ -336,16 +354,11 @@
       ]
     },
     "handoff": {
-      "owner": "producer (handoff skill)",
-      "outputs": "10_handoff/canvas-build-sheet.md + 10_handoff/upload-list.json",
+      "owner": "producer (handoff skill), only when the user asks",
+      "outputs": "10_handoff/resolve/: the approved finals by scene, timeline.fcpxml (opens in DaVinci Resolve in shot order) and shots.csv; optionally the Higgsfield project upload",
       "evidence": [
         {
-          "check": "file",
-          "path": "10_handoff/canvas-build-sheet.md"
-        },
-        {
-          "check": "json",
-          "path": "10_handoff/upload-list.json"
+          "check": "resolve_package"
         }
       ],
       "gate": [

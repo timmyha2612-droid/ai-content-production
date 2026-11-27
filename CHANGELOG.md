@@ -7,6 +7,42 @@ dates; rule changes that alter what gets generated are listed here too.
 
 ## [Unreleased]
 
+### Changed: element-first full track
+
+- **New full track:** intake, research, concept, script, shotlist, elements, prompts, drafts, finals, handoff,
+  learn. Research is now required; concept and drafts are optional; the hand-off is **on request** (new
+  projects start with it skipped; `sc.py stage include handoff --user-said "..."` brings it back). The single
+  track is intake, prompts, drafts, finals, handoff (on request), learn.
+- **Removed from the tracks:** boards (replaced by elements), sound, assembly and delivery (the edit, sound,
+  grade and export happen in DaVinci Resolve). Their stage definitions stay, so older projects still work.
+- **Scenes, then shots.** The shot list has a scene table (scene, place, time, mode, elements) above the shot
+  table (id, scene, duration_s, purpose, elements). The gate checks every shot sits in a known scene, a
+  scene's shots are together, every scene has a place and a time, and a `multi-shot` scene (one Kling 3.0
+  Omni generation) fits 15 s.
+- **Elements stage** (replaces the text-only bible): every character, place, prop and the style frame is built
+  and locked on its own before any shot. `rules/element_recipes.json` holds a prompt recipe for every element
+  kind and view (character: turnaround, expressions, outfit, portrait; environment: plate, reverse, detail,
+  time variant; prop: product, angles, in hand; style: frame). New commands: `sc.py element views | add |
+  list | view | lock | unlock | link | attach`. Element cards live in `04_elements/cards/` and generate on the
+  new `element` tier (default model in `rules/routing.json` `element_policy`). Locked takes become `@Label`
+  reference assets; `element attach` puts each shot's locked elements on its card; `element link` records the
+  Higgsfield Element it was saved as.
+- **DaVinci hand-off:** `sc.py handoff resolve` writes `10_handoff/resolve/` with the approved finals filed by
+  scene, `timeline.fcpxml` (shots in order at their cut lengths, past the handles; File > Import > Timeline in
+  Resolve) and `shots.csv`. The handoff stage's evidence is this package, unchanged.
+- With the drafts stage skipped, a final no longer needs an approved draft.
+- New projects get `04_elements/` (characters, environments, props, style, cards) and
+  `06_generations/elements/` instead of `04_bible/`, `06_generations/boards/`, `07_sound/`, `08_assembly/` and
+  `09_delivery/`.
+- Docs: producer, director, handoff, review and prompt-craft skills, the stage map, the intake, the shot list
+  template and format, and the designer, cinematographer, generation-tech and script-supervisor agents follow
+  the new flow. New reference: `skills/prompt-craft/references/element-prompting.md`.
+
+### Fixed
+
+- On macOS (and Windows), the card of a shot in progress could not be edited: the guard case-folded the path and
+  then looked for an upper-case shot id.
+
 ## [0.6.0] - 2026-11-27
 
 ### Changed

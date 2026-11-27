@@ -46,11 +46,12 @@ LAYER_FIELDS = {
 }
 
 KINDS = ("video", "image")
-TIERS = ("board", "draft", "final", "upscale")
+TIERS = ("element", "board", "draft", "final", "upscale")
 INPUT_ROLES = ("start_frame", "end_frame", "reference", "character", "style", "source")
 SOURCE_EDITS = ("edit", "extend_forward", "extend_backward")  # what to do with a "source" video
 STATUSES = ("draft", "approved", "generated", "final")
 SHOT_RE = re.compile(r"^S\d{3,4}[A-Z]?$")
+ELEMENT_CARD_RE = re.compile(r"^E\d{2,3}[A-Z]$")  # an element view card (04_elements/cards/E01A.md)
 ASSET_RE = re.compile(r"^A\d{3,}$")
 ASPECT_RE = re.compile(r"^(auto|\d+(\.\d+)?:\d+(\.\d+)?)$")
 BEAT_T_RE = re.compile(r"^\s*(\d+(?:\.\d+)?)\s*-\s*(\d+(?:\.\d+)?)\s*s?\s*$")
@@ -470,7 +471,7 @@ def validate(meta, presets=None, taxonomy=None):
         return ["The front matter must be a JSON object."]
 
     sid = meta.get("id")
-    if not isinstance(sid, str) or not SHOT_RE.match(sid):
+    if not isinstance(sid, str) or not (SHOT_RE.match(sid) or ELEMENT_CARD_RE.match(sid)):
         errs.append("id must be a shot id like S010 (got {!r}).".format(sid))
     kind = meta.get("kind")
     if kind not in KINDS:
@@ -988,8 +989,11 @@ def _card_in_project(project, path):
         raise Refused("No shotcraft project for this card. Pass --project or open the project first.")
     proj = Path(project).resolve()
     real = Path(os.path.realpath(str(path)))
+    if real.parent == Path(os.path.realpath(str(proj / "04_elements" / "cards"))) and real.suffix == ".md":
+        return str(proj), "04_elements/cards/" + real.name
     if real.parent != Path(os.path.realpath(str(proj / "05_prompts"))) or real.suffix != ".md":
-        raise Refused("Only cards in 05_prompts/<shot>.md can be approved or changed this way ({}).".format(path))
+        raise Refused("Only cards in 05_prompts/<shot>.md or 04_elements/cards/<E01A>.md can be approved or changed "
+                      "this way ({}).".format(path))
     return str(proj), "05_prompts/" + real.name
 
 
@@ -997,6 +1001,10 @@ def _card_edit_open(project, shot=None):
     from shotcraft import Refused, stages as _st
     st = _st.load_state(project)
     if st.get("track") == "refine":
+        return
+    if shot and re.match(r"^E\d{2,3}[A-Z]$", shot):  # an element card: only while the elements stage is open
+        if st["stages"].get("elements", {}).get("status") != "open":
+            raise Refused("Element cards are approved or changed only while the elements stage is open.")
         return
     if shot:  # shot by shot: an in-progress shot may change its own card; a locked one may not
         from shotcraft import shots as _shots

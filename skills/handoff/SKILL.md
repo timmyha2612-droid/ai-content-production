@@ -1,121 +1,88 @@
 ---
 name: handoff
-description: "Hand-off stage of a shotcraft production: upload approved work to Higgsfield and write the Canvas build sheet. Triggers: \"hand it off\", \"put it in Higgsfield\", \"set up the Canvas\"."
+description: "Hand-off of a shotcraft production, only when the user asks: the DaVinci Resolve package (approved finals by scene, a timeline that opens in shot order, a shot sheet), and optionally the Higgsfield upload. Triggers: \"send it to DaVinci\", \"make the DaVinci package\", \"hand it off\", \"put it in Higgsfield\"."
 metadata:
-  version: "0.1.0"
+  version: "0.2.0"
 ---
 
-# Hand-off (Higgsfield Canvas)
+# Hand-off (DaVinci Resolve, on request)
 
-When the user runs a whole production with shotcraft, the end result lives in Higgsfield: every approved shot, its
-inputs and the bible uploaded, and a Canvas board (Higgsfield's node-based workspace) laid out shot by shot with
-every prompt, model and setting ready, so the user can open it, re-run, branch or extend any shot.
-
-Higgsfield Canvas has **no API, CLI or MCP access** as of November 2026 (an open feature request on the
-Higgsfield CLI). So the hand-off is: upload the files, write the build sheet, and offer to build the board in
-the user's browser with them watching. When a Canvas API appears, this skill changes to building it directly.
+The user finishes every piece in DaVinci Resolve: the edit, sound, music, grade and the final export. shotcraft
+ends when every shot's final is approved. The hand-off turns those finals into a package that drops straight into
+Resolve. It runs **only when the user asks for it**: never offer it at intake, never run it unasked.
 
 In this skill, `sc.py` means `python3 "${CLAUDE_PLUGIN_ROOT}/scripts/sc.py"`. Add `--json` when you need to read
 the output.
 
-## 0. Open the stage
+## 0. Bring the stage back and open it
+
+A new project starts with the hand-off skipped ("on request"). When the user asks:
 
 ```
-sc.py project status --json
-sc.py stage status handoff
+sc.py stage include handoff --user-said "<their words asking for it>"
 sc.py stage start handoff
 ```
 
-The hand-off is optional. If the user dropped it at intake it shows as `skipped`; only run it if they ask (then
-`sc.py stage reopen handoff --user-said ".."`). Delivery must be done first.
+Finals must be done first (`sc.py stage status`).
 
-## 1. Check for a Canvas API first
-
-Run the model check's report (it also looks for signs of a Canvas command or model):
+## 1. Check what goes in
 
 ```
-sc.py scout report --json
+sc.py handoff resolve --dry-run
 ```
 
-- If `canvas_api_detected` is true, tell the user what was seen (`canvas_evidence`), and that shotcraft cannot
-  build through it yet: the build sheet and browser route below still work. Suggest a lesson so the plugin is
-  updated: `sc.py lessons add "Higgsfield Canvas may have an API now: <evidence>" --kind model`.
-- If the report is old (more than a day) or missing, run `sc.py scout check` first. If the Higgsfield CLI is
-  missing or signed out, `sc.py doctor` says how to fix it; uploading needs it.
+It lists every shot in shot-list order with its scene and the file it will use: the approved upscale, else the
+approved final; a shot covered by the user's own file uses that file. Any shot without an approved final is
+listed as not ready: go back to finals for it, or ask the user whether to cut it from the shot list.
 
-## 2. See what will be uploaded
+## 2. Build the package
 
 ```
-sc.py handoff upload --dry-run
+sc.py handoff resolve
 ```
 
-It lists the files that would go up: approved finals and upscales, the inputs those shots use (start and end
-frames, references the user owns or licensed), and the bible (characters, environments, props, moodboard). It
-never uploads an asset tagged `reference-only`; those are listed as left out, with the reason.
+It writes `10_handoff/resolve/`:
 
-Show the user the list in short form (counts, and anything left out and why). If an asset they need is left out
-because it is `reference-only` but they own it or have a licence, they can say so and you record it:
-`sc.py asset mark <asset id> --rights owned --user-said "<their words>"` (or `licensed`). Never change rights
-without their words.
+| File | What it is |
+|---|---|
+| `SC01/SC01_S010_v1.mp4` ... | The approved take of every shot, copied and filed by scene. `v1` is the take's number among that shot's finals. |
+| `timeline.fcpxml` | One timeline with every shot in order at its planned cut length, trimmed past the handles, at the job's frame rate and size. Each clip carries a note with its scene, shot and purpose. |
+| `shots.csv` | Scene, place, time, shot, length, purpose, elements, file, take, model and prompt per shot. |
 
-Ask with **AskUserQuestion**: "Upload these <N> files to your Higgsfield account?" (options: "Upload",
-"Change the list first", "Skip the upload, just write the sheet").
+The package is recorded in project.json with a checksum per file; changing a file afterwards means building it
+again. Frame rate and size come from the job card's delivery (else the clips themselves, else 30 fps 1080p).
 
-## 3. Upload and write the sheet
+Tell the user how to open it in Resolve:
+1. File > Import > Timeline, pick `10_handoff/resolve/timeline.fcpxml`. Resolve imports the clips into the media
+   pool and builds the timeline in shot order.
+2. If Resolve asks about the frame rate, keep the timeline's (the job's) rate.
+3. The clips have handles: trim or slip in Resolve as needed. `shots.csv` is the shot reference while editing.
 
-```
-sc.py handoff upload
-sc.py handoff build
-```
+If the user's **beon-edit** plugin is installed, the work in Resolve can carry on with it (grade, subtitles,
+finish pass) when the user asks.
 
-- `upload` sends each file once (a file already uploaded and unchanged is not sent again), records the upload ids,
-  and rebuilds the sheet. Failed uploads are listed; retry them with the same command.
-- `build` writes `10_handoff/canvas-build-sheet.md` (the human sheet, one node group per shot: input nodes,
-  prompt node, model node with settings, edges) and `10_handoff/upload-list.json` (the same plan as data, under
-  `canvas`). Run it after any change.
+## 3. Optional: the Higgsfield project
 
-Read the sheet yourself. Check that every approved shot is there, each prompt is the compiled one from its card,
-and nothing says "not uploaded" unless the user chose to skip it.
+Only if the user also wants the approved work in their Higgsfield account. `sc.py handoff upload --dry-run`
+lists what would go up (approved finals and upscales, the inputs they use, the locked elements); never a
+`reference-only` asset. On their yes: `sc.py handoff upload`. Locked elements are best kept as Higgsfield
+Elements (the elements stage saves them with `elements_create` and `sc.py element link`). Higgsfield Canvas has
+no API, so shotcraft does not build Canvas boards; `sc.py handoff build` still writes a Canvas build sheet if the
+user asks for one.
 
-## 4. Offer the browser build
+## 4. Close
 
-Ask with **AskUserQuestion**: "Do you want me to set up the Canvas board in your browser now? You watch, and I
-stop before anything that spends credits." Options: "Yes, build it with me", "No, I'll use the sheet myself".
-
-Only offer this when a browser tool is connected in this session (Claude in Chrome on the user's Mac, or another
-browser-control tool the user has connected). If none is connected, say that the sheet is ready and how to
-connect Claude in Chrome if they want help next time.
-
-The browser build, step by step:
-
-1. Ask the user to open Higgsfield in Chrome, signed in, and to open (or create) the Canvas board for this
-   project. Do not sign in for them and never type passwords.
-2. Work one shot at a time, in shot-list order, following `10_handoff/upload-list.json` → `canvas`:
-   add the input nodes (pick each file from the user's uploads by its upload id or file name), add the prompt
-   node and paste the prompt exactly, add the model node, choose the model and settings from the sheet, connect
-   the edges.
-3. After each shot, take a screenshot, compare it with the sheet, and tell the user in one line what was built
-   ("S020 done: start frame, prompt, Seedance 2.5 at 9:16 1080p 6 s").
-4. **Never press Run, Generate or anything that spends credits.** The approved results already exist. If the user
-   wants a new take, they press it, or they say so and you confirm the cost Canvas shows first.
-5. If the page differs from the sheet (a model renamed, a setting missing, a layout change), stop, tell the user
-   what differs, and log it: `sc.py lessons add "<what differed>" --kind model`.
-6. If anything asks for a login, a payment, a permission or a captcha, stop and hand it to the user.
-
-## 5. Close
-
-The gate is evidence only: the sheet and the upload list.
+The gate is the evidence: the package built and unchanged.
 
 ```
-sc.py stage done handoff --user-said "<the user's words, if they confirmed the hand-off>"
+sc.py stage done handoff --user-said "<the user's words, if they confirmed it>"
 ```
 
-Tell the user where everything is: the Canvas board (if built), `10_handoff/canvas-build-sheet.md`, and the
-delivery files in `09_delivery/`. Then the producer moves on to the learn stage.
+Tell the user where it is (`10_handoff/resolve/`), how many clips, and the frame rate and size. Then the
+producer moves on to the learn stage.
 
 ## Never
 
-- Never run raw `higgsfield upload` or `higgsfield generate` commands; use `sc.py handoff upload`.
-- Never upload a `reference-only` asset, and never mark rights without the user's own words.
-- Never press a button in Canvas that spends credits without the user's explicit yes for that run.
-- Never enter credentials or handle payments in the browser.
+- Never run the hand-off without the user asking for it.
+- Never edit files in `10_handoff/resolve/` by hand; build it again with `sc.py handoff resolve`.
+- Never run raw `higgsfield upload` or `higgsfield generate` commands; never upload a `reference-only` asset.

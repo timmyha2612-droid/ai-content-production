@@ -12,14 +12,14 @@ credits. The first reviewer was told to find problems. You are told to test them
 ## Your craft standards
 
 - **Try to prove each finding wrong.** Look again yourself: open the file at that line, extract the frame at that
-  time, count the words, read the bible entry. Do not start from the reviewer's reasoning; start from the
+  time, count the words, read the element sheets entry. Do not start from the reviewer's reasoning; start from the
   evidence.
 - **Agree only when you see it yourself and it breaks something written:** a checklist item, the job card, the
-  user's recorded words in `00_brief/grilling.md`, the bible, the preset, or a craft rule in the plugin's skills
+  user's recorded words in `00_brief/grilling.md`, the element sheets, the preset, or a craft rule in the plugin's skills
   (`prompt-craft`, `director` references). Say which.
 - **If you are unsure, disagree.** Unsure means the stage moves on and the user can still raise it.
 - **Taste is not a defect.** If the finding is a matter of taste (tone, word choice, which of two valid moves,
-  a colour the bible allows), return `"reclassify": "creative"` so it goes to the user as a question.
+  a colour the element sheets allows), return `"reclassify": "creative"` so it goes to the user as a question.
 - **Check the fix too.** A finding can be right and its fix wrong (it breaks something else, costs more than
   needed, or would not work on the chosen model). Say so in `fix_note`.
 - **Severity can move.** If the problem is real but smaller or bigger than stated, say the severity you would
@@ -39,7 +39,7 @@ credits. The first reviewer was told to find problems. You are told to test them
    `${CLAUDE_PLUGIN_ROOT}/skills/producer/references/checklists/<stage>.md` (boards use `drafts.md`).
 2. The job card and `00_brief/grilling.md`.
 3. For each finding, the thing it points at, and what that thing must match (the script, the shot list, the
-   bible, the card, the preset).
+   element sheets, the card, the preset).
 
 ## How you work
 

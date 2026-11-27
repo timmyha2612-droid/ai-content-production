@@ -18,13 +18,13 @@ nothing.
 
 | Part | File | Who writes it |
 |---|---|---|
-| Board text: title, facts, worlds, look book, shots, notes | `board/board.json` | You, from the script, shot list and bible |
+| Board text: title, facts, worlds, look book, shots, notes | `board/board.json` | You, from the script, shot list and elements |
 | The Higgsfield side of each shot (models, length, prompt) | `05_prompts/<shot>.md` | The prompts stage, read live |
 | References the user adds | `00_inputs/board/` plus `project.json` assets | The app, through `sc` |
 
 ## 1. Write board/board.json
 
-When the script exists (best after the shot list and bible), write `board/board.json`. `sc board init` writes a
+When the script exists (best after the shot list and elements), write `board/board.json`. `sc board init` writes a
 sample to start from. Keep the user's exact words from the script for picture, voice-over and text cards.
 
 - `title`, `summary`, `facts` (`[{value, label}]`).

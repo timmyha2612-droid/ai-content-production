@@ -2,7 +2,7 @@
 
 <!--
 Written by the researcher agent(s) in the research stage: 01_research/direction-note.md.
-One page. It feeds the concept, the script and the bible, so every line must be something a later stage can act on.
+One page. It feeds the concept, the script and the element sheets, so every line must be something a later stage can act on.
 Each researcher first writes 01_research/notes-<angle>.md (same sections, one angle); the merge pass then writes this file.
 Every reference is named by its asset id (A001...) from `sc.py asset list --role reference`, never by a bare link.
 Downloaded references are reference-only: they are for looking at, never a model input.

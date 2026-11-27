@@ -1,16 +1,38 @@
 ---
 name: director
-description: "Shot list stage of a shotcraft production (and planning one shot): beats, shots, exact durations. Triggers: \"break it into shots\", \"make the shot list\", \"fit it to 15 seconds\"."
+description: "Shot list stage of a shotcraft production (and planning one shot): scenes first, then the shots in each, exact durations and the elements each uses. Triggers: \"break it into scenes and shots\", \"make the shot list\", \"fit it to 15 seconds\"."
 metadata:
   version: "0.1.0"
 ---
 
 # Director (shot list stage)
 
-The director turns the approved script into a shot list that the cinematographer can write cards from and the
-budget can survive: every shot has a reason to exist, an exact length, and a note on how it joins its
-neighbours. The shot list is also where money is saved: fewer, better shots; image first where a wrong guess
-would waste video credits; exact durations with small handles.
+The director turns the approved script into **scenes, then shots**, that the cinematographer can write cards
+from and the budget can survive: every shot has a reason to exist, an exact length, a scene, and the elements
+it uses. The shot list is also where money is saved: fewer, better shots; exact durations with small handles;
+and every recurring character, place and prop named once as an element, built and locked before any shot.
+
+## Scene and shot: the definitions
+
+- **Scene:** one continuous piece of action in **one place at one time**, like a screenplay slugline
+  (`INT. BOXING GYM - NIGHT`). A new place or a new time is a new scene, even if the story carries on.
+- **Shot:** one **uninterrupted camera take between two cuts**: one framing, one camera move. A scene holds one
+  or more shots. A cut inside a scene is a new shot; a cut to another place or time is a new scene.
+- **Beat:** a unit of story (hook, setup, turn, payoff). A beat can span shots and even scenes; it is a column,
+  not a level.
+
+## How Higgsfield makes them
+
+- One generation is one clip of 3-15 s. Seedance 2.x, Cinema Studio 3.0 and Kling 3.0 make **one shot per
+  generation**: the `shots` mode. Most control; any model; cut in the edit.
+- **Kling 3.0 Omni** can make a **whole scene in one generation**: several shots, each with its own prompt and
+  length, up to 15 s in all, with up to 7 reference images: the `multi-shot` mode. Best continuity between the
+  cuts of a short scene (same light, same faces); less control per shot, and a fix means regenerating the scene.
+- **Higgsfield Elements** (characters, environments, props) are the locked elements saved on Higgsfield; a
+  prompt uses one with `<<<element_id>>>`. They are what keeps a scene's shots, and the scenes, consistent.
+
+Pick `multi-shot` for a short scene whose cuts must match closely (a dialogue exchange, a quick action burst)
+and `shots` for everything else, for scenes longer than 15 s, and for shots that need a specific model.
 
 In this skill, `sc.py` means `python3 "${CLAUDE_PLUGIN_ROOT}/scripts/sc.py"`. Add `--json` when you need to read
 the output.
@@ -41,22 +63,30 @@ On the **single** track there is no shot list stage: see section 6.
 3. `00_brief/job-card.md`: delivery (aspect, length, fps), budget, must-haves.
 4. The preset: `sc.py route --use-case <use_case> --tier draft --kind video --json` shows the draft models and
    their lengths. The preset's `handles_s` sets the handles.
-5. `04_bible/` is not written yet (the bible comes after the shot list). Note what the bible must cover
-   (characters, environments, props that recur) in the continuity column.
+5. `04_elements/` is not built yet (the elements stage comes after the shot list). You decide what it must
+   build: every character, place, prop and the style frame, each with an `@Label` (step 2.0).
 6. `sc.py asset list --role input --json`: the user's own footage, photos or renders that can fill a shot
    instead of a generation.
 
-## 2. Plan the beats, then the shots
+## 2. Plan the scenes, then the shots
 
+0. **Scenes and elements first.** Split the script into scenes (one place, one time each), in story order:
+   `SC01`, `SC02` ... For each scene write its place (`INT. BOXING GYM`), time (`NIGHT`), mode (`shots` or
+   `multi-shot`, above) and the `@Labels` of the elements in it: who is there, the place itself, the props
+   that matter, the style frame. Give each element a short label once (`@Boxer`, `@Gym`, `@Gloves`, `@Look`)
+   and use the same label everywhere.
 1. List the beats from the script (hook, setup, turn, payoff, call to action, or the script's own structure)
-   with their target timing. The beat timings must add up to the delivery length.
+   with their target timing. The beat timings must add up to the delivery length. When the job card says the
+   length is flexible (the default), the story sets it: give each beat just the time it needs and the total
+   becomes the delivery length; never pad to the preset's typical length or a model's maximum
+   (`references/duration-fitting.md`).
 2. For each beat, choose the fewest shots that do its job. Give each shot one **purpose** (what the viewer
    must get from it) and one main action. See `references/coverage-and-pacing.md`.
 3. Give each shot an exact `duration_s` (the length it plays in the edit, not the generated length). The total
    must equal the delivery length, within 0.5 s. See `references/duration-fitting.md`.
-4. Flag **image-first** where a still should come before video: people or a recurring character, a product or
-   logo that must look exact, readable text, a complex camera move, shots of 8 s or more, or a shot that needs
-   an end frame (match cut, loop).
+4. Put every shot in its scene (`scene` column), the scene's shots together and in order. Fill a shot's
+   `elements` cell only when it differs from its scene (a prop seen in this shot only). A `multi-shot` scene's
+   shots must add up to 15 s or less; otherwise make it `shots` or split the scene.
 5. Mark the **kind**: `video` or `image` (a still used as a held frame or a Ken Burns move is an `image`).
 6. Mark what belongs to **motion graphics** in the `graphics` column (titles, lower thirds, end card,
    captions, icons, charts). shotcraft does not build motion graphics: they are added afterwards in the
@@ -80,24 +110,27 @@ On the **single** track there is no shot list stage: see section 6.
 11. Write one **scene light plan** per scene: a line naming the light sources fixed to the set, for example
     "north window on the left wall, one table lamp right of the bed, blue hour outside". Pick the setup from
     the chooser in `${CLAUDE_PLUGIN_ROOT}/docs/research/cinematic-lighting-guide.md`. You own this line. The
-    production designer copies it word for word into the environment file's Light section in the bible stage,
+    production designer copies it word for word into the environment sheet's Light section in the elements stage,
     and the cinematographer copies the anchor phrase from there onto every card in the scene, so the key stays
     on the same side of frame from shot to shot.
 
 ## 3. Write the shot list
 
 Write `03_script/shotlist.md` in the format in `references/shotlist-format.md` (start from
-`${CLAUDE_PLUGIN_ROOT}/templates/shotlist.md` if it exists). Shot ids are `S010`, `S020` ... (steps of 10, so
-an insert can become `S015`). Required columns: `id`, `duration_s`, `purpose`. Strongly recommended: `kind`,
-`image_first`, `beat`, `shot`, `move`, `composition`, `depth`, `continuity`, `graphics`, `source`.
+`${CLAUDE_PLUGIN_ROOT}/templates/shotlist.md` if it exists): the **scene table** first (scene, place, time,
+mode, elements), then the **shot table**. Shot ids are `S010`, `S020` ... through the whole piece (steps of
+10, so an insert can become `S015`). Required shot columns: `id`, `scene`, `duration_s`, `purpose`. Strongly
+recommended: `elements`, `kind`, `beat`, `size_angle`, `move`, `composition`, `continuity`, `graphics`,
+`source`. The gate checks every shot sits in a known scene, a scene's shots are together, every scene has a
+place and a time, and a multi-shot scene fits 15 s.
 
 Under the table add:
 - **Total:** the sum of `duration_s` and the delivery length.
 - **Generated length per shot:** from `sc.py route --use-case <use_case> --tier draft --kind video --duration <duration_s>`
   for each video shot (it adds the handles and picks a length the model allows). Note any shot that needs a
   chain of two takes or a different model.
-- **Scene light plans:** one line per scene (step 2.11), as `Scene <n> (<place>): <anchor phrase>`.
-- **Bible needs:** the characters, environments and props that recur.
+- **Scene light plans:** one line per scene (step 2.11), as `SC01 (<place>): <anchor phrase>`.
+- **Elements to build:** every `@Label`, what it is, the views it needs (`sc.py element views`), its scenes.
 - **Graphics list:** everything for the user's motion graphics tool, per shot, with timing.
 
 ## 4. Ask the creative calls
@@ -106,7 +139,7 @@ Ask only what changes the plan. Use **AskUserQuestion**, at most 3 questions in 
 
 - Pacing: "Fast cuts (about 1.5 s a shot) or fewer, longer shots (about 3 s)?" when the script allows both.
 - The hero shot: which beat gets the longest or most expensive shot.
-- Image-first on borderline shots, stating the trade-off in credits and time.
+- Mode on borderline scenes: one multi-shot generation for the whole scene, or shot by shot.
 
 Show the user the table (or a short summary of it with the total length) before QA. Record what they asked for
 in the shot list; it is not a gate here, but their words go on record when the stage closes.
@@ -118,8 +151,9 @@ The gate is a QA PASS. Run the QA loop (the producer skill describes it in full)
 1. Spawn the **qa-supervisor** agent with: the project path, stage `shotlist`, the round number (from
    `sc.py qa status --stage shotlist --json`, field `next_round`), and the files to check
    (`03_script/shotlist.md`, `03_script/script.md`, `02_concept/chosen.md`, `00_brief/job-card.md`).
-   It checks: every script line covered, durations sum to the delivery, each shot has one purpose, image-first
-   flags follow the rule, continuity notes are present, nothing on the list is impossible for the routed models.
+   It checks: scenes split at every change of place or time, every script line covered, durations sum to the
+   delivery, each shot has one purpose and one scene, every recurring character, place and prop is a named
+   element, multi-shot scenes fit one take, nothing on the list is impossible for the routed models.
 2. Spawn the **qa-verifier** agent on the supervisor's judgement calls (fresh eyes), with the same files and the
    findings file.
 3. Record the round. The findings JSON goes in a temporary file outside `.shotcraft/qa/` (the guard protects that
@@ -142,8 +176,8 @@ On the single track (one shot, icon or thumbnail) there is no shot list stage. T
 the **prompts** stage, which must be open (`sc.py stage status prompts`):
 
 1. Decide the one shot's purpose, exact `duration_s` (video), and beats (what happens in which second).
-2. Decide if it should go image-first (same rule as above). On the single track there is no boards stage, so an
-   image-first plan means a cheap still draft first, approved, then used as the start frame for the video draft.
+2. Decide if it should go image-first (a person, a product that must look exact, readable text, a complex move):
+   then a cheap still draft first, approved, then used as the start frame for the video.
 3. Create the card and fill those parts:
    ```
    sc.py card new --shot S010 --from-text "<the user's description>"

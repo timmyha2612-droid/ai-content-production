@@ -107,5 +107,20 @@
   "beauty lighting": "motivated light with real shadow on the face",
   "rim light on both sides": "rim light on one side only",
   "lifted shadows": "deep shadows that fall to black",
-  "HDR": "natural contrast with dark shadows and gently rolled-off highlights"
+  "HDR": "natural contrast with dark shadows and gently rolled-off highlights",
+  "different outfits between views": "the identical outfit in every view",
+  "extra characters": "only this one character",
+  "text labels": "no lettering anywhere on the sheet",
+  "cropped feet": "the whole figure in frame, feet included",
+  "dramatic shadows": "soft, even, shadowless light",
+  "different faces between panels": "the identical face in every panel",
+  "hands covering the face": "the face fully visible",
+  "extra accessories": "only the listed garments and accessories",
+  "figures": "an empty place with nobody in it",
+  "hands": "the object alone",
+  "other objects": "the object alone on the background",
+  "text you do not own": "unmarked surfaces",
+  "logos you do not own": "unbranded surfaces with no logos",
+  "distorted hand": "a natural, relaxed hand",
+  "extra people": "only this one person"
 }

@@ -21,5 +21,5 @@ Read: the job card, the script, the shot list, the preset (aspect, `shot_duratio
 | SL-11 | Continuity notes are there where shots join: screen direction, eyelines, the side of the 180-degree line, matched frames, light direction. | Read the continuity column for every cut that shares a subject or space. | judgement | major |
 | SL-12 | Motion graphics are listed per shot (text, lower thirds, end card) and nothing that needs legible text is left to generation. | Compare with the script's on-screen text. | fact | major |
 | SL-13 | The user's own material is used where the job card says so (`source` column pointing at `00_inputs/` files that exist). | `sc asset list --role input --json` | fact | major |
-| SL-14 | The bible needs (characters, places, products, props) are listed so the bible stage can start. | Read the notes under the table. | fact | minor |
+| SL-14 | The element sheets needs (characters, places, products, props) are listed so the elements stage can start. | Read the notes under the table. | fact | minor |
 | SL-15 | Each scene has a line in the Scene light plans block (the anchored sources, as `Scene <n> (<place>): <anchor>`), and the `composition` column is filled for each generated shot (three techniques at most). | Read the block under the table against the scenes; read the composition column. | fact | major |

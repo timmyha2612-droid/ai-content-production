@@ -562,5 +562,14 @@
       "360"
     ],
     "min_duration_s": 8
+  },
+  "element_policy": {
+    "about": "Element sheets (characters, environments, props, style frames) are stills that take reference images. The element card's model.element wins; otherwise this default.",
+    "default_model": "nano_banana_2",
+    "alternatives": [
+      "gpt_image_2_6",
+      "seedream_v4_5",
+      "cinematic_studio_2_5"
+    ]
   }
 }

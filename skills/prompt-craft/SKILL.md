@@ -68,7 +68,7 @@ they are the words models were trained on.
 
 1. Intent first (one line each): what the shot must do, for whom, on what platform.
 2. Subject and action: who or what, doing one clear thing. Fixed wardrobe and props. For a recurring
-   character, `consistency` names the reference (a bible image or Soul ID) and the card's `inputs` carry it.
+   character, `consistency` names the reference (a locked element or Soul ID) and the card's `inputs` carry it.
 3. World: place, time of day, atmosphere. Era and weather only when they matter.
    Depth: far and near background, the subject's placement (midground), a foreground, and for video how
    the planes move (parallax). Then one or two interactions between the place and the subject.

@@ -1,8 +1,8 @@
 # <Place name, e.g. Cafe counter at dawn>
 
 <!--
-04_bible/environments/<env-slug>.md, one file per place. Written by the production-designer agent in the bible
-stage, alongside 04_bible/look.md (palette, grade, light logic, texture, look line) and 04_bible/props/.
+04_elements/environments/<env-slug>.md, one file per place. Written by the production-designer agent in the element sheets
+stage, alongside 04_elements/style/look.md (palette, grade, light logic, texture, look line) and 04_elements/props/.
 The environment line is the exact sentence every prompt card reuses word for word in its world layer, so the
 place looks the same in every shot. Use concrete nouns and terms from rules/taxonomy.json (world and light_look).
 References are reference-only: they guide the look and are never sent to a model as inputs. Only owned,
