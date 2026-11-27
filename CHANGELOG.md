@@ -7,6 +7,23 @@ dates; rule changes that alter what gets generated are listed here too.
 
 ## [Unreleased]
 
+## [0.7.0] - 2026-11-27
+
+### Added
+
+- **Research skill** (`skills/research`): social discovery for the research stage. Free sources first (the
+  user's saved links, TikTok Creative Center read in the browser, yt-dlp searches and public profiles), a paid
+  scraper (Apify or Bright Data) only with the user's yes to its shown price, then ranking, downloading the top
+  posts as reference-only, parallel breakdowns and a pattern count. The producer uses it for the research stage.
+- `sc.py discover collect|rank|fetch-top|patterns` (`discover.py`, standard library): normalises posts from
+  yt-dlp info JSON, Apify TikTok and Instagram datasets and CSV; ranks by reach, engagement, breakout (views
+  over followers) and recency, with each part shown; fetches the top through the normal reference download;
+  counts what repeats across breakdowns ("hook under 1.5 s: 7 of 10").
+- The researcher writes discovery breakdowns and proposes paid searches (`paid_search`) instead of running them.
+- Open-source sources on the user's own computer: `scripts/tools/tiktok_search.py` (hashtags, accounts and
+  trending through the unofficial TikTok-Api) and Instaloader for Instagram metadata. `discover collect` reads
+  TikTok-Api video dicts and Instaloader's per-post JSON, compressed or not.
+
 ## [0.6.0] - 2026-11-27
 
 ### Changed

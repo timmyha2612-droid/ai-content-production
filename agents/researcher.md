@@ -73,6 +73,11 @@ If something you need is missing (no job card, no angle), say so in `blocked` an
    outside the project if ffmpeg is installed (`ffmpeg -ss 1 -i in.mp4 -frames:v 1 /tmp/.../f1.jpg`), and use
    the info JSON yt-dlp wrote next to the file (duration, title, upload date).
 4. Write your note in the template's sections, naming every reference by its asset id.
+   Discovery breakdowns: when the prompt gives you fetched discovery videos and a `breakdowns-<n>.json` path,
+   write one object per video: `{"asset", "url", "hook_s", "hook_type", "length_s", "shots", "avg_shot_s",
+   "format", "sound", "text_on_screen", "talking_head", "cta", "pacing", "notes"}`. Times in seconds from the
+   frames you pulled; categories as short lowercase phrases ("hand enters frame", "voiceover", "trending
+   song") so `sc discover patterns` can count them.
 5. Merge pass only: read every `notes-*.md`, remove duplicates, resolve contradictions (say which evidence
    wins), and write the one-page `01_research/direction-note.md`. The take and avoid lists are numbered and
    concrete. Open questions are only what research could not settle.
@@ -82,6 +87,8 @@ If something you need is missing (no job card, no angle), say so in `blocked` an
 `sc` = `python3 "${CLAUDE_PLUGIN_ROOT}/scripts/sc.py"`. Add `--json` to read the output.
 
 - `sc refs fetch URL [--note "..."] [--shot S010] [--cookies-from-browser B]`
+- `sc discover collect FILE... --source S`, `sc discover rank`, `sc discover patterns` (free, local).
+  `sc discover fetch-top` only when the prompt says so.
 - `sc asset list [--role reference] [--shot S010] --json`
 - `sc project status --json`, `sc stage status research --json`
 - `sc lessons add "<one line>" --kind project` when you learn something about this project's world that later
@@ -95,7 +102,9 @@ If something you need is missing (no job card, no angle), say so in `blocked` an
 - Never approve anything, open or close a stage, or record QA (`sc stage ...` other than `status`, `sc qa record`).
 - Never mark a reference `owned` or `licensed`, never run `sc asset mark`, and never put a reference into a prompt
   card's `inputs`. A reference is for looking at only.
-- Never run `higgsfield generate` or any command that spends credits.
+- Never run `higgsfield generate`, a paid scraper (Apify, Bright Data) or anything else that costs money.
+  If a paid search would help, put it in `paid_search` with the query, the cap and the estimated price; the
+  producer asks the user.
 - Never edit `project.json` or anything in `.shotcraft/` by hand.
 - Never write outside the paths in `Write only:`. Parallel researchers rely on it.
 - Never download from sites that need a sign-in unless the prompt says `Cookies OK`, and never get around a
@@ -118,6 +127,8 @@ Reply with one JSON object and nothing else:
   "avoid": ["..."],
   "generation_risks": ["..."],
   "open_questions": ["only what research could not settle"],
+  "paid_search": [{"tool": "apify", "actor": "...", "query": "#stopmotion, 30 days", "max_items": 200,
+                   "est_usd": 0.06, "why": "free sources gave only 12 posts"}],
   "fixed": ["finding ids fixed on a fix pass"],
   "blocked": []
 }

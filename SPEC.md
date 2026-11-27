@@ -555,3 +555,21 @@ board.json) or all. State lives in `.shotcraft/shots.json` (sc.py only; the guar
   duration, one named `KEY` light) and land in `00_inputs/blender/`. `board.add_file` / `sc.py board add` puts an
   image from disk on the board; rights other than reference-only need the user's words. Video references are
   registered with `sc.py asset add` until the board shows video.
+
+## 15. Social discovery (discover.py, skills/research)
+
+- Posts from any source are normalised into `01_research/discovery/posts.json` (url, platform, author,
+  followers, views, likes, comments, shares, saves, posted, duration, caption, hashtags, sound, source), deduped
+  by URL, keeping the richest value per field.
+- `rank` scores each post: log10(views + 10) x (1 + 5 x min(engagement, 0.3)) x (1 + log10(1 + min(views /
+  followers, 100))) x 0.5 ** (days old / half-life), with engagement = (likes + 2 comments + 3 shares + 2 saves)
+  / views. It writes `ranked.json` and `ranked.md` with every part shown.
+- `fetch-top` downloads through `refs.fetch`, so every file is reference-only with its source URL.
+- `patterns` counts numeric bands (hook, length, shot length) and the top values of categorical fields across
+  `breakdowns.json`, into `patterns.md`.
+- Readers: yt-dlp info JSON, Apify TikTok and Instagram datasets, CSV, TikTok-Api video dicts (URL built from
+  the author and id) and Instaloader per-post JSON (`.json` or `.json.xz`; hashtags from the caption when none
+  are listed). `scripts/tools/tiktok_search.py` is an optional helper; nothing in `sc.py` imports it.
+- Free sources first. A paid scraper needs the user's yes to its shown price for that run; researchers only
+  propose (`paid_search`). Public posts only; no getting around sign-ins or blocks; cookies only with a yes.
+
