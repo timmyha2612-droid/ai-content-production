@@ -137,6 +137,21 @@ class TestRefs(Base):
             board.set_rights(self.proj, a["id"], "licensed")
 
 
+class TestAddFile(Base):
+    def test_add_file_with_label_and_rights(self):
+        src = os.path.join(self.tmp, "render.png")
+        with open(src, "wb") as fh:
+            fh.write(PNG)
+        with self.assertRaises(Refused):
+            board.add_file(self.proj, src, 1, "Environment", rights="owned")  # no words
+        a = board.add_file(self.proj, src, 1, "Environment", label="BakerySet", rights="owned",
+                           user_said="these are my Blender renders")
+        self.assertEqual((a["rights"], a["board"]["label"]), ("owned", "BakerySet"))
+        self.assertTrue(a["path"].startswith("00_inputs/board/"))
+        with self.assertRaises(ShotcraftError):
+            board.add_file(self.proj, os.path.join(self.tmp, "missing.png"), 1, "Mood")
+
+
 class TestPlanAndHiggsfield(Base):
     def test_reference_only_is_never_proposed(self):
         board.add_ref(self.proj, PNG, "p.png", 1, "Character")

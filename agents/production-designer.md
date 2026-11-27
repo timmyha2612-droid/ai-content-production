@@ -69,9 +69,10 @@ where it is the cheaper or more exact route:
   then use the render as the shot's start frame or as a style/environment reference. Write this as a plan in the
   environment file: objects, scale, camera (focal length, height, angle), lights, render size matching the
   delivery aspect, file names.
-- You only plan it unless the prompt says to build it and Blender tools (a Blender MCP) are available in this
-  session. If you build it: renders go to `00_inputs/blender/<env>-<setup>.png` and are registered as owned with
-  `sc asset add`. Only use Blender assets whose licence allows it (your own modelling, CC0 libraries); write the
+- You only plan it unless the prompt says to build it and Blender tools are available in this session. Building
+  follows the blender skill (`${CLAUDE_PLUGIN_ROOT}/skills/blender/SKILL.md`): renders go to
+  `00_inputs/blender/<shot>-<kind>-v01.png` and onto the board with `sc board add`, owned only with the user's
+  words. Only use Blender assets whose licence allows it (your own modelling, CC0 libraries); write the
   source of every downloaded model or texture in the note.
 - The user's own location photos or footage beat any generated environment: reference them by asset id.
 

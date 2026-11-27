@@ -430,7 +430,7 @@ def estimate(project, card, tier, model=None, variants=None, record=True, provid
     prov = _provider(project, provider=provider)
     each = _estimate_each(prov, pl)
     total = each * pl["variants"]
-    chk = budget.check(project, total)
+    chk = budget.check(project, total, generation=True)
     g = None
     if record:
         g = manifest.add_generation(project, shot=pl["shot"], card=pl["card_rel"], tier=tier, provider=prov.name,
@@ -465,7 +465,7 @@ def submit(project, card, tier, model=None, variants=None, user_said=None, wait=
         raise Refused("%s %s now costs about %s credits (%d x %s), more than the %s the user said yes to. Show the "
                       "new price and ask again." % (pl["shot"], tier, _clean(total), pl["variants"], _clean(each),
                                                     _clean(max_credits)))
-    chk = budget.check(project, total, user_said=user_said)
+    chk = budget.check(project, total, user_said=user_said, generation=True)
     if not chk["ok"]:
         raise Refused("%s %s would cost about %s credits (%d x %s): %s" % (
             pl["shot"], tier, _clean(total), pl["variants"], _clean(each), chk["reason"]))

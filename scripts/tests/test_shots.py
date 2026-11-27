@@ -70,10 +70,10 @@ class Base(unittest.TestCase):
         cards.approve(self.proj, path, "card looks right")
 
     def draft(self, sid):
-        return gen.submit(self.proj, sid, "draft", wait=True)["generations"][0]
+        return gen.submit(self.proj, sid, "draft", wait=True, user_said="go")["generations"][0]
 
     def final(self, sid):
-        return gen.submit(self.proj, sid, "final", wait=True)["generations"][0]
+        return gen.submit(self.proj, sid, "final", wait=True, user_said="go")["generations"][0]
 
 
 class TestSelectAndStart(Base):

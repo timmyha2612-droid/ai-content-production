@@ -16,6 +16,8 @@ API:
     asset_role(attr) -> manifest role                                    the project.json role it is filed as
     refs(project) -> [asset dicts with a "board" key]
     add_ref(project, data_bytes, filename, shot, attr) -> asset
+    add_file(project, path, shot, attr, label=None, rights=None, user_said=None) -> asset   a file on disk
+                                             (a Blender render, a photo) onto the board
     set_rights(project, asset_id, rights) -> asset
     set_label(project, asset_id, label) -> asset   a short name a prompt can mention as @Label
     resolve_mentions(project, card_id, prompt, model_id) -> {"prompt", "slots", "warnings"}
@@ -242,6 +244,23 @@ def set_label(project, asset_id, label):
     return a
 
 
+def add_file(project, path, shot, attr, label=None, rights=None, user_said=None):
+    """Put an image from disk on the board. Rights other than the default need the user's words."""
+    if rights and rights != "reference-only" and not (user_said or "").strip():
+        raise Refused("Marking it %s needs the user's own words (--user-said)." % rights)
+    try:
+        with open(path, "rb") as fh:
+            data = fh.read()
+    except OSError as exc:
+        raise ShotcraftError("Can't read %s: %s" % (path, exc))
+    a = add_ref(project, data, os.path.basename(path), shot, attr)
+    if label:
+        a = set_label(project, a["id"], label)
+    if rights and rights != a.get("rights"):
+        a = manifest.mark_asset(project, a["id"], rights, user_said)
+    return a
+
+
 def set_rights(project, asset_id, rights):
     a = manifest.find_asset(project, asset_id)
     if a is None or not isinstance(a.get("board"), dict):
@@ -455,6 +474,16 @@ def cli_board_init(args):
     jsonio.write_json(path, BOARD_TEMPLATE)
     _print(args, {"ok": True, "path": path}, "Sample board written to %s. Replace its text with the project's "
                                              "script, shot list and look book." % path)
+    return 0
+
+
+def cli_board_add(args):
+    project = _project(args)
+    a = add_file(project, args.path, args.shot, args.attr, getattr(args, "label", None),
+                 getattr(args, "rights", None), getattr(args, "user_said", None))
+    b = a["board"]
+    _print(args, {"ok": True, "asset": a}, "%s added to %s %s as @%s (%s)." % (
+        a["id"], "the look book" if b["shot"] == 0 else "shot %s" % b["shot"], b["attr"], b["label"], a["rights"]))
     return 0
 
 

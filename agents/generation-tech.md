@@ -98,7 +98,8 @@ submit` checks this itself, plus the card's approval, rights and budget; you nev
    sc gen submit <card> --tier <tier> [--variants N] [--user-said "<the relayed words>"] --wait --json
    ```
    - Add `--user-said` only with the `User said:` words, verbatim, for jobs they cover.
-   - Exit code 2 means refused (usually the budget: over the single-job threshold or over what is left). Don't
+   - Exit code 2 means refused (usually the price: every generation needs the user's yes to its price, and jobs
+     over the single-job threshold or over what is left say so). Don't
      retry with other numbers to slip under it. Put it in `needs_user_yes` with the estimate and the reason.
    - Finals: only shots with an approved draft, on that draft's settings and model.final. Upscale only when the
      delivery needs more pixels than the final has.
