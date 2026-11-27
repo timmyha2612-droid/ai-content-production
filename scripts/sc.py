@@ -742,6 +742,25 @@ def build_parser():
     leaf(s, "report", delegate("scout", "report", ["scout"]))
     leaf(s, "ack", delegate("scout", "ack", ["scout"]), help="the user has decided every proposal")
 
+    s = group("discover", "research: collect social posts, rank them, fetch the best, count what repeats")
+    sp = leaf(s, "collect", delegate("discover", "collect", ["discover"]),
+              help="add posts from JSON, JSON lines, CSV, yt-dlp .info.json files or a folder of them")
+    sp.add_argument("paths", nargs="+")
+    sp.add_argument("--source", help="where they came from: links, yt-dlp, creative-center, apify, ...")
+    sp = leaf(s, "rank", delegate("discover", "rank", ["discover"]),
+              help="rank by reach, engagement, breakout and recency")
+    sp.add_argument("--top", type=int, default=20)
+    sp.add_argument("--since-days", dest="since_days", type=int)
+    sp.add_argument("--platform", choices=["tiktok", "instagram", "youtube", "facebook", "x", "other"])
+    sp.add_argument("--min-views", dest="min_views", type=int)
+    sp.add_argument("--half-life", dest="half_life", type=int, default=30, help="days for recency to halve")
+    sp = leaf(s, "fetch-top", delegate("discover", "fetch_top", ["discover"]),
+              help="download the top ranked posts as reference-only")
+    sp.add_argument("--n", type=int, default=10)
+    sp.add_argument("--cookies-from-browser", dest="cookies_from_browser")
+    leaf(s, "patterns", delegate("discover", "patterns", ["discover"]),
+         help="count what repeats across discovery/breakdowns.json")
+
     s = group("shots", "per-shot progress: start a batch, lock approved shots")
     leaf(s, "status", delegate("shots", "status", ["shots"]))
     for name, helptext in (("start", "put shots in progress (after the whole board is approved)"),

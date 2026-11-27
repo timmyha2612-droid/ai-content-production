@@ -92,6 +92,7 @@ qa-supervisor + qa-verifier after every building stage (max 3 rounds).
 | handoff | Uploads approved assets to Higgsfield and writes the Canvas build sheet. |
 | learn | End-of-job learning: turns your corrections into rule proposals, and changes rules only after your yes. |
 | model-scout | Reviews new or changed Higgsfield models and proposes routing changes. |
+| research | Social discovery for the research stage: finds viral TikTok, Instagram and YouTube Shorts videos (free sources first: your saves, TikTok Creative Center, yt-dlp; a paid scraper only with your yes to its price), ranks them, downloads the best as references and counts the patterns they share. |
 | storyboard | Opens the project as a local web app: timeline, look book, shot panels, references with @labels, an assets tab and each shot's Higgsfield prompt. |
 | blender | Builds references in Blender (once you connect Blender yourself): sets, subject and camera motion, and renders matched to the shot's card, saved onto the board. |
 | prompt-craft | Reference: the six-layer prompt structure, the vocabulary, the negatives system, per-model notes. |
@@ -368,6 +369,10 @@ $sc route --use-case social-vertical --tier draft --kind video --duration 4
 $sc gen estimate 05_prompts/S010.md --tier draft
 $sc budget status
 $sc sheet build --tier draft --open
+$sc discover collect 01_research/discovery/raw/links.jsonl --source links
+$sc discover rank --since-days 90
+$sc discover fetch-top --n 10
+$sc discover patterns
 $sc board check
 $sc board serve
 $sc board add 00_inputs/blender/S050-lit-v01.png --shot 5 --attr Frame --rights owned --user-said "my renders"

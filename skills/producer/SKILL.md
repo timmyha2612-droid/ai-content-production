@@ -125,7 +125,7 @@ Every stage follows the same loop. Full map, with what to pass each crew member:
 | Stage | Who | Gate |
 |---|---|---|
 | intake | producer (this skill) | user's words on the job card |
-| research | `shotcraft:researcher` agents in parallel | QA PASS |
+| research | **research** skill (social discovery: free sources first, paid only with a yes to the price), `shotcraft:researcher` agents in parallel | QA PASS |
 | concept | **creative-director** skill | user's pick |
 | script | `shotcraft:screenwriter` | QA PASS + user's words |
 | shotlist | **director** skill | QA PASS |
