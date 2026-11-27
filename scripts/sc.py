@@ -760,6 +760,14 @@ def build_parser():
     sp = leaf(s, "init", delegate("board", "init", ["board"]), help="write a sample board/board.json")
     sp.add_argument("--force", action="store_true", help="replace an existing board.json")
     leaf(s, "check", delegate("board", "check", ["board"]), help="validate the board and show each shot's cards")
+    sp = leaf(s, "add", delegate("board", "add", ["board"]), help="put an image from disk on the board")
+    sp.add_argument("path")
+    sp.add_argument("--shot", required=True, help="the board's shot number, 0 for the look book")
+    sp.add_argument("--attr", required=True, help="Character, Wardrobe, Props, Environment, Camera, Lighting, "
+                                                   "Mood, Frame, or a look book row")
+    sp.add_argument("--label", help="the name prompts mention as @Label")
+    sp.add_argument("--rights", choices=["reference-only", "owned", "licensed", "generated"])
+    sp.add_argument("--user-said", dest="user_said")
     leaf(s, "inputs", delegate("board", "inputs", ["board"]),
          help="card inputs the board's sendable references call for (proposals only)")
     sp = leaf(s, "serve", delegate("board", "serve", ["board"]), help="open the storyboard on 127.0.0.1")

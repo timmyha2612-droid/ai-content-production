@@ -17,6 +17,9 @@ DEFAULTS = {
     "projects_root": None,
     "provider": "higgsfield",
     "default_threshold_credits": 50,
+    # Every generation shows its live price and waits for the user's yes, whatever its size. Set to false to
+    # let jobs under the single-job threshold go without asking.
+    "confirm_every_generation": True,
     "currency_note": None,
     "first_run_done": False,
 }

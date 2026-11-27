@@ -28,7 +28,8 @@ work around it), 1 error.
    hook blocks writing into a stage's folder until that stage is open, and blocks raw generation. When a
    command is refused, tell the user the reason in one line and do what it says.
 5. **Spend the least that meets the use case.** Image first for risky video shots, cheap drafts, approved
-   finals, upscale only when the delivery needs it. Every spend over the threshold needs the user's yes.
+   finals, upscale only when the delivery needs it. Every generation is priced first and needs the user's
+   yes to that price, however small (config `confirm_every_generation`, on by default).
 6. **Ask once.** The deep grilling happens at intake. Its answers go on the job card and in
    `00_brief/grilling.md` and are never asked again. Later questions are only things the intake could not
    know (say so).
@@ -172,8 +173,10 @@ a few shots, a range, or all of them. Then, with their words:
   generate` command is blocked by the guard.
 - Before spending: `sc gen estimate <card> --tier board|draft|final|upscale [--model <id>] [--variants N]`
   records the estimate and prints the cost and any gate still open. `sc budget status` shows what is left.
-- If the cost is over the single-job threshold or over what is left, `gen submit` refuses until the user
-  says yes. Ask with the number: "S030 drafts: 2 takes on Seedance 2.5, about 70 credits. 180 left. Go?".
+- Always show the live price before any generation and wait for the user's yes: `gen submit` refuses any job
+  that costs credits without their words (and also says when it's over the threshold or what is left). Ask
+  with the number: "S030 drafts: 2 takes on Seedance 2.5, about 70 credits. 180 left. Go?". Never reuse a yes
+  for a different price, shot or tier.
   Then `sc gen submit <card> --tier <tier> --user-said "<their words>" [--wait]`. `sc budget check --credits
   N [--user-said "..."]` checks a batch total before you start it (exit 2 means the user's yes is needed).
 - A final needs an approved draft of that shot, or the user's words. An upscale only when the delivery

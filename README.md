@@ -44,7 +44,8 @@ Six ideas run through the whole plugin:
 2. **Spend the least that still meets the use case.** Output is never bigger than the delivery needs.
    Durations are exact. Risky video starts as a cheap still ("image first"). Drafts are cheap, finals are
    approved by you, and upscaling happens only when the delivery needs it. Every job checks the live cost
-   first and asks you before it goes over your single-job threshold or the project budget.
+   first and shows you the price of every generation, waiting for your yes, however small. It also flags
+   anything over your single-job threshold or the project budget.
 3. **Stages are enforced, not suggested.** Each stage closes only when its evidence exists (checked by
    code, not taken on trust) and its gate is met: a QA pass, your words, or a spec check. A guard hook stops
    files being written into a stage that is not open, and routes every generation through the budget and
@@ -92,6 +93,7 @@ qa-supervisor + qa-verifier after every building stage (max 3 rounds).
 | learn | End-of-job learning: turns your corrections into rule proposals, and changes rules only after your yes. |
 | model-scout | Reviews new or changed Higgsfield models and proposes routing changes. |
 | storyboard | Opens the project as a local web app: timeline, look book, shot panels, references with @labels, an assets tab and each shot's Higgsfield prompt. |
+| blender | Builds references in Blender (once you connect Blender yourself): sets, subject and camera motion, and renders matched to the shot's card, saved onto the board. |
 | prompt-craft | Reference: the six-layer prompt structure, the vocabulary, the negatives system, per-model notes. |
 
 **Agents** (the producer spawns these): researcher, screenwriter, production-designer, character-designer,
@@ -246,7 +248,7 @@ Your settings live in `~/.shotcraft/` (set `SHOTCRAFT_HOME` to move it):
 
 | File | What it holds |
 |---|---|
-| `config.json` | `projects_root` (asked on first run), `provider` (`higgsfield`), `default_threshold_credits` (50), a currency note |
+| `config.json` | `projects_root` (asked on first run), `provider` (`higgsfield`), `default_threshold_credits` (50), `confirm_every_generation` (true: every generation waits for your yes to its price), a currency note |
 | `rules/` | your personal rule overrides |
 | `sessions/`, `active.json` | which project is active in which Claude session |
 | `scout/last.json` | the last model check |
@@ -368,6 +370,7 @@ $sc budget status
 $sc sheet build --tier draft --open
 $sc board check
 $sc board serve
+$sc board add 00_inputs/blender/S050-lit-v01.png --shot 5 --attr Frame --rights owned --user-said "my renders"
 $sc shots start S010-S030 --user-said "scene one first"
 $sc shots lock S010 --user-said "lock it"
 $sc finish texture 08_assembly/reel.mp4 --grain subtle --out 08_assembly/reel_tex.mp4

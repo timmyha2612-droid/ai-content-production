@@ -379,6 +379,9 @@ class GenFlowTests(Base):
 
         # submit --wait: downloads, names the file, registers the asset, settles the budget
         rc, out, err = run_cli("gen", "submit", "S010", "--tier", "draft", "--wait", "--project", proj, "--json")
+        self.assertEqual(rc, 2)  # every generation needs a yes to its price first
+        rc, out, err = run_cli("gen", "submit", "S010", "--tier", "draft", "--wait", "--project", proj, "--json",
+                               "--user-said", "yes, about 10 credits is fine")
         self.assertEqual(rc, 0, err)
         res = json.loads(out)
         g = res["generations"][0]
@@ -392,7 +395,7 @@ class GenFlowTests(Base):
         self.assertEqual(assets[0]["path"], "06_generations/drafts/S010-d1.mp4")
 
         # a second draft gets the next number
-        g2 = gen.submit(proj, "S010", "draft", wait=True)["generations"][0]
+        g2 = gen.submit(proj, "S010", "draft", wait=True, user_said="go")["generations"][0]
         self.assertEqual(g2["outputs"], ["06_generations/drafts/S010-d2.mp4"])
 
         # finals refused while the drafts stage is open, and without an approved draft
@@ -418,7 +421,7 @@ class GenFlowTests(Base):
         self.assertEqual(rc, 0)
         self.assertIs(manifest.find_generation(proj, g2["id"])["approved"], False)
 
-        res = gen.submit(proj, "S010", "final", wait=True)
+        res = gen.submit(proj, "S010", "final", wait=True, user_said="go")
         f = res["generations"][0]
         self.assertEqual(res["plan"]["model"], "seedance_2_5")
         self.assertEqual(res["plan"]["params"]["resolution"], "1080p")
@@ -457,7 +460,7 @@ class GenFlowTests(Base):
         self.assertIn("reference-only", str(cm.exception))
         # once the user says they own it, it goes through and is uploaded first
         manifest.mark_asset(proj, a["id"], "owned", "that's my own photo")
-        g = gen.submit(proj, "S020", "draft", wait=True)["generations"][0]
+        g = gen.submit(proj, "S020", "draft", wait=True, user_said="go")["generations"][0]
         self.assertEqual(g["status"], "completed")
         self.assertEqual(g["inputs"], [a["id"]])
         self.assertTrue(g["uploads"])
@@ -489,6 +492,21 @@ class GenFlowTests(Base):
         decisions = manifest.load(proj)["decisions"]
         self.assertTrue(any("overrode" in d["text"] and d["user_said"] == "yes, spend it" for d in decisions))
 
+    def test_every_generation_needs_a_yes_even_under_the_threshold(self):
+        proj = self.single_project(threshold=1000)
+        with self.assertRaises(Refused) as cm:
+            gen.submit(proj, "S010", "draft")
+        self.assertIn("priced first", str(cm.exception))
+        self.assertEqual(budget.status(proj)["reserved"], 0)
+        est = gen.estimate(proj, "S010", "draft")
+        self.assertTrue(est["budget"]["needs_user_said"])
+        gen.submit(proj, "S010", "draft", user_said="yes, go")
+        from shotcraft import config
+        cfg = config.load()
+        cfg["confirm_every_generation"] = False
+        config.save(cfg)
+        gen.submit(proj, "S010", "draft")  # opted out: under the threshold goes without asking
+
     def test_remaining_budget_needs_user_said(self):
         proj = self.single_project(budget_credits=1, threshold=100)
         with self.assertRaises(Refused) as cm:
@@ -498,7 +516,7 @@ class GenFlowTests(Base):
     def test_failed_job_releases_budget(self):
         proj = self.single_project()
         with mock.patch.dict(os.environ, {"SHOTCRAFT_FAKE_STATUS": "nsfw"}):
-            g = gen.submit(proj, "S010", "draft", wait=True)["generations"][0]
+            g = gen.submit(proj, "S010", "draft", wait=True, user_said="go")["generations"][0]
         self.assertEqual(g["status"], "nsfw")
         self.assertIn("content filter", g["help"])
         st = budget.status(proj)
@@ -508,7 +526,7 @@ class GenFlowTests(Base):
 
     def test_submit_without_wait_then_status(self):
         proj = self.single_project()
-        g = gen.submit(proj, "S010", "draft")["generations"][0]
+        g = gen.submit(proj, "S010", "draft", user_said="go")["generations"][0]
         self.assertEqual(g["status"], "submitted")
         self.assertGreater(budget.status(proj)["reserved"], 0)
         g = gen.refresh(proj, g["id"])
@@ -518,7 +536,7 @@ class GenFlowTests(Base):
 
     def test_variants_make_one_generation_each(self):
         proj = self.single_project()
-        res = gen.submit(proj, "S010", "draft", variants=2, wait=True)
+        res = gen.submit(proj, "S010", "draft", variants=2, wait=True, user_said="go")
         self.assertEqual([g["outputs"][0] for g in res["generations"]],
                          ["06_generations/drafts/S010-d1.mp4", "06_generations/drafts/S010-d2.mp4"])
 
@@ -536,7 +554,7 @@ class GenFlowTests(Base):
         st["stages"]["boards"]["status"] = "open"
         stages.save_state(proj, st)
         self.make_card(proj, "S010", use_case="thumbnail")
-        g = gen.submit(proj, "S010", "board", wait=True)["generations"][0]
+        g = gen.submit(proj, "S010", "board", wait=True, user_said="go")["generations"][0]
         self.assertEqual(g["outputs"][0], "06_generations/boards/S010-b1.png")
         self.assertEqual(g["model"], "nano_banana_flash")
 

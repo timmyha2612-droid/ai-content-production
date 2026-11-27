@@ -7,6 +7,23 @@ dates; rule changes that alter what gets generated are listed here too.
 
 ## [Unreleased]
 
+## [0.5.0] - 2026-11-27
+
+### Added
+
+- **Blender skill** (`skills/blender`): builds references in Blender once the user connects it themselves. Plans
+  in plain words first, builds to the shot's card (lens, 9:16, depth-plane collections, one camera move over
+  the exact duration, the look book's key light), renders clay, lit and camera-move versions into
+  `00_inputs/blender/`, and puts them on the board.
+- `sc.py board add PATH --shot N --attr A [--label L] [--rights owned --user-said "..."]`: an image from disk
+  (a Blender render, a photo) onto the board.
+
+### Changed
+
+- **Every generation now waits for the user's yes to its live price**, however small (`confirm_every_generation`
+  in the user config, on by default; set it to false to let jobs under the threshold go without asking).
+  Estimates say so too. The production designer's Blender route now follows the blender skill.
+
 ## [0.4.0] - 2026-11-27
 
 ### Added

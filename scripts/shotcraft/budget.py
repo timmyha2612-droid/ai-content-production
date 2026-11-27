@@ -54,12 +54,19 @@ def status(project):
     return _status_of(_budget(manifest.load(project)))
 
 
-def check(project, credits, user_said=None):
+def check(project, credits, user_said=None, generation=False):
+    """generation=True for a submit: with confirm_every_generation on (the default), any job that costs
+    credits needs the user's yes to its price, not only jobs over the threshold."""
     st = status(project)
     cost = _num(credits, None)
     if cost is None or cost < 0:
         raise Refused("Credits must be a number of 0 or more.")
     reasons = []
+    if generation and cost > 0:
+        from . import config
+        if config.load().get("confirm_every_generation", True):
+            reasons.append("every generation is priced first and needs the user's yes (about %s credits)"
+                           % _clean(cost))
     thr = st.get("threshold_single_job")
     if thr is not None and cost > _num(thr):
         reasons.append("%s credits is over the single-job threshold of %s" % (_clean(cost), thr))

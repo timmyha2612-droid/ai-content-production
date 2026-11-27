@@ -540,3 +540,13 @@ board.json) or all. State lives in `.shotcraft/shots.json` (sc.py only; the guar
   board; an empty field is refused. Generation itself never starts from the board.
 - The drafts and finals stages still close the usual way, with their evidence, once every shot is locked.
 
+## 14. Price confirmation and Blender references
+
+- `budget.check(..., generation=True)` (used by `gen.estimate` and `gen.submit`): with the user config's
+  `confirm_every_generation` on (the default), any job that costs credits needs the user's words, on top of the
+  threshold and remaining-budget checks. Off, only those two apply, as before.
+- `skills/blender`: Blender work happens only through tools the user connected; renders follow the card
+  (aspect, lens, depth-plane collections `FG`, `SUBJECT`, `BG_NEAR`, `BG_FAR`, one keyframed move over the exact
+  duration, one named `KEY` light) and land in `00_inputs/blender/`. `board.add_file` / `sc.py board add` puts an
+  image from disk on the board; rights other than reference-only need the user's words. Video references are
+  registered with `sc.py asset add` until the board shows video.
