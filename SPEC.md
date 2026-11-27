@@ -514,10 +514,13 @@ it never writes a card, opens a stage or generates.
   Environment → `reference`; Lighting, Mood, Camera and the look book's Visual worlds, Palette, Light and
   texture, Moodboard → `style`; anything else is not sent. `sc.py board inputs` lists the matching
   `card set-input` commands for sendable references only; the producer runs them with the user's words.
+- **Shot layers:** `board.SHOT_LAYERS` (Character, Wardrobe, Performance, Emotion, Environment, Camera,
+  Lighting, Mood, Start frame, End frame). Start frame and End frame map to `start_frame` and `end_frame`.
 - **@ mentions:** each reference has a unique label. A card field may mention one as `@Label`; the board
   resolves mentions against the shot's sendable references in slot order (character, reference, style) into
   the model's pointer (`MENTION_STYLE`, `@Image{n}` for Seedance) or plain words, and warns about mentions
-  of references that aren't sent and sent references never mentioned. The card keeps `@Label`.
+  of references that aren't sent and sent references never mentioned. The card keeps `@Label`, and the
+  compiler never trims a field that holds one.
 - **Server:** stdlib `http.server` on 127.0.0.1 only. Every request needs the per-run token (header or `?t=`)
   and a localhost `Host`, so other web pages can't read or post to it. Uploads are images only (no SVG),
   20 MB at most, with sanitised file names.

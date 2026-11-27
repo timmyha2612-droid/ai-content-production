@@ -30,6 +30,7 @@ import re
 
 DEFAULT_MAX_WORDS = 120
 DEFAULT_PROTECT = 90
+MENTION_RE = re.compile(r"@[A-Za-z][A-Za-z0-9_-]{0,23}")  # a reference label, see board.py
 MIN_GUARDS = 2
 DEFAULT_GUARD_PRIORITY = 45
 
@@ -604,6 +605,9 @@ def compile(card, model_profile=None, rules=None):  # noqa: A001 - name fixed by
                 # what changes is the point of an edit: light and look are trimmed last
                 if pri < protect:  # trimmed last, but still trimmable; already-protected fields stay protected
                     pri = min(protect - 1, max(pri, 80 + pri // 5))
+            if MENTION_RE.search(text):
+                # a field naming a reference image (@Label) carries the link to an input: never trim it away
+                pri = max(pri, protect)
             items.append({"key": key, "group": group, "text": text,
                           "priority": pri, "idx": idx})
             idx += 1

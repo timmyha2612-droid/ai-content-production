@@ -53,15 +53,22 @@ _SLOT_ORDER = {"character": 0, "reference": 1, "style": 2}
 
 # Board attribute -> card input role ("as" in sc.py card set-input). None: never sent, a note for the edit.
 _INPUT = {
-    "frame": "start_frame",
+    "frame": "start_frame", "start frame": "start_frame", "end frame": "end_frame",
     "character": "character",
     "wardrobe": "reference", "props": "reference", "environment": "reference",
     "lighting": "style", "mood": "style", "camera": "style",
     "palette": "style", "visual worlds": "style", "light and texture": "style", "moodboard": "style",
 }
+FRAME_ATTRS = ("frame", "start frame", "end frame")
+# The shot layers a board uses, in order. Character, Wardrobe, Performance and Emotion describe the person (who
+# they are, what they wear, what they do, what they feel, shown through the body); Environment is the place
+# with its props; Start frame and End frame are how the shot opens and how it ends. Cutting belongs to the edit.
+SHOT_LAYERS = ("Character", "Wardrobe", "Performance", "Emotion", "Environment", "Camera", "Lighting", "Mood",
+               "Start frame", "End frame")
 # Board attribute -> project.json asset role.
 _ROLE = {
-    "frame": "board", "character": "character", "wardrobe": "prop", "props": "prop",
+    "frame": "board", "start frame": "board", "end frame": "board",
+    "character": "character", "wardrobe": "prop", "props": "prop",
     "environment": "environment",
 }
 
@@ -81,9 +88,17 @@ BOARD_TEMPLATE = {
         {"n": 1, "card": "S010", "time": "0.0-3.0", "dur": 3.0, "world": "dawn", "name": "First light",
          "size": "MS", "picture": "A baker dusts flour off her hands as the oven light comes on.",
          "vo": "", "text": "Open at 6", "sound": "Oven hum.",
-         "layers": {"Character": "A baker in her 40s.", "Wardrobe": "Linen apron.",
-                    "Environment": "Small bakery counter.", "Camera": "MS, eye level, locked-off.",
-                    "Lighting": "Cool window key from frame left.", "Mood": "Calm."}},
+         "layers": {"Character": "A baker in her 40s, flour on her forearms.",
+                    "Wardrobe": "Faded linen apron over a grey tee.",
+                    "Performance": "Dusts her hands, flicks on the oven light, glances at the door.",
+                    "Emotion": "Settled and unhurried; a small breath out as the light comes on.",
+                    "Environment": "A small bakery before opening: proving trays stacked by the window, "
+                                   "flour drifting in the first light, the street still dark outside.",
+                    "Camera": "MS, eye level, locked-off.",
+                    "Lighting": "Cool window key from frame left; the oven light adds warm fill.",
+                    "Mood": "Quiet, the calm before the day.",
+                    "Start frame": "Her hands mid-dust over the counter, the oven still dark.",
+                    "End frame": "Oven light on, she looks toward the door."}},
     ],
     "notes": [{"title": "Before generating", "items": ["Make each shot as a still first."]}],
 }
@@ -203,7 +218,7 @@ def add_ref(project, data, filename, shot, attr):
     dest = os.path.join(folder, "%s-%s%s" % (uuid.uuid4().hex[:8], base or "image", ext))
     with open(dest, "wb") as fh:
         fh.write(data)
-    rights = "generated" if _key(attr) == "frame" else "reference-only"
+    rights = "generated" if _key(attr) in FRAME_ATTRS else "reference-only"
     asset = manifest.add_asset(project, dest, rights, asset_role(attr), kind="image",
                                note="Added on the storyboard (%s)" % attr, shot=_shot_card(project, shot))
     m = manifest.load(project)
@@ -356,7 +371,7 @@ def inputs_plan(project, data=None):
             continue
         targets = list(cards_by_shot.items()) if b.get("shot") == 0 else [(b.get("shot"), cards_by_shot.get(b.get("shot")))]
         for n, card in targets:
-            if not card or (role == "start_frame" and b.get("shot") == 0):
+            if not card or (role in ("start_frame", "end_frame") and b.get("shot") == 0):
                 continue
             plan.append({"shot": n, "card": card, "asset": a["id"], "as": role, "attr": b.get("attr"),
                          "label": b.get("label"),

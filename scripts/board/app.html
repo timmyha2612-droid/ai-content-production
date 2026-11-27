@@ -144,11 +144,12 @@ code{font-size:13px;overflow-wrap:anywhere}
     <div id="plan"></div>
     <h2 style="font-size:20px;margin:36px 0 4px">How references map to Higgsfield</h2>
     <div style="overflow-x:auto"><table><thead><tr><th>Where you add it</th><th>Card input</th><th>What it does</th></tr></thead><tbody>
-      <tr><td>Add still (frame)</td><td>start_frame</td><td>Image to video. The prompt becomes motion only.</td></tr>
+      <tr><td>Add still (frame) or Start frame</td><td>start_frame</td><td>Image to video. The prompt becomes motion only.</td></tr>
+      <tr><td>End frame</td><td>end_frame</td><td>Where the shot must land, on models that take an end frame.</td></tr>
       <tr><td>Character</td><td>character</td><td>Keeps the same face across shots.</td></tr>
-      <tr><td>Wardrobe, Props, Environment</td><td>reference</td><td>Matches clothing, objects and set.</td></tr>
+      <tr><td>Wardrobe, Environment (with its props)</td><td>reference</td><td>Matches clothing, the place and the objects in it.</td></tr>
       <tr><td>Lighting, Mood, Camera, Visual worlds, Palette, Light and texture, Moodboard</td><td>style</td><td>Matches light, colour and grade. Look book references apply to every shot.</td></tr>
-      <tr><td>Anything else (Transition, Keep out…)</td><td>not sent</td><td>Notes for the writing and the edit.</td></tr>
+      <tr><td>Performance, Emotion, Keep out and other notes</td><td>not sent</td><td>Written into the prompt; a phone clip of the performance can become a motion reference later.</td></tr>
     </tbody></table></div>
   </section>
 </div></main>

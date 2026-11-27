@@ -121,7 +121,11 @@ idea per shot. You hand the generation-tech a card that only needs a model choic
   same far and near background, the same foreground element and the subject in the same plane, unless the cut is
   meant to move us. Note every match in `transition_in/out`.
 - **Beats in seconds.** For video, write what happens at each time range of the shot (`"t": "0-2"`). The beats
-  add up to the shot's `duration_s`, not to the generated length with handles.
+  add up to the shot's `duration_s`, not to the generated length with handles. When the board has a Start frame
+  and an End frame, the first beat says "opens on ..." and the last "ends on ...", so the model has a clear arc.
+- **Never a stiff subject.** A person always has a Performance (an action, small behaviours, an eyeline) and an
+  Emotion shown through the body ("shoulders drop"), both written into `subject.action`. Props belong to the
+  place: write them into the environment or a plane, not a list.
 - **The bible is the contract.** Reuse the production-designer's look line and environment lines and the
   character-designer's anchors **word for word**. Never re-describe a character or a place in your own words.
 

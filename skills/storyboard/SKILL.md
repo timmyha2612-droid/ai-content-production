@@ -34,7 +34,30 @@ sample to start from. Keep the user's exact words from the script for picture, v
   music belong on the shots.
 - `shots`: one per shot-list row: `n`, `card` (the shot id such as `S010`, or `null` for a shot cut in the
   edit), `time`, `dur` (cut length in seconds), `world` (an id or `mix`), `name`, `size`, `picture`, `vo`,
-  `text`, `sound`, `layers` (attribute: text, from the bible and the card), `risk`.
+  `text`, `sound`, `layers` (attribute: text, below), `risk`.
+
+### The shot layers
+
+Use these, in this order (`board.SHOT_LAYERS`). Leave out a layer that doesn't apply (no Wardrobe or Emotion
+for a brush or a machine).
+
+| Layer | Write | Goes into the card |
+|---|---|---|
+| Character | Who or what it is: age, build, face, the look that stays the same in every shot (`@Label` for its reference) | `subject.subject`, `subject.consistency` |
+| Wardrobe | What they wear, in concrete materials | `subject.wardrobe_props` |
+| Performance | What they do in this shot: the main action, small behaviours, where they look | `subject.action`, `subject.interaction` |
+| Emotion | What they feel, shown through the body ("shoulders drop"), not named ("calm") | folded into `subject.action` |
+| Environment | The place as a scene: what and when, one telling detail, what moves in the air, the props in it, how it touches the subject. A short last line for depth | `world.environment`, `world.atmosphere`, the plane fields |
+| Camera, Lighting, Mood | As before | `camera.*`, `light_look.*` |
+| Start frame, End frame | How the shot opens and how it lands | the first and last beats (`0-1`: "opens on ...", `<d-1>-<d>`: "ends on ...") |
+
+A still on Start frame or End frame becomes the card's `start_frame` or `end_frame` input once it is sendable;
+continuity runs through them (one shot's End frame is often the next shot's Start frame). Transitions belong
+to the edit, not the board. A stiff character usually means an empty Performance: always give a person
+something to do and a physical sign of what they feel.
+
+Keep each card under the model's word cap: `sc board check` lists anything the compiler left out. Shorten the
+other layers before cutting Wardrobe, Performance or a field with an `@Label` (those are never trimmed).
 - `notes`: `[{title, items}]`.
 
 Then `sc board check`: it validates the file and shows, per shot, the models chosen on the card, the prompt's
@@ -52,7 +75,8 @@ click the @label to rename. The server stops with Ctrl+C. It binds to 127.0.0.1 
   still is **generated**. The user taps the tag to mark one **owned** or **licensed**.
 - Every reference has a label (`@Character1` by default). The user renames it (`@Baker`). When you write a
   card, mention a sent reference by its label in the field it belongs to: `subject.consistency: "same face
-  as @Baker"`, `wardrobe_props: "the apron from @Apron"`. The board turns each mention into the model's own
+  as @Baker"`, `wardrobe_props: "the apron from @Apron"`. The compiler never trims a field that holds a
+  mention. The board turns each mention into the model's own
   pointer in slot order (character, then reference, then style): `@Image1`, `@Image2` on Seedance, plain
   words on a model with no pointer syntax on record. It warns when a mention names a reference that isn't
   sent, and when a sent reference is never mentioned.
