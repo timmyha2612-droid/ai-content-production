@@ -1,7 +1,7 @@
 {
   "name": "shotcraft",
   "version": "0.6.0",
-  "description": "A production crew for AI video and images: intake grilling, research, concept, two-column script, shot list, bible, layered prompt cards, cheap-first boards and drafts, approved finals, motion graphics, sound, assembly, delivery checks and a Higgsfield hand-off (assets uploaded plus a Canvas build sheet). Stage gates with evidence, a credit budget, reference rights, a QA loop and a learning loop. A local storyboard app for references and @ mentions. Also a fast 'just a prompt' mode. Higgsfield CLI by default; other providers plug in.",
+  "description": "A production crew for AI video and images: research, script, shot list, prompt cards, boards, drafts, finals, sound, assembly and a Higgsfield hand-off. Stage gates, a credit budget, reference rights, QA and a learning loop, a local storyboard app, and a fast 'just a prompt' mode.",
   "author": {
     "name": "shotcraft contributors"
   },
